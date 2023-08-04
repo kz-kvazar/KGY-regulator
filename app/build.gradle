@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdkVersion 34
+    buildToolsVersion '34.0.0'
+    defaultConfig {
+        applicationId "com.add.vpn"
+        minSdkVersion 21  // Было: minSdk 21
+        targetSdkVersion 34
+        versionCode 6
+        versionName "6.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
+    namespace 'com.add.vpn'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1' // Обновил версию до 1.4.0
+    implementation 'com.google.android.material:material:1.9.0' // Обновил версию до 1.4.0
+    implementation 'com.google.android.gms:play-services-ads:22.2.0' // Обновил версию до 20.5.0
+    implementation 'androidx.preference:preference:1.2.1' // Обновил версию до 1.1.1
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5' // Обновил версию до 1.1.3
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1' // Обновил версию до 3.4.0
+}
