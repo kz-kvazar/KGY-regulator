@@ -14,8 +14,6 @@ import com.add.vpn.fragments.LogFragment;
 import com.add.vpn.holders.ContextHolder;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
-import com.google.android.material.color.DynamicColors;
-import com.google.android.material.color.utilities.DynamicColor;
 
 import java.util.LinkedList;
 
@@ -36,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         notificationHelper = new NotificationHelper(this);
         ContextHolder.setNotificationHelper(notificationHelper);
-        //DynamicColors.applyToActivitiesIfAvailable(this.getApplication());
 
 
         if (savedInstanceState == null) {

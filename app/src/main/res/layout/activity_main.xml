@@ -12,13 +12,13 @@
         android:id="@+id/dataFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="6" />
 
     <FrameLayout
         android:id="@+id/logFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="10"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.5"/>
 
 </LinearLayout>

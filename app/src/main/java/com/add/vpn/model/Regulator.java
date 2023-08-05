@@ -73,7 +73,7 @@ public class Regulator {
         }
     }
     private void checkThrottle(){
-        if (throttlePosition > 90){
+        if (throttlePosition > 90 && opPressure > 3){
             DataHolder.setMaxPower(constPower - 10);
             logList.addFirst(sdf.format(now) + " снижение макс.мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
         }

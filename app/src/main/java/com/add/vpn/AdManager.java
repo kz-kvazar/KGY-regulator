@@ -28,7 +28,7 @@ public class AdManager {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     Handler handler = new Handler();
-                    handler.postDelayed(AdManager::loadBannerAd, 30_000);
+                    handler.postDelayed(AdManager::loadBannerAd, 60_000);
                     super.onAdFailedToLoad(loadAdError);
                 }
             });
@@ -47,7 +47,8 @@ public class AdManager {
                         @Override
                         public void onAdDismissedFullScreenContent() {
                             super.onAdDismissedFullScreenContent();
-                            loadInterstitialAd();
+                            Handler handler = new Handler();
+                            handler.postDelayed(AdManager::loadInterstitialAd,60_000);
                         }
                     });
                 }
@@ -67,7 +68,7 @@ public class AdManager {
         } else {
             Handler handler = new Handler();
             loadInterstitialAd();
-            handler.postDelayed(AdManager::showInterstitialAd, 30_000);
+            handler.postDelayed(AdManager::showInterstitialAd, 60_000);
         }
     }
 }
