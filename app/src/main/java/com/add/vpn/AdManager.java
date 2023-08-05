@@ -28,7 +28,7 @@ public class AdManager {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     Handler handler = new Handler();
-                    handler.postDelayed(AdManager::loadBannerAd, 10_000);
+                    handler.postDelayed(AdManager::loadBannerAd, 30_000);
                     super.onAdFailedToLoad(loadAdError);
                 }
             });
@@ -60,7 +60,6 @@ public class AdManager {
         }
     }
 
-    // Метод для показа межстрочной рекламы
     public static void showInterstitialAd() {
         Activity activity = ContextHolder.getActivity();
         if (mInterstitialAd != null && activity != null) {
@@ -68,7 +67,7 @@ public class AdManager {
         } else {
             Handler handler = new Handler();
             loadInterstitialAd();
-            handler.postDelayed(AdManager::showInterstitialAd, 10_000);
+            handler.postDelayed(AdManager::showInterstitialAd, 30_000);
         }
     }
 }

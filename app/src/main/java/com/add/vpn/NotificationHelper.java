@@ -40,7 +40,7 @@ public class NotificationHelper {
         long[] pattern = {0, 100, 1000, 100, 1000};
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle(title)
+                //.setContentTitle(title)
                 .setContentText(message)
                 .setVibrate(pattern)
                 .setTicker(message)
