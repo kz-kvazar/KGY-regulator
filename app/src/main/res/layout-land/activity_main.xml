@@ -5,38 +5,39 @@
 
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               tools:context=".MainActivity"
               android:baselineAligned="false">
 
     <!-- view for AdMob Interstitial Ad -->
+    <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id"
+            android:layout_gravity="center_horizontal"/>
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                ads:adSize="BANNER"
-                ads:adUnitId="@string/banner_ad_unit_id"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
 
             <FrameLayout
-                android:id="@+id/dataFrameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                    android:id="@+id/dataFrameLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6"/>
+            <FrameLayout
+                    android:id="@+id/logFrameLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="10"/>
         </LinearLayout>
 
 
-        <FrameLayout
-            android:id="@+id/logFrameLayout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+
     </LinearLayout>
 
 

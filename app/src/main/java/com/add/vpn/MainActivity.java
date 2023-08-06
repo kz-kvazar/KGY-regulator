@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         notificationHelper = new NotificationHelper(this);
         ContextHolder.setNotificationHelper(notificationHelper);
 
-
         if (savedInstanceState == null) {
             LogFragment logFragment = new LogFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.logFrameLayout, logFragment).commit();

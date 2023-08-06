@@ -1,5 +1,6 @@
 package com.add.vpn.model;
 
+import com.add.vpn.NotificationHelper;
 import com.add.vpn.holders.ContextHolder;
 import com.add.vpn.holders.DataHolder;
 
@@ -45,7 +46,7 @@ public class Regulator {
                 if (list != null)list.addFirst(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
                 now = new Date().getTime();
                 return  (constPower + regulatePower);
-            } else if (constPower < 1520 && opPressure > 6 && throttlePosition < 80 && maxPower < 1520) {
+            } else if (opPressure > 5 && throttlePosition < 80 && maxPower < 1500) {
                 DataHolder.setMaxPower(maxPower + 10);
                 if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (maxPower + 10) + "кВт");
                 now = new Date().getTime();
@@ -55,6 +56,8 @@ public class Regulator {
             logList.addFirst(sdf.format(now) + " остановка");
             AlarmSound errorSound = ContextHolder.getErrorSound();
             if (errorSound != null) errorSound.alarmPlay();
+            NotificationHelper notificationHelper = ContextHolder.getNotificationHelper();
+            if (notificationHelper != null) notificationHelper.showNotification("Остановка!", "КГУ остановлена, так и задуманно?");
             return 900;
         }
         return null;
