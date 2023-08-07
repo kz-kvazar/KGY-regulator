@@ -22,8 +22,6 @@ public class AdManager {
         Activity activity = ContextHolder.getActivity();
         if (activity != null) {
             AdView adView = activity.findViewById(R.id.adView);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
             adView.setAdListener(new AdListener() {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
@@ -32,6 +30,8 @@ public class AdManager {
                     super.onAdFailedToLoad(loadAdError);
                 }
             });
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
         }
     }
 

@@ -88,5 +88,4 @@ public class Regulator {
         opPressure = DataHolder.getOpPressure();
         maxPower = DataHolder.getMaxPower();
     }
-
 }
