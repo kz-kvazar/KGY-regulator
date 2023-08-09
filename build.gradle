@@ -1,20 +1,25 @@
 buildscript {
     ext {
-        agp_version = '7.4.2'
-        agp_version1 = '8.0.2'
-        agp_version2 = '7.4.2'
-        agp_version3 = '8.0.2'
-        agp_version4 = '8.0.2'
-        agp_version5 = '8.0.0'
+        agp_version = '8.0.2'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id 'com.android.application' version '8.0.0' apply false
-    id 'com.android.library' version '8.0.0' apply false
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
 
-task clean(type: Delete) {
+
+plugins {
+    id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
+}
+
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
+
+
 
 

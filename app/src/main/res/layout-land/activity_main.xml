@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="start"/>
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -35,8 +35,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="10"/>
         </LinearLayout>
-
-
 
     </LinearLayout>
 

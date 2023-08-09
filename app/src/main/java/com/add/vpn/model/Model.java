@@ -115,7 +115,7 @@ public class Model extends Thread {
             AlarmSound errorSound = ContextHolder.getErrorSound();
             NotificationHelper notificationHelper = ContextHolder.getNotificationHelper();
             if (notificationHelper != null){
-                notificationHelper.showNotification("KGY", "Обнаружена ошибка КГУ требующая вашего внимания");
+                notificationHelper.showNotification("Ошибка КГУ", "Обнаружена ошибка КГУ требующая вашего внимания");
             }
             if (errorSound != null) {
                 errorSound.alarmPlay();

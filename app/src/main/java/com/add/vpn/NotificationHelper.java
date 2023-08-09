@@ -37,10 +37,10 @@ public class NotificationHelper {
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long[] pattern = {0, 100, 1000, 100, 1000};
+        long[] pattern = {0, 100, 1000, 100, 100};
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
-                //.setContentTitle(title)
+                .setContentTitle(title)
                 .setContentText(message)
                 .setVibrate(pattern)
                 .setTicker(message)
