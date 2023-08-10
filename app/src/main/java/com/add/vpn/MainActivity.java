@@ -14,9 +14,6 @@ import com.add.vpn.fragments.LogFragment;
 import com.add.vpn.holders.ContextHolder;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.AdapterStatus;
-import com.google.android.gms.ads.initialization.InitializationStatus;
 
 import java.util.LinkedList;
 
@@ -27,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private AlarmSound errorSound;
     private AlarmSound alarmSound;
     private NotificationHelper notificationHelper;
-    private boolean adsInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +55,6 @@ public class MainActivity extends AppCompatActivity {
             notificationHelper = new NotificationHelper(this.getApplicationContext());
             ContextHolder.setNotificationHelper(notificationHelper);
 
-            MobileAds.initialize(this.getApplicationContext(), initializationStatus -> {
-                adsInit = true;
-                adsInitialization();
-            });
         }
 
         connectionAlarm = SettingsManager.getAlarmSetting(MainActivity.this, connectionAlarm);
@@ -83,10 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void adsInitialization() {
-            AdManager.loadBannerAd();
-            AdManager.loadInterstitialAd();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("alarmBool", connectionAlarm);
         outState.putBoolean("errorBool", generatorErrors);
-        outState.putBoolean("adsInit", adsInit);
         super.onSaveInstanceState(outState);
     }
 
@@ -161,8 +148,5 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         connectionAlarm = savedInstanceState.getBoolean("alarmBool");
         generatorErrors = savedInstanceState.getBoolean("errorBool");
-        adsInit = savedInstanceState.getBoolean("adsInit");
-
-        if (adsInit) adsInitialization();
     }
 }

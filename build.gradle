@@ -1,15 +1,13 @@
 buildscript {
-    ext {
-        agp_version = '8.0.2'
-    }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
     repositories {
         google()
         mavenCentral()
     }
+    dependencies {
+        // Здесь вы можете добавить зависимости для вашего buildscript, если это необходимо
+        // Например, classpath 'com.android.tools.build:gradle:8.0.2'
+    }
 }
-
 
 plugins {
     id 'com.android.application' version '8.0.2' apply false
@@ -19,7 +17,3 @@ plugins {
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
-
-
-
-

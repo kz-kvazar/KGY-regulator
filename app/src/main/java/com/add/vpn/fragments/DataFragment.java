@@ -1,5 +1,6 @@
 package com.add.vpn.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -19,6 +20,10 @@ import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.holders.ContextHolder;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.model.Model;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import org.jetbrains.annotations.NotNull;
 
 public class DataFragment extends Fragment {
 
@@ -94,8 +99,19 @@ public class DataFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Handler handler = new Handler();
-        handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
+        Activity activity = ContextHolder.getActivity();
+        if (activity != null) {
+            MobileAds.initialize(activity, new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(@NotNull InitializationStatus initializationStatus) {
+                    AdManager.loadBannerAd();
+                    AdManager.loadInterstitialAd();
+                    Handler handler = new Handler();
+                    handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
+                }
+            });
+        }
+
     }
 
     @Override
