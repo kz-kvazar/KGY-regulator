@@ -3,23 +3,23 @@
     <string name="action_settings">Settings</string>
 
 
-    <string name="regulate_statusOn">Регулирование включенно</string>
-    <string name="regulate_statusOff">Регулирование отключенно</string>
+    <string name="regulate_statusOn">Регулирование включено</string>
+    <string name="regulate_statusOff">Регулирование отключено</string>
 
     <string name="kgy_statusFailure">Ошибка связи с КГУ</string>
     <string name="error_msg">Ошибка</string>
 
 
-    <string name="op_Pressure">Давлене перед ОП</string>
+    <string name="op_Pressure">Давление перед ОП</string>
 
-    <string name="act_Power">Актвная мощность</string>
+    <string name="act_Power">Активная мощность</string>
     <string name="set_Power">Заданная мощность</string>
 
     <string name="alarmEnable">Сигнал при ошибках связи</string>
     <string name="errorEnable">Сигнал при ошибках КГУ</string>
     <string name="max_power">Максимальная мощность</string>
 
-    <string name="btn_regulateOn">Включть!</string>
+    <string name="btn_regulateOn">Включать!</string>
     <string name="btn_regulateOff">Отключить!</string>
     <string name="throttlePosition">Положение дросселя</string>
     <!-- -

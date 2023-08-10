@@ -26,7 +26,7 @@ public class DataHolder {
         dataList.add("Положение дросселя :" + throttlePosition + "%");
         dataList.add("Активная мощность :" + actPower + "кВт");
         dataList.add("Заданная мощность :" + constPower + "кВт");
-        dataList.add("Расход газа :" + calculateGasFlow(CH4Concentration, actPower) + "м3/ч");
+        dataList.add("Расход смеси :" + calculateGasFlow(CH4Concentration, actPower) + "м3/ч");
         //dataList.add("Максимальная мощность : " + maxPower + "кВт");
         return dataList;
     }
