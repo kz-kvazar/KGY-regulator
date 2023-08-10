@@ -48,9 +48,9 @@ public class Regulator {
                 if (list != null)list.addFirst(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
                 now = new Date().getTime();
                 return  (constPower + regulatePower);
-            } else if (opPressure > 5 && throttlePosition < 80 && userMaxPower > appMaxPower) {
-                appMaxPower = (appMaxPower + 10);
-                if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (appMaxPower + 10) + "кВт");
+            } else if (opPressure > 5 && throttlePosition < 80 && userMaxPower > appMaxPower && appMaxPower != (constPower + 10)) {
+                appMaxPower = (constPower + 10);
+                if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (constPower + 10) + "кВт");
                 now = new Date().getTime();
             }
         } else if (actPower <= 0 && constPower != 900){
