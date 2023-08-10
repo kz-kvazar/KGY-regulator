@@ -12,7 +12,8 @@ import java.util.Locale;
 public class Regulator {
     private final LinkedList<String> logList;
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    public int maxPower = 1550;
+    public int userMaxPower = 1550;
+    private int appMaxPower = 1560;
     public int regulatePower = 10;
     private long now = new Date().getTime();
     private double opPressure = 0d;
@@ -30,25 +31,26 @@ public class Regulator {
         if (actPower > 0 && (new Date().getTime() - now) >= 20_000) {
 
             regulatePower();
+            checkMaxPower();
             LinkedList<String> list = ContextHolder.getLogList();
 
             if (opPressure < 3) {
                 if (list != null)list.addFirst(sdf.format(now) + " снижение мощности до " + (constPower - 100) + "кВт");
                 now = new Date().getTime();
                 return  constPower > 1000 ? (constPower - 100) : 900;
-            } else if (opPressure < 4 || throttlePosition > 90 || actPower > 1560 || constPower > maxPower) {
+            } else if (opPressure < 4 || throttlePosition > 90 || actPower > 1560 || constPower > appMaxPower) {
                 if (list != null)list.addFirst(sdf.format(now) + " снижение мощности до " + (constPower - regulatePower) + "кВт");
                 now = new Date().getTime();
                 checkActPower();
                 checkThrottle();
                 return  (constPower - regulatePower);
-            } else if (opPressure > 5 && (constPower + regulatePower) < maxPower && (constPower - actPower) <= 50 && throttlePosition < 90) {
+            } else if (opPressure > 5 && (constPower + regulatePower) < appMaxPower && (constPower - actPower) <= 50 && throttlePosition < 90) {
                 if (list != null)list.addFirst(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
                 now = new Date().getTime();
                 return  (constPower + regulatePower);
-            } else if (opPressure > 5 && throttlePosition < 80 && maxPower < 1500) {
-                DataHolder.setMaxPower(maxPower + 10);
-                if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (maxPower + 10) + "кВт");
+            } else if (opPressure > 5 && throttlePosition < 80 && userMaxPower > appMaxPower) {
+                appMaxPower = (appMaxPower + 10);
+                if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (appMaxPower + 10) + "кВт");
                 now = new Date().getTime();
             }
         } else if (actPower <= 0 && constPower != 900){
@@ -71,14 +73,19 @@ public class Regulator {
     }
     private void checkActPower() {
         if (actPower > 1560) {
-            DataHolder.setMaxPower(constPower - 10);
+            appMaxPower = (constPower - 10);
             logList.addFirst(sdf.format(now) + " снижение макс.мощности по активной мощности до " + DataHolder.getMaxPower() + "кВт");
         }
     }
     private void checkThrottle(){
         if (throttlePosition > 90 && opPressure > 3){
-            DataHolder.setMaxPower(constPower - 10);
+            appMaxPower = (constPower - 10);
             logList.addFirst(sdf.format(now) + " снижение макс.мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
+        }
+    }
+    private void checkMaxPower(){
+        if (userMaxPower < appMaxPower){
+            appMaxPower -= 10;
         }
     }
     private void getData(){
@@ -86,6 +93,6 @@ public class Regulator {
         constPower = DataHolder.getConstPower();
         throttlePosition = DataHolder.getThrottlePosition();
         opPressure = DataHolder.getOpPressure();
-        maxPower = DataHolder.getMaxPower();
+        userMaxPower = DataHolder.getMaxPower();
     }
 }

@@ -43,7 +43,7 @@ public class Model extends Thread {
                 if (regulateConstant != null) {
                     dataSender.setPowerConstant(regulateConstant);
                 }
-                Thread.sleep(1000);
+                Thread.sleep(200);
                 dataChange();
             } catch (InterruptedException i) {
                 //logList.add("Interrupt model");
@@ -104,6 +104,8 @@ public class Model extends Thread {
         DataHolder.setActPower(dataReceiver.getPowerActive());
         Thread.sleep(100);
         DataHolder.setConstPower(dataReceiver.getPowerConstant());
+        Thread.sleep(100);
+        DataHolder.setCH4Concentration(dataReceiver.getCH4Concentration());
         Thread.sleep(100);
         retry = 0;
     }
