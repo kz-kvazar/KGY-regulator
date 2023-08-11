@@ -22,7 +22,7 @@ public class DataHolder {
     //TODO reparse hardcode strings with strings.xml
     public static List<String> toLis() {
         dataList.clear();
-        dataList.add("Давлене перед ОП :" + opPressure + "kPa");
+        dataList.add("Давление перед ОП :" + opPressure + "kPa");
         dataList.add("Положение дросселя :" + throttlePosition + "%");
         dataList.add("Активная мощность :" + actPower + "кВт");
         dataList.add("Заданная мощность :" + constPower + "кВт");
