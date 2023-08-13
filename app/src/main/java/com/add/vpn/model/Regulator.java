@@ -48,19 +48,19 @@ public class Regulator {
                 if (list != null)list.addFirst(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
                 now = new Date().getTime();
                 return  (constPower + regulatePower);
-            } else if (opPressure > 5 && throttlePosition < 80 && userMaxPower > appMaxPower && appMaxPower < 1520) {
+            } else if (opPressure > 5 && throttlePosition < 80 && (userMaxPower - appMaxPower) >= 10 && (new Date().getTime() - now) > 600_000)  { // 10 min
                 appMaxPower = (constPower + 10);
                 if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (constPower + 10) + "кВт");
                 now = new Date().getTime();
             }
-        } else if (actPower <= 0 && constPower != 900){
-            DataHolder.setMaxPower(1540);
+        } else if (actPower <= 0 && constPower != 800){
+            DataHolder.setMaxPower(1520);
             logList.addFirst(sdf.format(now) + " остановка");
             AlarmSound errorSound = ContextHolder.getErrorSound();
             if (errorSound != null) errorSound.alarmPlay();
             NotificationHelper notificationHelper = ContextHolder.getNotificationHelper();
             if (notificationHelper != null) notificationHelper.showNotification("Остановка!", "КГУ остановлена, так и задумано?");
-            return 900;
+            return 800;
         }
         return null;
     }

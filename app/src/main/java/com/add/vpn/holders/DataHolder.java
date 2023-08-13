@@ -9,7 +9,7 @@ public class DataHolder {
     private static short actPower = 0;
     private static short constPower = 0;
     private static float throttlePosition = 0f;
-    private static int maxPower = 1540;
+    private static int maxPower = 1520;
     private static float CH4Concentration = 0f;
 
     public static int getMaxPower() {
