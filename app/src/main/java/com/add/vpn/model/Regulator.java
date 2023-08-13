@@ -48,7 +48,7 @@ public class Regulator {
                 if (list != null)list.addFirst(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
                 now = new Date().getTime();
                 return  (constPower + regulatePower);
-            } else if (opPressure > 5 && throttlePosition < 80 && userMaxPower > appMaxPower && appMaxPower != (constPower + 10)) {
+            } else if (opPressure > 5 && throttlePosition < 80 && userMaxPower > appMaxPower && appMaxPower < 1520) {
                 appMaxPower = (constPower + 10);
                 if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (constPower + 10) + "кВт");
                 now = new Date().getTime();
@@ -59,7 +59,7 @@ public class Regulator {
             AlarmSound errorSound = ContextHolder.getErrorSound();
             if (errorSound != null) errorSound.alarmPlay();
             NotificationHelper notificationHelper = ContextHolder.getNotificationHelper();
-            if (notificationHelper != null) notificationHelper.showNotification("Остановка!", "КГУ остановлена, так и задуманно?");
+            if (notificationHelper != null) notificationHelper.showNotification("Остановка!", "КГУ остановлена, так и задумано?");
             return 900;
         }
         return null;
