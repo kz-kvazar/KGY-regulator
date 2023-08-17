@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
             logList = new LinkedList<>();
             ContextHolder.setLogList(logList);
 
-            logAdapter = new LogAdapter(this, R.layout.list_item, logList);
+            logAdapter = new LogAdapter(this, R.layout.log_item, logList);
             ContextHolder.setLogAdapter(logAdapter);
 
-            dataAdapter = new DataAdapter(this, R.layout.list_item, DataHolder.toLis());
+            dataAdapter = new DataAdapter(this, R.layout.data_item, DataHolder.toLis());
             ContextHolder.setDataAdapter(dataAdapter);
 
             notificationHelper = new NotificationHelper(this.getApplicationContext());

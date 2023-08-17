@@ -28,10 +28,11 @@ public class Regulator {
 
     public Integer regulate() {
         getData();
+        regulatePower();
+        checkMaxPower();
+
         if (actPower > 0 && (new Date().getTime() - now) >= 20_000) {
 
-            regulatePower();
-            checkMaxPower();
             LinkedList<String> list = ContextHolder.getLogList();
 
             if (opPressure < 3) {
@@ -84,9 +85,9 @@ public class Regulator {
         }
     }
     private void checkMaxPower(){
-        if (userMaxPower < appMaxPower){
-            appMaxPower -= 10;
-            logList.addFirst(sdf.format(now) + " плавное снижение границы регулирования мощности по запросу пользователя до " + DataHolder.getMaxPower() + "кВт");
+        if (userMaxPower != appMaxPower){
+            appMaxPower = userMaxPower;
+            logList.addFirst(sdf.format(now) + " снижение границы регулирования мощности по запросу пользователя до " + appMaxPower + "кВт");
         }
     }
     private void getData(){
