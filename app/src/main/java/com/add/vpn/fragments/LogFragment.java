@@ -12,11 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.add.vpn.R;
+import com.add.vpn.adapters.LogAdapter;
 import com.add.vpn.holders.ContextHolder;
 
 public class LogFragment extends Fragment {
     private ListView logList;
-    private ListAdapter adapter;
+    private LogAdapter adapter;
 
     public LogFragment() {
         // Required empty public constructor
@@ -29,7 +30,6 @@ public class LogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         adapter = ContextHolder.getLogAdapter();
         logList.setAdapter(adapter);
-
     }
 
     @Override
@@ -46,7 +46,9 @@ public class LogFragment extends Fragment {
         return inflate;
     }
 
-    public void setAdapter(ListAdapter adapter) {
-        this.adapter = adapter;
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 }

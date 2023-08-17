@@ -35,11 +35,11 @@ public class Regulator {
             LinkedList<String> list = ContextHolder.getLogList();
 
             if (opPressure < 3) {
-                if (list != null)list.addFirst(sdf.format(now) + " снижение мощности до " + (constPower - 100) + "кВт");
+                if (list != null)list.addFirst(sdf.format(now) + " снижение мощности по аварийно низкому давлению до " + (constPower - 100) + "кВт");
                 now = new Date().getTime();
                 return  constPower > 1000 ? (constPower - 100) : 900;
             } else if (opPressure < 4 || throttlePosition > 90 || actPower > 1560 || constPower > appMaxPower) {
-                if (list != null)list.addFirst(sdf.format(now) + " снижение мощности до " + (constPower - regulatePower) + "кВт");
+                if (list != null)list.addFirst(sdf.format(now) + " снижение мощности по низкому давлению до " + (constPower - regulatePower) + "кВт");
                 now = new Date().getTime();
                 checkActPower();
                 checkThrottle();
@@ -50,12 +50,12 @@ public class Regulator {
                 return  (constPower + regulatePower);
             } else if (opPressure > 5 && throttlePosition < 80 && (userMaxPower - appMaxPower) >= 10 && (new Date().getTime() - now) > 600_000)  { // 10 min
                 appMaxPower = (constPower + 10);
-                if (list != null)list.addFirst(sdf.format(now) + " повышение макс.мощности до " + (constPower + 10) + "кВт");
+                if (list != null)list.addFirst(sdf.format(now) + " повышение границы регулирования мощности до " + (constPower + 10) + "кВт");
                 now = new Date().getTime();
             }
         } else if (actPower <= 0 && constPower != 800){
             DataHolder.setMaxPower(1520);
-            logList.addFirst(sdf.format(now) + " остановка");
+            logList.addFirst(sdf.format(now) + " КГУ остановлена");
             AlarmSound errorSound = ContextHolder.getErrorSound();
             if (errorSound != null) errorSound.alarmPlay();
             NotificationHelper notificationHelper = ContextHolder.getNotificationHelper();
@@ -74,18 +74,19 @@ public class Regulator {
     private void checkActPower() {
         if (actPower > 1560) {
             appMaxPower = (constPower - 10);
-            logList.addFirst(sdf.format(now) + " снижение макс.мощности по активной мощности до " + DataHolder.getMaxPower() + "кВт");
+            logList.addFirst(sdf.format(now) + " снижение границы регулирования мощности по активной мощности до " + DataHolder.getMaxPower() + "кВт");
         }
     }
     private void checkThrottle(){
         if (throttlePosition > 90 && opPressure > 3){
             appMaxPower = (constPower - 10);
-            logList.addFirst(sdf.format(now) + " снижение макс.мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
+            logList.addFirst(sdf.format(now) + " снижение границы регулирования мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
         }
     }
     private void checkMaxPower(){
         if (userMaxPower < appMaxPower){
             appMaxPower -= 10;
+            logList.addFirst(sdf.format(now) + " плавное снижение границы регулирования мощности по запросу пользователя до " + DataHolder.getMaxPower() + "кВт");
         }
     }
     private void getData(){

@@ -26,8 +26,7 @@
             android:value="ca-app-pub-7270220917037921~1303351804" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:screenOrientation="sensor">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

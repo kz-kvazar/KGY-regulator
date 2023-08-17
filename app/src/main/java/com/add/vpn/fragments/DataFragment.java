@@ -65,10 +65,6 @@ public class DataFragment extends Fragment {
 
     }
 
-    public void setAdapter(DataAdapter dataAdapter) {
-        this.dataAdapter = dataAdapter;
-    }
-
     private void startRegulate() {
         if (ContextHolder.getModel() != null) {
             regulate = false;
@@ -100,6 +96,7 @@ public class DataFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Activity activity = ContextHolder.getActivity();
+        //dataAdapter.notifyDataSetChanged();
         if (activity != null) {
             MobileAds.initialize(activity, new OnInitializationCompleteListener() {
                 @Override

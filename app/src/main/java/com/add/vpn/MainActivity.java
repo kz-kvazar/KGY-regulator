@@ -7,15 +7,21 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.adapters.LogAdapter;
+import com.add.vpn.adapters.ViewPagerAdapter;
+import com.add.vpn.adapters.ZoomOutPageTransformer;
 import com.add.vpn.fragments.DataFragment;
 import com.add.vpn.fragments.LogFragment;
 import com.add.vpn.holders.ContextHolder;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private boolean connectionAlarm = false;
@@ -24,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private AlarmSound errorSound;
     private AlarmSound alarmSound;
     private NotificationHelper notificationHelper;
+    private ViewPager2 viewPager;
+    private LinkedList<String> logList;
+    private LogAdapter logAdapter;
+    private DataAdapter dataAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,27 +45,28 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
-            LogFragment logFragment = new LogFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.logFrameLayout, logFragment).commit();
-
-            DataFragment dataFragment = new DataFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.dataFrameLayout, dataFragment).commit();
-
-            LinkedList<String> logList = new LinkedList<>();
+            logList = new LinkedList<>();
             ContextHolder.setLogList(logList);
 
-            LogAdapter logAdapter = new LogAdapter(this, R.layout.list_item, logList);
+            logAdapter = new LogAdapter(this, R.layout.list_item, logList);
             ContextHolder.setLogAdapter(logAdapter);
-            DataAdapter dataAdapter = new DataAdapter(this, R.layout.list_item, DataHolder.toLis());
-            ContextHolder.setDataAdapter(dataAdapter);
 
-            dataFragment.setAdapter(dataAdapter);
-            logFragment.setAdapter(logAdapter);
+            dataAdapter = new DataAdapter(this, R.layout.list_item, DataHolder.toLis());
+            ContextHolder.setDataAdapter(dataAdapter);
 
             notificationHelper = new NotificationHelper(this.getApplicationContext());
             ContextHolder.setNotificationHelper(notificationHelper);
 
         }
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(new DataFragment());
+        fragments.add(new LogFragment());
+
+
+        viewPager = findViewById(R.id.pager);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this,fragments);
+        viewPager.setAdapter(adapter);
+        viewPager.setPageTransformer(new ZoomOutPageTransformer());
 
         connectionAlarm = SettingsManager.getAlarmSetting(MainActivity.this, connectionAlarm);
         generatorErrors = SettingsManager.getErrorSetting(MainActivity.this, generatorErrors);
@@ -75,6 +86,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() == 0) {
+            // If the user is currently looking at the first step, allow the system to handle the
+            // Back button. This calls finish() on this activity and pops the back stack.
+            super.onBackPressed();
+        } else {
+            // Otherwise, select the previous step.
+            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
             errorMenu.setChecked(generatorErrors);
             maxPower = menu.findItem(R.id.max_power);
             maxPower.setTitle(getText(R.string.max_power) + " " + DataHolder.getMaxPower());
+
+
         }
         return true;
     }
