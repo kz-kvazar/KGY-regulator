@@ -3,6 +3,9 @@ package com.add.vpn;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
@@ -26,12 +29,24 @@ public class NumberPickerDialog extends DialogFragment {
         numberPicker.setMaxValue(MAX_VALUE / STEP);
         numberPicker.setDisplayedValues(getDisplayedValues());
         numberPicker.setWrapSelectorWheel(true);
+         EditText editText = new EditText(getContext());
+         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+         editText.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(4)});
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle(R.string.max_power)
-                .setView(numberPicker)
+                .setView(editText)
                 .setPositiveButton("OK", (dialog, which) -> {
-                    int selectedValue = (numberPicker.getValue() * STEP);
+                    int selectedValue = 1520;
+                    try {
+                        selectedValue = (Integer.parseInt(editText.getText().toString()));
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(getContext(), "Неверно введенное значение", Toast.LENGTH_LONG).show();
+                    }
+
+                    if (selectedValue>1560) selectedValue = 1560;
+                    if (selectedValue<800) selectedValue = 800;
+
                     Toast.makeText(getActivity(),   getText(R.string.max_power) + " " + selectedValue + "кВт", Toast.LENGTH_SHORT).show();
                    // menuItem.setTitle(getText(R.string.max_power) + " " + selectedValue + "кВт");
                     if (listener != null) {

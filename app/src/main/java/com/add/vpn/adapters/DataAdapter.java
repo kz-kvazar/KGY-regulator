@@ -34,7 +34,7 @@ public class DataAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(resource, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.textView = convertView.findViewById(R.id.itemTextView);
+            viewHolder.textView = convertView.findViewById(R.id.itemLogView);
 
             convertView.setTag(viewHolder);
         } else {

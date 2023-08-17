@@ -8,15 +8,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.add.vpn.R;
 
 import java.util.List;
 
 public class LogAdapter extends ArrayAdapter<String> {
-    private Context context;
-    private int resource;
+    private final Context context;
+    private final int resource;
 
     public LogAdapter(@NonNull Context context, int resource, @NonNull List<String> logList) {
         super(context, resource, logList);
@@ -33,8 +32,8 @@ public class LogAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(resource, parent, false);
 
             viewHolder = new ViewHolder();
-            viewHolder.textView = convertView.findViewById(R.id.itemTextView);
-            // Инициализация других подэлементов, если есть
+            viewHolder.textView = convertView.findViewById(R.id.itemLogView);
+            // Инициализация других элементов, если есть
 
             convertView.setTag(viewHolder);
         } else {

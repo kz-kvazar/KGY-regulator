@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
             logList = new LinkedList<>();
             ContextHolder.setLogList(logList);
 
-            logAdapter = new LogAdapter(this, R.layout.log_item, logList);
+            logAdapter = new LogAdapter(this.getApplicationContext(), R.layout.log_item, logList);
             ContextHolder.setLogAdapter(logAdapter);
 
-            dataAdapter = new DataAdapter(this, R.layout.data_item, DataHolder.toLis());
+            dataAdapter = new DataAdapter(this.getApplicationContext(), R.layout.data_item, DataHolder.toLis());
             ContextHolder.setDataAdapter(dataAdapter);
 
             notificationHelper = new NotificationHelper(this.getApplicationContext());
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new DataFragment());
         fragments.add(new LogFragment());
-
 
         viewPager = findViewById(R.id.pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(this,fragments);

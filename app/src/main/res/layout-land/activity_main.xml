@@ -8,7 +8,7 @@
               android:orientation="vertical"
               tools:context=".MainActivity"
               android:baselineAligned="false"
-        android:keepScreenOn="true">
+              android:keepScreenOn="true">
 
     <!-- view for AdMob Interstitial Ad -->
     <com.google.android.gms.ads.AdView
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id"
-            android:layout_gravity="start"/>
+            android:layout_gravity="center_horizontal"/>
 
     <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pager"

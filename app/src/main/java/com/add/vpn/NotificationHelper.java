@@ -26,7 +26,7 @@ public class NotificationHelper {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
             notificationManager.createNotificationChannel(channel);
         }
@@ -37,15 +37,15 @@ public class NotificationHelper {
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long[] pattern = {0, 100, 1000, 100, 100};
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setVibrate(pattern)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setTicker(message)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
 
         Notification notification = builder.build();
         notificationManager.notify(777, notification);
