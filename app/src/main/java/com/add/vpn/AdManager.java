@@ -1,11 +1,10 @@
 package com.add.vpn;
 
-import android.app.Activity;
+
 import android.os.Handler;
-
+import android.os.Looper;
 import androidx.annotation.NonNull;
-
-import com.add.vpn.holders.ContextHolder;
+import androidx.fragment.app.FragmentActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -16,28 +15,28 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 
 public class AdManager {
-    private static InterstitialAd mInterstitialAd;
+    private final FragmentActivity activity;
+    private InterstitialAd mInterstitialAd;
 
-    public static void loadBannerAd() {
-        Activity activity = ContextHolder.getActivity();
-        if (activity != null) {
+    public AdManager(FragmentActivity activity) {
+        this.activity = activity;
+    }
+
+    public void loadBannerAd() {
             AdView adView = activity.findViewById(R.id.adView);
             adView.setAdListener(new AdListener() {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(AdManager::loadBannerAd, 60_000);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(() -> loadBannerAd(), 60_000);
                     super.onAdFailedToLoad(loadAdError);
                 }
             });
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
-        }
     }
 
-    public static void loadInterstitialAd() {
-        Activity activity = ContextHolder.getActivity();
-        if (activity != null) {
+    public void loadInterstitialAd() {
             AdRequest adRequest = new AdRequest.Builder().build();
             InterstitialAd.load(activity, activity.getString(R.string.interstitial_ad_unit_id), adRequest, new InterstitialAdLoadCallback() {
                 @Override
@@ -47,8 +46,8 @@ public class AdManager {
                         @Override
                         public void onAdDismissedFullScreenContent() {
                             super.onAdDismissedFullScreenContent();
-                            Handler handler = new Handler();
-                            handler.postDelayed(AdManager::loadInterstitialAd,60_000);
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(AdManager.this::loadInterstitialAd,60_000);
                         }
                     });
                 }
@@ -59,16 +58,13 @@ public class AdManager {
                 }
             });
         }
-    }
 
-    public static void showInterstitialAd() {
-        Activity activity = ContextHolder.getActivity();
+    public void showInterstitialAd() {
         if (mInterstitialAd != null && activity != null) {
             mInterstitialAd.show(activity);
         } else {
-            Handler handler = new Handler();
-            loadInterstitialAd();
-            handler.postDelayed(AdManager::showInterstitialAd, 60_000);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(this::showInterstitialAd, 60_000);
         }
     }
 }

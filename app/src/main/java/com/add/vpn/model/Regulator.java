@@ -1,18 +1,19 @@
 package com.add.vpn.model;
 
-import com.add.vpn.NotificationHelper;
-import com.add.vpn.holders.ContextHolder;
+import com.add.vpn.adapters.ReportItem;
 import com.add.vpn.holders.DataHolder;
+import com.add.vpn.holders.DataViewModel;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
 
 public class Regulator {
-    private final LinkedList<String> logList;
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    public int userMaxPower = 1550;
+    private final DataViewModel dataViewModel;
+    public int userMaxPower = 1560;
     private int appMaxPower = 1560;
     public int regulatePower = 10;
     private long now = new Date().getTime();
@@ -20,10 +21,11 @@ public class Regulator {
     private short actPower = 0;
     private short constPower = 0;
     private float throttlePosition = 0;
+    private boolean report = true;
 
-    public Regulator(LinkedList<String> logList) {
-        this.logList = logList;
-
+    public Regulator(DataViewModel dataViewModel) {
+        this.dataViewModel = dataViewModel;
+        dataViewModel.addToLogList(sdf.format(now) + " Запуск регулирования");
     }
 
     public Integer regulate() {
@@ -31,36 +33,41 @@ public class Regulator {
         regulatePower();
         checkMaxPower();
 
-        if (actPower > 0 && (new Date().getTime() - now) >= 20_000) {
+        Date date = new Date();
+        LinkedList<ReportItem> value = dataViewModel.getReportListLiveData().getValue();
+        if (value != null && value.isEmpty() || (date.getHours() != value.getFirst().getDate().getHours())) {
+            dataViewModel.addToReportList(new ReportItem(new Date(),
+                    DataHolder.getCH4Concentration().toString(),
+                    DataHolder.getGasFlow().toString()));
+        }
 
-            LinkedList<String> list = ContextHolder.getLogList();
+
+        if (actPower > 0 && (new Date().getTime() - now) >= 20_000) {
+            // TODO remove the hardcoding strings
 
             if (opPressure < 3) {
-                if (list != null)list.addFirst(sdf.format(now) + " снижение мощности по аварийно низкому давлению до " + (constPower - 100) + "кВт");
+                dataViewModel.addToLogList(sdf.format(now) + " снижение мощности по аварийно низкому давлению до " + (constPower - 100) + "кВт");
                 now = new Date().getTime();
                 return  constPower > 1000 ? (constPower - 100) : 900;
             } else if (opPressure < 4 || throttlePosition > 90 || actPower > 1560 || constPower > appMaxPower) {
-                if (list != null)list.addFirst(sdf.format(now) + " снижение мощности по низкому давлению до " + (constPower - regulatePower) + "кВт");
+                dataViewModel.addToLogList(sdf.format(now) + " снижение мощности по низкому давлению до " + (constPower - regulatePower) + "кВт");
                 now = new Date().getTime();
                 checkActPower();
                 checkThrottle();
                 return  (constPower - regulatePower);
             } else if (opPressure > 5 && (constPower + regulatePower) < appMaxPower && (constPower - actPower) <= 50 && throttlePosition < 90) {
-                if (list != null)list.addFirst(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
+                dataViewModel.addToLogList(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
                 now = new Date().getTime();
                 return  (constPower + regulatePower);
             } else if (opPressure > 5 && throttlePosition < 80 && (userMaxPower - appMaxPower) >= 10 && (new Date().getTime() - now) > 600_000)  { // 10 min
                 appMaxPower = (constPower + 10);
-                if (list != null)list.addFirst(sdf.format(now) + " повышение границы регулирования мощности до " + (constPower + 10) + "кВт");
+                dataViewModel.addToLogList(sdf.format(now) + " повышение границы регулирования мощности до " + (constPower + 10) + "кВт");
                 now = new Date().getTime();
             }
         } else if (actPower <= 0 && constPower != 800){
             DataHolder.setMaxPower(1520);
-            logList.addFirst(sdf.format(now) + " КГУ остановлена");
-            AlarmSound errorSound = ContextHolder.getErrorSound();
-            if (errorSound != null) errorSound.alarmPlay();
-            NotificationHelper notificationHelper = ContextHolder.getNotificationHelper();
-            if (notificationHelper != null) notificationHelper.showNotification("Остановка!", "КГУ остановлена, так и задумано?");
+            dataViewModel.addToLogList(sdf.format(now) + " КГУ остановлена");
+            dataViewModel.playErrorSound("Остановка!", "КГУ остановлена, так и задумано?");
             return 800;
         }
         return null;
@@ -75,19 +82,19 @@ public class Regulator {
     private void checkActPower() {
         if (actPower > 1560) {
             appMaxPower = (constPower - 10);
-            logList.addFirst(sdf.format(now) + " снижение границы регулирования мощности по активной мощности до " + DataHolder.getMaxPower() + "кВт");
+            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по активной мощности до " + DataHolder.getMaxPower() + "кВт");
         }
     }
     private void checkThrottle(){
         if (throttlePosition > 90 && opPressure > 3){
             appMaxPower = (constPower - 10);
-            logList.addFirst(sdf.format(now) + " снижение границы регулирования мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
+            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
         }
     }
     private void checkMaxPower(){
         if (userMaxPower != appMaxPower){
             appMaxPower = userMaxPower;
-            logList.addFirst(sdf.format(now) + " снижение границы регулирования мощности по запросу пользователя до " + appMaxPower + "кВт");
+            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по запросу пользователя до " + appMaxPower + "кВт");
         }
     }
     private void getData(){

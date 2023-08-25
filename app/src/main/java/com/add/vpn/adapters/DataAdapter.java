@@ -1,52 +1,46 @@
 package com.add.vpn.adapters;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
-
 import java.util.List;
 
-public class DataAdapter extends ArrayAdapter<String> {
-    private Context context;
-    private int resource;
+public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
+    private final List<String> stringList;
 
-    public DataAdapter(@NonNull Context context, int resource, @NonNull List<String> stringList) {
-        super(context, resource, stringList);
-        this.resource = resource;
-        this.context = context;
+    public DataAdapter(List<String> stringList) {
+        this.stringList = stringList;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ViewHolder viewHolder;
-
-        if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(resource, parent, false);
-
-            viewHolder = new ViewHolder();
-            viewHolder.textView = convertView.findViewById(R.id.itemLogView);
-
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        viewHolder.textView.setText(getItem(position));
-
-        return convertView;
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.data_item, parent, false);
+        return new ViewHolder(view);
     }
 
-    static class ViewHolder {
-        TextView textView;
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        String item = stringList.get(position);
+        holder.textView.setText(item);
+    }
+
+    @Override
+    public int getItemCount() {
+        return stringList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView textView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.itemDataView);
+        }
     }
 }
+

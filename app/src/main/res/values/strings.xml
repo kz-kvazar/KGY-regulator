@@ -19,9 +19,11 @@
     <string name="errorEnable">Сигнал при ошибках КГУ</string>
     <string name="max_power">Максимальная мощность</string>
 
-    <string name="btn_regulateOn">Включать!</string>
-    <string name="btn_regulateOff">Отключить!</string>
+    <string name="btn_regulateOn">Start!</string>
+    <string name="btn_regulateOff">Stop!</string>
     <string name="throttlePosition">Положение дросселя</string>
+
+    <string name="btn_soundOff">"Откл. сигнал"</string>
     <!-- -
         This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
         For more information, see https://support.google.com/admob/answer/3052638
@@ -47,4 +49,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_title">История работы</string>
+    <string name="report_title">Отчет за время работы</string>
 </resources>

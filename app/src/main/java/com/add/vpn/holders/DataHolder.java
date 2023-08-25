@@ -1,9 +1,12 @@
 package com.add.vpn.holders;
 
+import com.add.vpn.adapters.ReportItem;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class DataHolder {
+public class DataHolder  {
     private static final List<String> dataList = new ArrayList<>();
     private static double opPressure = 0d;
     private static short actPower = 0;
@@ -11,6 +14,12 @@ public class DataHolder {
     private static float throttlePosition = 0f;
     private static int maxPower = 1520;
     private static float CH4Concentration = 0f;
+    private static float gasFlow;
+
+    public static Float getGasFlow() {
+        return gasFlow;
+    }
+
 
     public static int getMaxPower() {
         return maxPower;
@@ -26,8 +35,10 @@ public class DataHolder {
         dataList.add("Положение дросселя :" + throttlePosition + "%");
         dataList.add("Активная мощность :" + actPower + "кВт");
         dataList.add("Заданная мощность :" + constPower + "кВт");
-        dataList.add("Расход смеси :" + calculateGasFlow(CH4Concentration, actPower) + "м3/ч");
-        //dataList.add("Максимальная мощность : " + maxPower + "кВт");
+        gasFlow = calculateGasFlow(CH4Concentration, actPower);
+        dataList.add("Расход смеси :" + gasFlow + "м3/ч");
+        dataList.add("Максимальная мощность : " + maxPower + "кВт");
+        dataList.add("Концентрация СН4 : " + CH4Concentration + "%");
         return dataList;
     }
 
@@ -78,7 +89,7 @@ public class DataHolder {
         }
     }
 
-    public static float getCH4Concentration() {
+    public static Float getCH4Concentration() {
         return CH4Concentration;
     }
 

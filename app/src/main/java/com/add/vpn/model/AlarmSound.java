@@ -1,31 +1,33 @@
 package com.add.vpn.model;
 
-import android.media.Ringtone;
+import android.content.Context;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
-import com.add.vpn.holders.ContextHolder;
-
 public class AlarmSound {
-    private Ringtone ringtone;
+    private MediaPlayer mediaPlayer;
 
-    public AlarmSound() {
+    public AlarmSound(Context context) {
         Uri alarmSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if (alarmSoundUri != null) {
-            this.ringtone = RingtoneManager.getRingtone(ContextHolder.getActivity(), alarmSoundUri);
+            this.mediaPlayer = MediaPlayer.create(context,alarmSoundUri);
         }
     }
 
     public void alarmPlay() {
-        if (ringtone != null && !ringtone.isPlaying()) {
-            ringtone.play();
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.setLooping(false);
+            mediaPlayer.start();
         }
-
     }
 
     public void alarmStop() {
-        if (ringtone != null && ringtone.isPlaying()) {
-            ringtone.stop();
+
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            //mediaPlayer.release();
+            //mediaPlayer = null;
         }
     }
 }

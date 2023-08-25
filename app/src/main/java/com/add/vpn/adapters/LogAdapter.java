@@ -1,57 +1,46 @@
 package com.add.vpn.adapters;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
+import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
-
 import java.util.List;
 
-public class LogAdapter extends ArrayAdapter<String> {
-    private final Context context;
-    private final int resource;
+public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
+    private final List<String> logList;
 
-    public LogAdapter(@NonNull Context context, int resource, @NonNull List<String> logList) {
-        super(context, resource, logList);
-        this.context = context;
-        this.resource = resource;
-
+    public LogAdapter(List<String> logList) {
+        this.logList = logList;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-
-        if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(resource, parent, false);
-
-            viewHolder = new ViewHolder();
-            viewHolder.textView = convertView.findViewById(R.id.itemLogView);
-            // Инициализация других элементов, если есть
-
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-
-        // Заполнение данных элемента списка
-        String item = getItem(position);
-        viewHolder.textView.setText(item);
-        // Установка данных в другие подэлементы, если есть
-
-        return convertView;
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_item, parent, false);
+        return new ViewHolder(view);
     }
 
-    // ViewHolder класс
-    private static class ViewHolder {
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        String item = logList.get(position);
+        holder.textView.setText(item);
+    }
+
+    @Override
+    public int getItemCount() {
+        return logList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
-        // Дополнительные подэлементы вашего элемента списка, если есть
-    }
 
+        public ViewHolder(View itemView) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.itemLogView);
+            // Инициализация других элементов, если есть
+        }
+    }
 }
