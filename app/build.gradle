@@ -9,8 +9,8 @@ android {
         applicationId "com.add.vpn"
         minSdkVersion 21  // Было: minSdk 21
         targetSdkVersion 33
-        versionCode 8
-        versionName "7.2"
+        versionCode 9
+        versionName "9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
