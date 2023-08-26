@@ -30,9 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean connectionAlarm = false;
     private boolean generatorErrors = false;
     private MenuItem maxPower;
-    private ViewPager2 viewPager;
+    private ViewPager2 viewPager2;
     private DataViewModel dataViewModel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(new LogFragment());
         fragments.add(new ReportFragment());
 
-        viewPager = findViewById(R.id.pager);
+        viewPager2 = findViewById(R.id.pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(this,fragments);
-        viewPager.setAdapter(adapter);
-        viewPager.setPageTransformer(new ZoomOutPageTransformer());
+        viewPager2.setAdapter(adapter);
+        viewPager2.setPageTransformer(new ZoomOutPageTransformer());
 
         connectionAlarm = SettingsManager.getAlarmSetting(MainActivity.this, connectionAlarm);
         generatorErrors = SettingsManager.getErrorSetting(MainActivity.this, generatorErrors);
@@ -60,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 0) {
+        if (viewPager2.getCurrentItem() == 0) {
             super.onBackPressed();
         } else {
-            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
         }
     }
 

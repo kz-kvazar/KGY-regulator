@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.AdManager;
+import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
 
@@ -43,6 +44,14 @@ public class DataFragment extends Fragment {
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
         dataAdapter = new DataAdapter(DataHolder.toLis());
+
+        dataAdapter.setOnItemClickListener(position -> {
+            if(DataHolder.toLis().get(position).contains("Макс")){
+                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+                numberPickerDialog.setOnNumberSetListener(DataHolder::setMaxPower);
+                numberPickerDialog.show(requireActivity().getSupportFragmentManager(), "MaxPower");
+            }
+        });
         dataList.setAdapter(dataAdapter);
         dataList.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -65,6 +74,7 @@ public class DataFragment extends Fragment {
             }
         }
         btnOnOff.setOnClickListener(v -> startRegulate());
+
         btnSoundOff.setOnClickListener(v -> {
             dataViewModel.stopErrorSound();
             dataViewModel.stopAlarmSound();

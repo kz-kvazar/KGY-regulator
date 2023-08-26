@@ -11,6 +11,11 @@ import java.util.List;
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     private final List<String> stringList;
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public DataAdapter(List<String> stringList) {
         this.stringList = stringList;
@@ -27,6 +32,12 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String item = stringList.get(position);
         holder.textView.setText(item);
+
+        holder.itemView.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onItemClick(position);
+            }
+        });
     }
 
     @Override
@@ -41,6 +52,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             super(itemView);
             textView = itemView.findViewById(R.id.itemDataView);
         }
+    }
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 }
 

@@ -5,7 +5,6 @@ import com.add.vpn.holders.DataHolder;
 import com.add.vpn.holders.DataViewModel;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -21,7 +20,6 @@ public class Regulator {
     private short actPower = 0;
     private short constPower = 0;
     private float throttlePosition = 0;
-    private boolean report = true;
 
     public Regulator(DataViewModel dataViewModel) {
         this.dataViewModel = dataViewModel;
@@ -36,33 +34,33 @@ public class Regulator {
         Date date = new Date();
         LinkedList<ReportItem> value = dataViewModel.getReportListLiveData().getValue();
         if (value != null && value.isEmpty() || (date.getHours() != value.getFirst().getDate().getHours())) {
-            dataViewModel.addToReportList(new ReportItem(new Date(),
+            dataViewModel.addToReportList(new ReportItem(date,
                     DataHolder.getCH4Concentration().toString(),
                     DataHolder.getGasFlow().toString()));
         }
 
 
-        if (actPower > 0 && (new Date().getTime() - now) >= 20_000) {
+        if (actPower > 0 && (date.getTime() - now) >= 20_000) {
             // TODO remove the hardcoding strings
 
             if (opPressure < 3) {
                 dataViewModel.addToLogList(sdf.format(now) + " снижение мощности по аварийно низкому давлению до " + (constPower - 100) + "кВт");
-                now = new Date().getTime();
+                now = date.getTime();
                 return  constPower > 1000 ? (constPower - 100) : 900;
             } else if (opPressure < 4 || throttlePosition > 90 || actPower > 1560 || constPower > appMaxPower) {
-                dataViewModel.addToLogList(sdf.format(now) + " снижение мощности по низкому давлению до " + (constPower - regulatePower) + "кВт");
-                now = new Date().getTime();
+                dataViewModel.addToLogList(sdf.format(now) + " снижение мощности " + (constPower - regulatePower) + "кВт");
+                now = date.getTime();
                 checkActPower();
                 checkThrottle();
                 return  (constPower - regulatePower);
             } else if (opPressure > 5 && (constPower + regulatePower) < appMaxPower && (constPower - actPower) <= 50 && throttlePosition < 90) {
                 dataViewModel.addToLogList(sdf.format(now) + " повышение мощности до " + (constPower + regulatePower) + "кВт");
-                now = new Date().getTime();
+                now = date.getTime();
                 return  (constPower + regulatePower);
-            } else if (opPressure > 5 && throttlePosition < 80 && (userMaxPower - appMaxPower) >= 10 && (new Date().getTime() - now) > 600_000)  { // 10 min
+            } else if (opPressure > 5 && throttlePosition < 80 && (userMaxPower - appMaxPower) >= 10 && (date.getTime() - now) > 300_000)  { // 5 min
                 appMaxPower = (constPower + 10);
                 dataViewModel.addToLogList(sdf.format(now) + " повышение границы регулирования мощности до " + (constPower + 10) + "кВт");
-                now = new Date().getTime();
+                now = date.getTime();
             }
         } else if (actPower <= 0 && constPower != 800){
             DataHolder.setMaxPower(1520);
@@ -82,19 +80,19 @@ public class Regulator {
     private void checkActPower() {
         if (actPower > 1560) {
             appMaxPower = (constPower - 10);
-            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по активной мощности до " + DataHolder.getMaxPower() + "кВт");
+            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по активной мощности до " + appMaxPower + "кВт");
         }
     }
     private void checkThrottle(){
         if (throttlePosition > 90 && opPressure > 3){
             appMaxPower = (constPower - 10);
-            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по дросселю до " + DataHolder.getMaxPower() + "кВт");
+            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по дросселю до " + appMaxPower + "кВт");
         }
     }
     private void checkMaxPower(){
-        if (userMaxPower != appMaxPower){
+        if (userMaxPower < appMaxPower){
             appMaxPower = userMaxPower;
-            dataViewModel.addToLogList(sdf.format(now) + " снижение границы регулирования мощности по запросу пользователя до " + appMaxPower + "кВт");
+            dataViewModel.addToLogList(sdf.format(now) + " изменение границы регулирования мощности по запросу пользователя до " + appMaxPower + "кВт");
         }
     }
     private void getData(){

@@ -2,17 +2,13 @@ package com.add.vpn.model;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import com.add.vpn.R;
 
 public class AlarmSound {
-    private MediaPlayer mediaPlayer;
+    private final MediaPlayer mediaPlayer;
 
     public AlarmSound(Context context) {
-        Uri alarmSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        if (alarmSoundUri != null) {
-            this.mediaPlayer = MediaPlayer.create(context,alarmSoundUri);
-        }
+            this.mediaPlayer = MediaPlayer.create(context, R.raw.alarm);
     }
 
     public void alarmPlay() {
@@ -26,8 +22,6 @@ public class AlarmSound {
 
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
-            //mediaPlayer.release();
-            //mediaPlayer = null;
         }
     }
 }
