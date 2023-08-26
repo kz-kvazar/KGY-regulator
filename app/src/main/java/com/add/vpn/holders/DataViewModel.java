@@ -9,6 +9,7 @@ import com.add.vpn.adapters.ReportItem;
 import com.add.vpn.model.AlarmSound;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class DataViewModel extends AndroidViewModel {
     }
     public void playAlarmSound() {
         new NotificationHelper(getApplication()).showNotification("Проблемы с соединением", "Обнаружена ошибка связи с КГУ. Проверьте Wi-Fi соединение");
-        if (alarmState.getValue() != null && alarmState.getValue() && alarmSoundLiveData.getValue() != null){
+        if (Boolean.TRUE.equals(alarmState.getValue()) && alarmSoundLiveData.getValue() != null){
             alarmSoundLiveData.getValue().alarmPlay();
         }
     }
@@ -51,7 +52,7 @@ public class DataViewModel extends AndroidViewModel {
     }
     public void playErrorSound(String title, String message) {
         new NotificationHelper(getApplication()).showNotification(title, message);
-        if (errorState.getValue() != null && errorState.getValue() && errorSoundLiveData.getValue() != null){
+        if (Boolean.TRUE.equals(errorState.getValue()) && errorSoundLiveData.getValue() != null){
             errorSoundLiveData.getValue().alarmPlay();
         }
     }
@@ -99,5 +100,15 @@ public class DataViewModel extends AndroidViewModel {
         if (currentList != null){
             dataListLiveData.postValue(list);
         }
+    }
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        AlarmSound alarmSound = alarmSoundLiveData.getValue();
+        if (alarmSound != null) alarmSound.release();
+        AlarmSound errorSound = errorSoundLiveData.getValue();
+        if (errorSound != null) errorSound.release();
     }
 }

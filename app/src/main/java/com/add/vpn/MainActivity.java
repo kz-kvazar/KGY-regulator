@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
             dataViewModel.setAlarmState(connectionAlarm);
             return true;
-
         } else if (id == R.id.error_settings) {
             generatorErrors = !generatorErrors;
             item.setChecked(generatorErrors);
@@ -108,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
             dataViewModel.setErrorState(generatorErrors);
             return true;
-
         } else if (id == R.id.max_power) {
             NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
             numberPickerDialog.setOnNumberSetListener(DataHolder::setMaxPower);

@@ -4,16 +4,15 @@ plugins {
 
 android {
     compileSdk 33
-    buildToolsVersion "33.0.0"
+    buildToolsVersion = "33.0.0"
     defaultConfig {
         applicationId "com.add.vpn"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 9
-        versionName "9"
+        versionCode 10
+        versionName "10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    // Другие настройки
 
 
     buildTypes {

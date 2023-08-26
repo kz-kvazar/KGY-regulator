@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationHelper {
 
@@ -20,7 +21,6 @@ public class NotificationHelper {
     public NotificationHelper(Context context) {
         this.context = context;
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
         // Создание уведомления для Android 8.0 (Oreo) и выше
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
@@ -45,6 +45,8 @@ public class NotificationHelper {
                 .setTicker(message)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true);
 
         Notification notification = builder.build();

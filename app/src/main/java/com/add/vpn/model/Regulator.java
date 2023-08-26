@@ -58,12 +58,13 @@ public class Regulator {
                 now = date.getTime();
                 return  (constPower + regulatePower);
             } else if (opPressure > 5 && throttlePosition < 80 && (userMaxPower - appMaxPower) >= 10 && (date.getTime() - now) > 300_000)  { // 5 min
-                appMaxPower = (constPower + 10);
-                dataViewModel.addToLogList(sdf.format(now) + " повышение границы регулирования мощности до " + (constPower + 10) + "кВт");
+                appMaxPower += 10;
+                dataViewModel.addToLogList(sdf.format(now) + " повышение границы регулирования мощности до " + appMaxPower + "кВт");
                 now = date.getTime();
             }
         } else if (actPower <= 0 && constPower != 800){
             DataHolder.setMaxPower(1520);
+            appMaxPower = 1520;
             dataViewModel.addToLogList(sdf.format(now) + " КГУ остановлена");
             dataViewModel.playErrorSound("Остановка!", "КГУ остановлена, так и задумано?");
             return 800;
