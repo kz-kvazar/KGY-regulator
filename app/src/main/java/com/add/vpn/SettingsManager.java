@@ -2,31 +2,20 @@ package com.add.vpn;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 public class SettingsManager {
     private static final String PREFS_NAME = "MyPrefs";
     private static final String KEY_ALARM = "alarm";
     private static final String KEY_ERROR = "error";
 
-    public static boolean getAlarmSetting(Context context, Boolean getDefaultValue) {
+    public static boolean getAlarmSetting(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        // Проверяем, есть ли ключ KEY_ALARM в файле настроек
-        if (!sharedPreferences.contains(KEY_ALARM)) {
-            // Если ключ отсутствует, то записываем значение по умолчанию
-            setAlarmSetting(context, getDefaultValue); // Значение по умолчанию true
-        }
-        return sharedPreferences.getBoolean(KEY_ALARM, true);
+        return sharedPreferences.getBoolean(KEY_ALARM, true); // Значение по умолчанию true
     }
 
-    public static boolean getErrorSetting(Context context, Boolean getDefaultValue) {
+    public static boolean getErrorSetting(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
-        // Проверяем, есть ли ключ KEY_ERROR в файле настроек
-        if (!sharedPreferences.contains(KEY_ERROR)) {
-            // Если ключ отсутствует, то записываем значение по умолчанию
-            setErrorSetting(context, getDefaultValue); // Значение по умолчанию false
-        }
-        return sharedPreferences.getBoolean(KEY_ERROR, true);
+        return sharedPreferences.getBoolean(KEY_ERROR, false); // Значение по умолчанию false
     }
 
     public static void setAlarmSetting(Context context, boolean value) {
@@ -43,4 +32,3 @@ public class SettingsManager {
         editor.apply();
     }
 }
-

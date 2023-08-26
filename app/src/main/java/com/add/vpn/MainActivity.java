@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager2.setAdapter(adapter);
         viewPager2.setPageTransformer(new ZoomOutPageTransformer());
 
-        connectionAlarm = SettingsManager.getAlarmSetting(MainActivity.this, connectionAlarm);
-        generatorErrors = SettingsManager.getErrorSetting(MainActivity.this, generatorErrors);
+        connectionAlarm = SettingsManager.getAlarmSetting(MainActivity.this);
+        generatorErrors = SettingsManager.getErrorSetting(MainActivity.this);
 
         dataViewModel.setAlarmState(connectionAlarm);
         dataViewModel.setErrorState(generatorErrors);
