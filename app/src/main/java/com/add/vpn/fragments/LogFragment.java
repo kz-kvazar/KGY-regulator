@@ -40,6 +40,7 @@ public class LogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //super.onCreateView(inflater,container,savedInstanceState);
         View inflate = inflater.inflate(R.layout.fragment_log, container, false);
         logView = inflate.findViewById(R.id.logListView);
         return inflate;
