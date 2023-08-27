@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +18,6 @@ import com.add.vpn.R;
 import com.add.vpn.adapters.LogAdapter;
 import com.add.vpn.holders.DataViewModel;
 
-import java.util.Objects;
 
 public class LogFragment extends Fragment {
     private RecyclerView logView;

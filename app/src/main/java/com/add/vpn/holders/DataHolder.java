@@ -1,12 +1,10 @@
 package com.add.vpn.holders;
 
-import com.add.vpn.adapters.ReportItem;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-public class DataHolder  {
+public class DataHolder {
     private static final List<String> dataList = new ArrayList<>();
     private static double opPressure = 0d;
     private static short actPower = 0;
@@ -28,6 +26,7 @@ public class DataHolder  {
     public static void setMaxPower(int maxPower) {
         if (maxPower >= 800) DataHolder.maxPower = maxPower;
     }
+
     //TODO reparse hardcode strings with strings.xml
     public static List<String> toLis() {
         dataList.clear();
@@ -94,28 +93,29 @@ public class DataHolder  {
     }
 
     public static void setCH4Concentration(Float Concentration) {
-        if (Concentration != null){
+        if (Concentration != null) {
             CH4Concentration = Concentration;
             toLis();
         }
     }
+
     public static float calculateGasFlow(float concentration, int power) {
-        if (power > 0 && concentration > 0){
-        float concentration1 = 27.24f;
-        float concentration2 = 41.5f;
-        float power1 = 1560f;
-        float power2 = 1170f;
+        if (power > 0 && concentration > 0) {
+            float concentration1 = 27.24f;
+            float concentration2 = 41.5f;
+            float power1 = 1560f;
+            float power2 = 1170f;
 
-        float q11 = 1192.5f;
-        float q12 = 918.5f;
-        float q21 = 812.8f;
-        float q22 = 626.0f;
+            float q11 = 1192.5f;
+            float q12 = 918.5f;
+            float q21 = 812.8f;
+            float q22 = 626.0f;
 
-        float q1 = q11 + (q12 - q11) * (power - power1) / (power2 - power1);
-        float q2 = q21 + (q22 - q21) * (power - power1) / (power2 - power1);
-        float interpolatedFlow = q1 + (q2 - q1) * (concentration - concentration1) / (concentration2 - concentration1);
+            float q1 = q11 + (q12 - q11) * (power - power1) / (power2 - power1);
+            float q2 = q21 + (q22 - q21) * (power - power1) / (power2 - power1);
+            float interpolatedFlow = q1 + (q2 - q1) * (concentration - concentration1) / (concentration2 - concentration1);
 
-        return Math.round(interpolatedFlow * 10.0f) / 10.0f;
-        }else return 0;
+            return Math.round(interpolatedFlow * 10.0f) / 10.0f;
+        } else return 0;
     }
 }

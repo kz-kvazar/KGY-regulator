@@ -33,12 +33,11 @@ public class Regulator {
 
         Date date = new Date();
         LinkedList<ReportItem> value = dataViewModel.getReportListLiveData().getValue();
-        if (value != null && value.isEmpty() || (date.getHours() != value.getFirst().getDate().getHours())) {
+        if (value != null && value.isEmpty() || (value != null && !value.isEmpty() && date.getHours() != value.getFirst().getDate().getHours())) {
             dataViewModel.addToReportList(new ReportItem(date,
                     DataHolder.getCH4Concentration().toString(),
                     DataHolder.getGasFlow().toString()));
         }
-
 
         if (actPower > 0 && (date.getTime() - now) >= 20_000) {
             // TODO remove the hardcoding strings

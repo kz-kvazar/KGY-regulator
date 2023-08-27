@@ -1,7 +1,6 @@
 package com.add.vpn.fragments;
 
 import android.os.Bundle;
-import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,18 +8,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
-import com.add.vpn.adapters.LogAdapter;
 import com.add.vpn.adapters.ReportAdapter;
-import com.add.vpn.adapters.ReportItem;
 import com.add.vpn.holders.DataViewModel;
 
-import java.util.LinkedList;
-import java.util.Objects;
 
 public class ReportFragment extends Fragment {
     private RecyclerView reportView;
