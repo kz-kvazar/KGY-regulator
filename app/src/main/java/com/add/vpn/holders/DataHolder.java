@@ -1,6 +1,9 @@
 package com.add.vpn.holders;
 
 
+import android.content.Context;
+import com.add.vpn.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +13,7 @@ public class DataHolder {
     private static short actPower = 0;
     private static short constPower = 0;
     private static float throttlePosition = 0f;
-    private static int maxPower = 1520;
+    private static int maxPower = 1560;
     private static float CH4Concentration = 0f;
     private static float gasFlow;
 
@@ -24,20 +27,22 @@ public class DataHolder {
     }
 
     public static void setMaxPower(int maxPower) {
-        if (maxPower >= 800) DataHolder.maxPower = maxPower;
+        if (maxPower >= 800 && maxPower <= 1560) DataHolder.maxPower = maxPower;
     }
 
     //TODO reparse hardcode strings with strings.xml
-    public static List<String> toLis() {
+    public static List<String> toLis(Context context) {
         dataList.clear();
-        dataList.add("Давление перед ОП :" + opPressure + "kPa");
-        dataList.add("Положение дросселя :" + throttlePosition + "%");
-        dataList.add("Активная мощность :" + actPower + "кВт");
-        dataList.add("Заданная мощность :" + constPower + "кВт");
+
         gasFlow = calculateGasFlow(CH4Concentration, actPower);
-        dataList.add("Расход смеси :" + gasFlow + "м3/ч");
-        dataList.add("Максимальная мощность : " + maxPower + "кВт");
-        dataList.add("Концентрация СН4 : " + CH4Concentration + "%");
+
+        dataList.add(context.getString(R.string.op_Pressure,String.valueOf(opPressure)));
+        dataList.add(context.getString(R.string.throttlePosition,  String.valueOf(throttlePosition)));
+        dataList.add(context.getString(R.string.act_Power, String.valueOf(actPower)));
+        dataList.add(context.getString(R.string.const_Power, String.valueOf(constPower)));
+        dataList.add(context.getString(R.string.max_power, String.valueOf(maxPower)));
+        dataList.add(context.getString(R.string.gas_Flow, String.valueOf(gasFlow)));
+        dataList.add(context.getString(R.string.CH4, String.valueOf(CH4Concentration)));
         return dataList;
     }
 
@@ -48,7 +53,6 @@ public class DataHolder {
     public static void setOpPressure(Double op) {
         if (op != null) {
             opPressure = op;
-            toLis();
         }
 
     }
@@ -60,7 +64,6 @@ public class DataHolder {
     public static void setActPower(Short act) {
         if (act != null) {
             actPower = act;
-            toLis();
         }
 
     }
@@ -72,7 +75,6 @@ public class DataHolder {
     public static void setConstPower(Short cons) {
         if (cons != null) {
             constPower = cons;
-            toLis();
         }
 
     }
@@ -84,7 +86,6 @@ public class DataHolder {
     public static void setThrottlePosition(Float throttle) {
         if (throttle != null) {
             throttlePosition = throttle;
-            toLis();
         }
     }
 
@@ -95,7 +96,6 @@ public class DataHolder {
     public static void setCH4Concentration(Float Concentration) {
         if (Concentration != null) {
             CH4Concentration = Concentration;
-            toLis();
         }
     }
 

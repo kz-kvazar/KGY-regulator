@@ -43,10 +43,10 @@ public class DataFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        dataAdapter = new DataAdapter(DataHolder.toLis());
+        dataAdapter = new DataAdapter(DataHolder.toLis(requireContext().getApplicationContext()));
 
         dataAdapter.setOnItemClickListener(position -> {
-            if(DataHolder.toLis().get(position).contains("Макс")){
+            if(DataHolder.toLis(requireContext().getApplicationContext()).get(position).contains("Макс")){
                 NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
                 numberPickerDialog.setOnNumberSetListener(DataHolder::setMaxPower);
                 numberPickerDialog.show(requireActivity().getSupportFragmentManager(), "MaxPower");
@@ -114,7 +114,7 @@ public class DataFragment extends Fragment {
 
         } else {
             regulate = true;
-            model = new Model(dataViewModel);
+            model = new Model(dataViewModel, requireContext().getApplicationContext());
             model.start();
             btnOnOff.setText(R.string.btn_regulateOff);
             Toast.makeText(getContext(), getString(R.string.regulate_statusOn), Toast.LENGTH_LONG).show();
@@ -125,7 +125,7 @@ public class DataFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("isButtonPressed", regulate);
+        outState.putBoolean("isButtonPressed", false); // regulate instead of false
     }
 
     @Override

@@ -1,27 +1,20 @@
 <resources>
     <string name="app_name">Оператор КГУ</string>
-    <string name="action_settings">Settings</string>
 
+    <string name="op_Pressure">Давление перед ОП: %s kPa</string>
+    <string name="throttlePosition">Положение дросселя: %s %%</string>
+    <string name="act_Power">Активная мощность: %s kW</string>
+    <string name="const_Power">Заданная мощность: %s kW</string>
+    <string name="gas_Flow">Расход ГВС: %s M3</string>
+    <string name="max_power">Максимальная мощность: %s kW</string>
+    <string name="CH4">Концентрация СН4: %s %%</string>
 
-    <string name="regulate_statusOn">Регулирование включено</string>
-    <string name="regulate_statusOff">Регулирование отключено</string>
-
-    <string name="kgy_statusFailure">Ошибка связи с КГУ</string>
-    <string name="error_msg">Ошибка</string>
-
-
-    <string name="op_Pressure">Давление перед ОП</string>
-
-    <string name="act_Power">Активная мощность</string>
-    <string name="set_Power">Заданная мощность</string>
 
     <string name="alarmEnable">Сигнал при ошибках связи</string>
     <string name="errorEnable">Сигнал при ошибках КГУ</string>
-    <string name="max_power">Максимальная мощность</string>
 
-    <string name="btn_regulateOn">Start!</string>
-    <string name="btn_regulateOff">Stop!</string>
-    <string name="throttlePosition">Положение дросселя</string>
+    <string name="btn_regulateOn">Start</string>
+    <string name="btn_regulateOff">Stop</string>
 
     <string name="btn_soundOff">"Откл. сигнал"</string>
     <!-- -
@@ -33,24 +26,20 @@
     <string name="interstitial_ad_unit_id">ca-app-pub-7270220917037921/4303755944</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="log_title">История работы</string>
     <string name="report_title">Отчет за время работы</string>
+
     <string name="connection_error_title">Проблемы с соединением</string>
     <string name="connection_error_message">Обнаружена ошибка связи с КГУ. Проверьте Wi-Fi соединение</string>
+
+    <string name="icon">icon</string>
+
+    <string name="KGY_start">%s Запуск регулирования</string>
+    <string name="power_down">%s ↓ снижение мощности до %dкВт</string>
+    <string name="power_up">%s ↑ повышение мощности до %dкВт</string>
+    <string name="power_max">%s изменение границы регулирования мощности до %dкВт</string>
+    <string name="KGY_stop">%s КГУ остановлена</string>
+    <string name="stop_notification">КГУ остановлена, так и задумано?</string>
+    <string name="regulate_statusOn">Регулирование запущено</string>
+    <string name="regulate_statusOff">Регулирование остановлено</string>
 </resources>

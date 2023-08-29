@@ -1,5 +1,6 @@
 package com.add.vpn.model;
 
+import android.content.Context;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.holders.DataViewModel;
 
@@ -14,17 +15,19 @@ public class Model extends Thread {
     private final Regulator regulator;
     private final AlarmReceiver alarmReceiver;
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private final Context applicationContext;
     private int retry = 0;
     private boolean interrupt = true;
     private final DataViewModel dataViewModel;
     private boolean isAlarmPlaying  = false;
 
-    public Model(DataViewModel dataViewModel) {
+    public Model(DataViewModel dataViewModel, Context applicationContext) {
         this.dataViewModel = dataViewModel;
         this.dataReceiver = new DataReceiver();
         this.dataSender = new DataSender();
-        this.regulator = new Regulator(dataViewModel);
+        this.regulator = new Regulator(dataViewModel , applicationContext);
         this.alarmReceiver = new AlarmReceiver();
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class Model extends Thread {
         DataHolder.setCH4Concentration(dataReceiver.getCH4Concentration());
         Thread.sleep(100);
 
-        dataViewModel.setDataList(DataHolder.toLis());
+        dataViewModel.setDataList(DataHolder.toLis(applicationContext));
 
         retry = 0;
     }
