@@ -34,20 +34,20 @@ public class NumberPickerDialog extends DialogFragment {
          editText.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(4)});
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle(R.string.max_power)
+        builder.setTitle(R.string.set_max_power)
                 .setView(editText)
                 .setPositiveButton("OK", (dialog, which) -> {
                     int selectedValue = 1520;
                     try {
                         selectedValue = (Integer.parseInt(editText.getText().toString()));
                     } catch (NumberFormatException e) {
-                        Toast.makeText(getContext(), "Неверно введенное значение", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireActivity(), R.string.max_power_Error, Toast.LENGTH_LONG).show();
                     }
 
                     if (selectedValue>1560) selectedValue = 1560;
-                    if (selectedValue<800) selectedValue = 800;
+                    if (selectedValue<900) selectedValue = 900;
 
-                    Toast.makeText(getActivity(),   getText(R.string.max_power) + " " + selectedValue + "кВт", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireActivity(),(requireActivity().getString(R.string.max_power, String.valueOf(selectedValue))), Toast.LENGTH_SHORT).show();
                    // menuItem.setTitle(getText(R.string.max_power) + " " + selectedValue + "кВт");
                     if (listener != null) {
                         listener.onNumberSet(selectedValue);

@@ -42,7 +42,7 @@ public class Regulator {
         if ((value != null && value.isEmpty()) || (value != null && isNotSameHour(now, value.getFirst().getDate()))) {
             dataViewModel.addToReportList(new ReportItem(now,
                     DataHolder.getCH4Concentration().toString(),
-                    DataHolder.getGasFlow().toString()));
+                    DataHolder.getGasFlow().toString(),String.valueOf(DataHolder.getConstPower())));
         }
 
         if (actPower > 0 && (now.getTime() - this.lastTimeRegulated) >= 20_000) {

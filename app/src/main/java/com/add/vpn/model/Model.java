@@ -1,6 +1,7 @@
 package com.add.vpn.model;
 
 import android.content.Context;
+import com.add.vpn.R;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.holders.DataViewModel;
 
@@ -17,7 +18,7 @@ public class Model extends Thread {
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private final Context applicationContext;
     private int retry = 0;
-    private boolean interrupt = true;
+    private volatile boolean interrupt = true;
     private final DataViewModel dataViewModel;
     private boolean isAlarmPlaying  = false;
 
@@ -56,6 +57,9 @@ public class Model extends Thread {
             interrupt = false;
         }
     }
+    public void setInterrupt(){
+        interrupt = false;
+    }
 
 
 
@@ -88,14 +92,15 @@ public class Model extends Thread {
         Thread.sleep(100);
         if (alarmReceiverAlarm && !isAlarmPlaying) {
             isAlarmPlaying = true;
-            dataViewModel.playErrorSound("Ошибка КГУ", "Обнаружена ошибка КГУ требующая вашего внимания");
+            dataViewModel.playErrorSound(applicationContext.getString(R.string.KGY_error_title), applicationContext.getString(R.string.KGY_error_msg));
         } else if (!alarmReceiverAlarm && isAlarmPlaying) {
             isAlarmPlaying = false;
         }
     }
     public void checkConnectionErrors(int retry) {
         if (retry == 3) {
-            dataViewModel.addToLogList(sdf.format(new Date()) + " Ошибка связи. Нестабильное соединение...");
+
+            dataViewModel.addToLogList(applicationContext.getString(R.string.connection_error_log_msg, sdf.format(new Date())));
             dataViewModel.playAlarmSound();
         }
     }

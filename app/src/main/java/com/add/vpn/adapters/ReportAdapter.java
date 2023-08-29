@@ -30,8 +30,10 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         holder.timeTextView.setText(currentItem.getTime());
         String ch4 = currentItem.getCh4() + "%";
         holder.ch4TextView.setText(ch4);
-        String consumption = currentItem.getConsumption() + "м3";
+        String consumption = currentItem.getConsumption() + "M3";
         holder.consumptionTextView.setText(consumption);
+        String constPower = currentItem.getConstPower() + "kW";
+        holder.constPower.setText(constPower);
     }
 
     @Override
@@ -40,6 +42,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView constPower;
         public TextView timeTextView;
         public TextView ch4TextView;
         public TextView consumptionTextView;
@@ -49,6 +52,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
             timeTextView = itemView.findViewById(R.id.itemReportTime);
             ch4TextView = itemView.findViewById(R.id.itemReportCH4);
             consumptionTextView = itemView.findViewById(R.id.itemReportConsumption);
+            constPower = itemView.findViewById(R.id.constPower);
         }
     }
 }

@@ -76,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
             MenuItem errorMenu = menu.findItem(R.id.error_settings);
             errorMenu.setChecked(generatorErrors);
             maxPower = menu.findItem(R.id.max_power);
-            maxPower.setTitle(getText(R.string.max_power) + " " + DataHolder.getMaxPower());
-
+            maxPower.setTitle(getString(R.string.max_power, String.valueOf(DataHolder.getMaxPower())));
 
         }
         return true;
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        maxPower.setTitle(getText(R.string.max_power) + " " + DataHolder.getMaxPower());
+        maxPower.setTitle(getString(R.string.max_power, String.valueOf(DataHolder.getMaxPower())));
         return super.onPrepareOptionsMenu(menu);
     }
 

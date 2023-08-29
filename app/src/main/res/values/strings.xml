@@ -31,6 +31,9 @@
 
     <string name="connection_error_title">Проблемы с соединением</string>
     <string name="connection_error_message">Обнаружена ошибка связи с КГУ. Проверьте Wi-Fi соединение</string>
+    <string name="connection_error_log_msg">%s Ошибка связи. Нестабильное соединение…</string>
+
+
 
     <string name="icon">icon</string>
 
@@ -42,4 +45,8 @@
     <string name="stop_notification">КГУ остановлена, так и задумано?</string>
     <string name="regulate_statusOn">Регулирование запущено</string>
     <string name="regulate_statusOff">Регулирование остановлено</string>
+    <string name="set_max_power">Верхний предел регулирования мощности 900–1560 kW</string>
+    <string name="max_power_Error">Неверно введенное значение</string>
+    <string name="KGY_error_title">Ошибка КГУ</string>
+    <string name="KGY_error_msg">Обнаружена ошибка КГУ требующая вашего внимания</string>
 </resources>

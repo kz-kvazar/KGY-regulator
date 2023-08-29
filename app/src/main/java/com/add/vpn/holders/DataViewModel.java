@@ -9,6 +9,7 @@ import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
 import com.add.vpn.adapters.ReportItem;
 import com.add.vpn.model.AlarmSound;
+import com.add.vpn.model.Model;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -23,6 +24,14 @@ public class DataViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> errorState = new MutableLiveData<>(true);
     private final MutableLiveData<AlarmSound> alarmSoundLiveData = new MutableLiveData<>(new AlarmSound(getApplication()));
     private final MutableLiveData<AlarmSound> errorSoundLiveData = new MutableLiveData<>(new AlarmSound(getApplication()));
+    private final MutableLiveData<Model> modelLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<Model> getModelLiveData() {
+        return modelLiveData;
+    }
+    public void setModelLiveData(Model model){
+        modelLiveData.setValue(model);
+    }
 
     public DataViewModel(@NonNull @NotNull Application application) {
         super(application);
