@@ -11,13 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
 import com.add.vpn.adapters.LogAdapter;
-import com.add.vpn.holders.DataViewModel;
-
+import com.add.vpn.modelService.ModelService;
 
 public class LogFragment extends Fragment {
     private RecyclerView logView;
@@ -27,19 +25,17 @@ public class LogFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        DataViewModel model = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        logAdapter = new LogAdapter(ModelService.logListLiveData.getValue());
 
-        logAdapter = new LogAdapter(model.getLogListLiveData().getValue());
         logView.setAdapter(logAdapter);
         logView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        model.getLogListLiveData().observe(getViewLifecycleOwner(), strings -> logAdapter.notifyItemInserted(0));
+        ModelService.logListLiveData.observe(getViewLifecycleOwner(), strings -> logAdapter.notifyItemInserted(0));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //super.onCreateView(inflater,container,savedInstanceState);
         View inflate = inflater.inflate(R.layout.fragment_log, container, false);
         logView = inflate.findViewById(R.id.logListView);
         return inflate;
@@ -53,4 +49,9 @@ public class LogFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStop() {
+        ModelService.logListLiveData.removeObservers(requireActivity());
+        super.onStop();
+    }
 }

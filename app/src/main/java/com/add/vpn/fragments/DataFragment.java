@@ -1,5 +1,7 @@
 package com.add.vpn.fragments;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,10 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.AdManager;
@@ -24,8 +26,8 @@ import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
 
 import com.add.vpn.holders.DataHolder;
-import com.add.vpn.holders.DataViewModel;
-import com.add.vpn.model.Model;
+import com.add.vpn.model.AlarmSound;
+import com.add.vpn.modelService.ModelService;
 import com.google.android.gms.ads.MobileAds;
 
 public class DataFragment extends Fragment {
@@ -33,9 +35,7 @@ public class DataFragment extends Fragment {
     private RecyclerView dataList;
     private Button btnOnOff;
     private DataAdapter dataAdapter;
-    private Model model;
     private boolean regulate;
-    private DataViewModel dataViewModel;
     private AdManager adManager;
     private Button btnSoundOff;
     private FragmentActivity fragmentActivity;
@@ -43,8 +43,8 @@ public class DataFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         fragmentActivity = requireActivity();
-        dataViewModel = new ViewModelProvider(fragmentActivity).get(DataViewModel.class);
 
         dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
 
@@ -55,10 +55,18 @@ public class DataFragment extends Fragment {
                 numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
             }
         });
+
         dataList.setAdapter(dataAdapter);
         dataList.setLayoutManager(new LinearLayoutManager(fragmentActivity));
 
-        dataViewModel.getDataListLiveData().observe(getViewLifecycleOwner(), strings -> dataAdapter.notifyItemRangeChanged(0,10));
+        ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean){
+                btnOnOff.setText(R.string.btn_regulateOff);
+            }else btnOnOff.setText(R.string.btn_regulateOn);
+            regulate = aBoolean;
+        });
+
+        ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> dataAdapter.notifyItemRangeChanged(0,10));
 
         MobileAds.initialize(fragmentActivity, initializationStatus -> {
             adManager = new AdManager(fragmentActivity);
@@ -68,19 +76,11 @@ public class DataFragment extends Fragment {
             handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
         });
 
-        if (savedInstanceState != null) {
-            regulate = savedInstanceState.getBoolean("isButtonPressed", false);
-            if (regulate) {
-                btnOnOff.setText(R.string.btn_regulateOff);
-            } else {
-                btnOnOff.setText(R.string.btn_regulateOn);
-            }
-        }
         btnOnOff.setOnClickListener(v -> startRegulate());
 
         btnSoundOff.setOnClickListener(v -> {
-            dataViewModel.stopErrorSound();
-            dataViewModel.stopAlarmSound();
+            AlarmSound alarmSound = ModelService.alarmSound;
+            if (alarmSound != null) alarmSound.alarmStop();
         });
     }
 
@@ -95,7 +95,6 @@ public class DataFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_data, container, false);
         dataList = rootView.findViewById(R.id.dataListView);
         btnOnOff = rootView.findViewById(R.id.on_off);
@@ -104,62 +103,35 @@ public class DataFragment extends Fragment {
     }
 
     private void startRegulate() {
-
-        model = dataViewModel.getModelLiveData().getValue();
-
         if (regulate) {
             regulate = false;
-            if (model != null){
-                model.interrupt();
-                model.setInterrupt();
-                dataViewModel.setModelLiveData(null);
-                model = null;
-            }
-            btnOnOff.setText(R.string.btn_regulateOn);
-
-            dataViewModel.stopErrorSound();
-            dataViewModel.stopAlarmSound();
-
+            serviceIntent("STOP");
             Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOff), Toast.LENGTH_LONG).show();
 
         } else {
             regulate = true;
-            dataViewModel.setModelLiveData(new Model(dataViewModel, fragmentActivity.getApplicationContext()));
-            model = dataViewModel.getModelLiveData().getValue();
-            if (model != null) model.start();
-
-            btnOnOff.setText(R.string.btn_regulateOff);
+            serviceIntent("START");
             Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOn), Toast.LENGTH_LONG).show();
             adManager.showInterstitialAd();
         }
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("isButtonPressed", false); // regulate instead of false
+    private void serviceIntent(String action){
+        Intent intent = new Intent(requireContext(), ModelService.class);
+        intent.setAction(action);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ContextCompat.startForegroundService(requireContext(), intent);
+        } else {
+            fragmentActivity.startService(intent);
+        }
     }
 
     @Override
     public void onStop() {
-        model = dataViewModel.getModelLiveData().getValue();
-        if (regulate) {
-
-            regulate = false; // instance is saved right, but here is hardcoding!!!
-
-            if (model != null) {
-                model.interrupt();
-                model.setInterrupt();
-                dataViewModel.setModelLiveData(null);
-            }
-
-            btnOnOff.setText(R.string.btn_regulateOn);
-
-            Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOff), Toast.LENGTH_LONG).show();
-
-            dataViewModel.stopErrorSound();
-            dataViewModel.stopAlarmSound();
-        }
+        adManager.release();
+        ModelService.dataListLiveData.removeObservers(fragmentActivity);
+        ModelService.running.removeObservers(fragmentActivity);
         super.onStop();
     }
 }

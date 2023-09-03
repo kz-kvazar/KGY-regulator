@@ -17,6 +17,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 public class AdManager {
     private final FragmentActivity activity;
     private InterstitialAd mInterstitialAd;
+    private boolean active = true;
 
     public AdManager(FragmentActivity activity) {
         this.activity = activity;
@@ -27,9 +28,11 @@ public class AdManager {
             adView.setAdListener(new AdListener() {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(() -> loadBannerAd(), 60_000);
-                    super.onAdFailedToLoad(loadAdError);
+                    if (active) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(() -> loadBannerAd(), 60_000);
+                        super.onAdFailedToLoad(loadAdError);
+                    }
                 }
             });
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -45,9 +48,11 @@ public class AdManager {
                     mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                         @Override
                         public void onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent();
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(AdManager.this::loadInterstitialAd,60_000);
+                            if (active) {
+                                Handler handler = new Handler(Looper.getMainLooper());
+                                handler.postDelayed(AdManager.this::loadInterstitialAd, 60_000);
+                                super.onAdDismissedFullScreenContent();
+                            }
                         }
                     });
                 }
@@ -62,9 +67,12 @@ public class AdManager {
     public void showInterstitialAd() {
         if (mInterstitialAd != null && activity != null) {
             mInterstitialAd.show(activity);
-        } else {
+        } else if (active){
             Handler handler = new Handler(Looper.getMainLooper());
             handler.postDelayed(this::showInterstitialAd, 60_000);
         }
+    }
+    public void release(){
+        active = false;
     }
 }

@@ -18,7 +18,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -34,7 +34,6 @@ android {
         includeInBundle true
     }
     namespace 'com.add.vpn'
-    ndkVersion '25.2.9519653'
 }
 
 dependencies {

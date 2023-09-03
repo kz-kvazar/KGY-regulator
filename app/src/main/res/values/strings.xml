@@ -5,13 +5,13 @@
     <string name="throttlePosition">Положение дросселя: %s %%</string>
     <string name="act_Power">Активная мощность: %s kW</string>
     <string name="const_Power">Заданная мощность: %s kW</string>
-    <string name="gas_Flow">Расход ГВС: %s M3</string>
-    <string name="max_power">Максимальная мощность: %s kW</string>
+    <string name="gas_Flow">Расход ГВС: %s m3</string>
+    <string name="max_power">Макс. мощность: %s kW</string>
     <string name="CH4">Концентрация СН4: %s %%</string>
 
 
     <string name="alarmEnable">Сигнал при ошибках связи</string>
-    <string name="errorEnable">Сигнал при ошибках КГУ</string>
+    <string name="errorEnable">Сигнал при ошибках</string>
 
     <string name="btn_regulateOn">Start</string>
     <string name="btn_regulateOff">Stop</string>
@@ -32,6 +32,8 @@
     <string name="connection_error_title">Проблемы с соединением</string>
     <string name="connection_error_message">Обнаружена ошибка связи с КГУ. Проверьте Wi-Fi соединение</string>
     <string name="connection_error_log_msg">%s Ошибка связи. Нестабильное соединение…</string>
+
+    <string name="service_notification_message">Автоматическое регулирование КГУ запущенно!</string>
 
 
 

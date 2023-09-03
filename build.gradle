@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         // Здесь вы можете добавить зависимости для вашего buildscript, если это необходимо
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        //classpath "com.android.tools.build:gradle:$agp_version"
     }
 }
 
@@ -16,6 +16,8 @@ plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '8.0.2' apply false
 }
+
+
 
 tasks.register('clean', Delete) {
     delete rootProject.buildDir
