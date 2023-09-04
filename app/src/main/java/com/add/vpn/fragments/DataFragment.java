@@ -49,7 +49,7 @@ public class DataFragment extends Fragment {
         dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
 
         dataAdapter.setOnItemClickListener(position -> {
-            if(DataHolder.toLis(fragmentActivity.getApplicationContext()).get(position).contains("Макс")){
+            if(position == 4){
                 NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
                 numberPickerDialog.setOnNumberSetListener(DataHolder::setMaxPower);
                 numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
@@ -105,12 +105,12 @@ public class DataFragment extends Fragment {
     private void startRegulate() {
         if (regulate) {
             regulate = false;
-            serviceIntent("STOP");
+            serviceIntent(ModelService.STOP);
             Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOff), Toast.LENGTH_LONG).show();
 
         } else {
             regulate = true;
-            serviceIntent("START");
+            serviceIntent(ModelService.START);
             Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOn), Toast.LENGTH_LONG).show();
             adManager.showInterstitialAd();
         }
@@ -130,8 +130,8 @@ public class DataFragment extends Fragment {
     @Override
     public void onStop() {
         adManager.release();
-        ModelService.dataListLiveData.removeObservers(fragmentActivity);
-        ModelService.running.removeObservers(fragmentActivity);
+        //ModelService.dataListLiveData.removeObservers(fragmentActivity);
+        //ModelService.running.removeObservers(fragmentActivity);
         super.onStop();
     }
 }

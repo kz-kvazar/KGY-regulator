@@ -25,17 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-   // private boolean connectionAlarm = false;
     private boolean generatorErrors = false;
     private MenuItem maxPower;
     private ViewPager2 viewPager2;
-   // private DataViewModel dataViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //dataViewModel = new ViewModelProvider(this).get(DataViewModel.class);
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new DataFragment());
@@ -45,14 +42,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(this,fragments);
         viewPager2.setAdapter(adapter);
-        viewPager2.setPageTransformer(new NotificationHelper.ZoomOutPageTransformer());
+        viewPager2.setPageTransformer(new ZoomOutPageTransformer());
 
-        //connectionAlarm = SettingsManager.getAlarmSetting(MainActivity.this);
         generatorErrors = SettingsManager.getErrorSetting(MainActivity.this);
 
-//        dataViewModel.setAlarmState(connectionAlarm);
-//        dataViewModel.setErrorState(generatorErrors);
-        ModelService.alarm.setValue(generatorErrors);
+
+        ModelService.enableAlarm.setValue(generatorErrors);
 
     }
 
@@ -70,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         if (menu != null) {
-//            MenuItem alarmMenu = menu.findItem(R.id.alarm_settings);
-//            alarmMenu.setChecked(connectionAlarm);
             MenuItem errorMenu = menu.findItem(R.id.error_settings);
             errorMenu.setChecked(generatorErrors);
             maxPower = menu.findItem(R.id.max_power);
@@ -91,21 +84,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-//        if (id == R.id.alarm_settings) {
-//            connectionAlarm = !connectionAlarm;
-//            item.setChecked(connectionAlarm);
-//            SettingsManager.setAlarmSetting(this, connectionAlarm);
-//
-//            dataViewModel.setAlarmState(connectionAlarm);
-//            return true;
-//        } else
             if (id == R.id.error_settings) {
             generatorErrors = !generatorErrors;
             item.setChecked(generatorErrors);
             SettingsManager.setErrorSetting(this, generatorErrors);
 
-            ModelService.alarm.setValue(generatorErrors);
-            //dataViewModel.setErrorState(generatorErrors);
+            ModelService.enableAlarm.setValue(generatorErrors);
             return true;
         } else if (id == R.id.max_power) {
             NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
@@ -117,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        //outState.putBoolean("alarmBool", connectionAlarm);
         outState.putBoolean("errorBool", generatorErrors);
         super.onSaveInstanceState(outState);
     }
@@ -125,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        //connectionAlarm = savedInstanceState.getBoolean("alarmBool");
         generatorErrors = savedInstanceState.getBoolean("errorBool");
     }
 }

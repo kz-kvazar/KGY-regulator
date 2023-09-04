@@ -54,7 +54,7 @@ public class ReportFragment extends Fragment {
 
     @Override
     public void onStop() {
-        ModelService.reportListLiveData.removeObservers(requireActivity());
+        //ModelService.reportListLiveData.removeObservers(requireActivity());
         super.onStop();
     }
 }

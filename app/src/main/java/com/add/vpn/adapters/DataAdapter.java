@@ -45,7 +45,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+        public final TextView textView;
 
         public ViewHolder(View itemView) {
             super(itemView);

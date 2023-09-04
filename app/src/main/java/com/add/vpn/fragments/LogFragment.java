@@ -51,7 +51,7 @@ public class LogFragment extends Fragment {
 
     @Override
     public void onStop() {
-        ModelService.logListLiveData.removeObservers(requireActivity());
+        //ModelService.logListLiveData.removeObservers(requireActivity());
         super.onStop();
     }
 }

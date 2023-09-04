@@ -42,10 +42,10 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView constPower;
-        public TextView timeTextView;
-        public TextView ch4TextView;
-        public TextView consumptionTextView;
+        public final TextView constPower;
+        public final TextView timeTextView;
+        public final TextView ch4TextView;
+        public final TextView consumptionTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);

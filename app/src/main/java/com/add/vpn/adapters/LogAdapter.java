@@ -47,8 +47,8 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        TextView textView;
+        final ImageView imageView;
+        final TextView textView;
 
         public ViewHolder(View itemView) {
             super(itemView);

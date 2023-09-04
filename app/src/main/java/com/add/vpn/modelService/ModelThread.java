@@ -105,7 +105,7 @@ public class ModelThread extends Thread{
 
         dataListLiveData.postValue(DataHolder.toLis(applicationContext));
 
-        retry = 0;
+        //retry = 0;
     }
 
     public void checkGeneratorErrors() throws IOException, InterruptedException {
@@ -118,10 +118,11 @@ public class ModelThread extends Thread{
         } else if (!alarmReceiverAlarm && isAlarmPlaying) {
             isAlarmPlaying = false;
         }
+        //Thread.sleep(1200);
     }
-    public void checkConnectionErrors(int retry) {
-        if (retry == 3) {
-
+    public void checkConnectionErrors(int trays) {
+        if (trays == 3) {
+            retry = 0;
             LinkedList<String> list = logListLiveData.getValue();
             if (list != null) {
                 list.addFirst(applicationContext.getString(R.string.connection_error_log_msg, sdf.format(new Date())));
@@ -131,5 +132,4 @@ public class ModelThread extends Thread{
             notification.showNotification(applicationContext.getString(R.string.connection_error_title), applicationContext.getString(R.string.connection_error_message));
         }
     }
-
 }
