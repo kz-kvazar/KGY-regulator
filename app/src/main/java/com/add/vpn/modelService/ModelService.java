@@ -2,15 +2,15 @@ package com.add.vpn.modelService;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.IBinder;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
+import com.add.vpn.R;
 import com.add.vpn.adapters.ReportItem;
 import com.add.vpn.model.AlarmSound;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +23,6 @@ public class ModelService extends Service {
     private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
-    private WakeLock wakeLock;
 
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<>());
@@ -70,11 +69,12 @@ public class ModelService extends Service {
         alarmSound = new AlarmSound(getApplicationContext());
         notificationHelper = new NotificationHelper(this);
 
-        startForeground(888, notificationHelper.serviceNotification());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(888, notificationHelper.serviceNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        } else {
+            startForeground(888, notificationHelper.serviceNotification());
+        }
 
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ModelService::WakeLock");
-        wakeLock.acquire(12 * 60 * 60 * 1000L);
     }
 
     @Nullable
@@ -87,7 +87,16 @@ public class ModelService extends Service {
     public void onDestroy() {
         alarmSound.alarmStop();
         alarmSound.release();
-        wakeLock.release();
         super.onDestroy();
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        notificationHelper.showNotification(getString(R.string.app_name), getString(R.string.backgrounded_message));
+        thread.interrupt();
+        thread.setInterrupt();
+        running.postValue(false);
+        stopSelf();
     }
 }

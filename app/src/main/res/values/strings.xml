@@ -47,6 +47,7 @@
     <string name="stop_notification">КГУ остановлена, так и задумано?</string>
     <string name="regulate_statusOn">Регулирование запущено</string>
     <string name="regulate_statusOff">Регулирование остановлено</string>
+    <string name="backgrounded_message">Внимание !!!\nОтключение автоматического регулирования.</string>
     <string name="set_max_power">Верхний предел регулирования мощности 900–1560 kW</string>
     <string name="max_power_Error">Неверно введенное значение</string>
     <string name="KGY_error_title">Ошибка КГУ</string>

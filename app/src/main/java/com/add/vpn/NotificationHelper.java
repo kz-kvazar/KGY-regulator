@@ -68,7 +68,7 @@ public class NotificationHelper {
         sounIntent.setAction(ModelService.SOUND_OFF);
         PendingIntent soundPendingIntent = PendingIntent.getService(context,2,sounIntent,PendingIntent.FLAG_IMMUTABLE);
 
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+        return new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.service_notification_message))
                 .setSmallIcon(R.drawable.notification_icon)
@@ -83,7 +83,5 @@ public class NotificationHelper {
                 .setColor(Color.GREEN)
                 .setOngoing(true)
                 .build();
-        //notificationManager.notify(888,notification);
-        return notification;
     }
 }

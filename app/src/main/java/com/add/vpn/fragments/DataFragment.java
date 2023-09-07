@@ -18,8 +18,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.*;
 import com.add.vpn.AdManager;
 import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
@@ -28,7 +30,11 @@ import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
+import com.add.vpn.modelService.ModelWorkManager;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 public class DataFragment extends Fragment {
 
@@ -65,8 +71,16 @@ public class DataFragment extends Fragment {
             }else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
         });
+//        ModelWorkManager.running.observe(getViewLifecycleOwner(), aBoolean -> {
+//            if (aBoolean){
+//                btnOnOff.setText(R.string.btn_regulateOff);
+//            }else btnOnOff.setText(R.string.btn_regulateOn);
+//            regulate = aBoolean;
+//        });
+
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> dataAdapter.notifyItemRangeChanged(0,10));
+        //ModelWorkManager.dataListLiveData.observe(getViewLifecycleOwner(), strings -> dataAdapter.notifyItemRangeChanged(0,10));
 
         MobileAds.initialize(fragmentActivity, initializationStatus -> {
             adManager = new AdManager(fragmentActivity);
@@ -76,7 +90,10 @@ public class DataFragment extends Fragment {
             handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
         });
 
-        btnOnOff.setOnClickListener(v -> startRegulate());
+        btnOnOff.setOnClickListener(v -> {
+            startRegulate();
+            //startWorkManager();
+            });
 
         btnSoundOff.setOnClickListener(v -> {
             AlarmSound alarmSound = ModelService.alarmSound;
@@ -106,12 +123,14 @@ public class DataFragment extends Fragment {
         if (regulate) {
             regulate = false;
             serviceIntent(ModelService.STOP);
-            Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOff), Toast.LENGTH_LONG).show();
+            Snackbar.make(fragmentActivity, requireView(),getString(R.string.regulate_statusOff),Snackbar.LENGTH_LONG).show();
+            //Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOff), Toast.LENGTH_LONG).show();
 
         } else {
             regulate = true;
             serviceIntent(ModelService.START);
-            Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOn), Toast.LENGTH_LONG).show();
+            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
+            //Toast.makeText(fragmentActivity, getString(R.string.regulate_statusOn), Toast.LENGTH_LONG).show();
             adManager.showInterstitialAd();
         }
     }
@@ -130,8 +149,26 @@ public class DataFragment extends Fragment {
     @Override
     public void onStop() {
         adManager.release();
-        //ModelService.dataListLiveData.removeObservers(fragmentActivity);
-        //ModelService.running.removeObservers(fragmentActivity);
         super.onStop();
     }
+//    private void startWorkManager(){
+//        Boolean value = ModelWorkManager.running.getValue();
+//        if (Boolean.FALSE.equals(value)){
+//            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(ModelWorkManager.class)
+//                    .setConstraints(
+//                            new Constraints.Builder()
+//                                    .setRequiredNetworkType(NetworkType.CONNECTED)
+//                                    .setRequiresBatteryNotLow(true) // Задача может выполняться, даже если батарея слабая
+//                                    .setRequiresStorageNotLow(true) // Задача может выполняться, даже если хранилище недоступно
+//                                    .build()
+//                    )
+//                    .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
+//                    .build();
+//            WorkManager.getInstance(fragmentActivity).
+//                    beginUniqueWork("KGY", ExistingWorkPolicy.KEEP, workRequest).enqueue();
+//        } else {
+//            WorkManager.getInstance(fragmentActivity).cancelUniqueWork("KGY");
+//            ModelWorkManager.running.setValue(false);
+//        }
+//    }
 }
