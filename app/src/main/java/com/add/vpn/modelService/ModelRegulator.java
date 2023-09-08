@@ -4,7 +4,9 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
-import com.add.vpn.adapters.ReportItem;
+import com.add.vpn.roomDB.DatabaseManager;
+import com.add.vpn.roomDB.ReportDao;
+import com.add.vpn.roomDB.ReportItem;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
 
@@ -15,10 +17,11 @@ public class ModelRegulator {
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private final MutableLiveData<LinkedList<String>> logListLiveDat;
-    private final MutableLiveData<LinkedList<ReportItem>> reportListLiveDat;
+    //private final MutableLiveData<LinkedList<ReportItem>> reportListLiveDat;
     private final Context applicationContext;
     private final MutableLiveData<Boolean> alarm;
     private final NotificationHelper notificationHelper;
+    private final ReportDao reportDao;
     public int userMaxPower = 1560;
     private int appMaxPower = 1560;
     public int regulatePower = 10;
@@ -28,9 +31,9 @@ public class ModelRegulator {
     private short constPower = 0;
     private float throttlePosition = 0;
     private final AlarmSound alarmSound;
+    private ReportItem lastReport;
 
     public ModelRegulator(MutableLiveData<LinkedList<String>> logListLiveDat,
-                          MutableLiveData<LinkedList<ReportItem>> reportListLiveDat,
                           Context applicationContext,
                           NotificationHelper notificationHelper,
                           AlarmSound alarmSound,
@@ -38,7 +41,6 @@ public class ModelRegulator {
 
         this.notificationHelper = notificationHelper;
         this.logListLiveDat = logListLiveDat;
-        this.reportListLiveDat = reportListLiveDat;
         this.applicationContext = applicationContext;
         this.alarm = alarm;
         LinkedList<String> value = logListLiveDat.getValue();
@@ -46,7 +48,8 @@ public class ModelRegulator {
         if (value != null) {
             value.addFirst(applicationContext.getString(R.string.KGY_start,sdf.format(lastTimeRegulated)));
         }
-
+        reportDao = DatabaseManager.getInstance(applicationContext).reportDao();
+        lastReport = reportDao.getLast().getValue();
     }
 
     public Integer regulate() {
@@ -55,12 +58,13 @@ public class ModelRegulator {
         checkMaxPower();
 
         Date now = new Date();
-        LinkedList<ReportItem> value = reportListLiveDat.getValue();
 
-        if ((value != null && value.isEmpty()) || (value != null && isNotSameHour(now, value.getFirst().getDate()))) {
-            value.addFirst(new ReportItem(now,
+        if (lastReport == null || isNotSameHour(now, lastReport.getDate())) {
+            ReportItem reportItem = new ReportItem(now,
                     DataHolder.getCH4Concentration().toString(),
-                    DataHolder.getGasFlow().toString(),String.valueOf(DataHolder.getConstPower())));
+                    DataHolder.getGasFlow().toString(), String.valueOf(DataHolder.getConstPower()));
+            reportDao.insertAll(reportItem);
+            lastReport = reportItem;
         }
 
         if (actPower > 0 && (now.getTime() - this.lastTimeRegulated) >= 20_000) {

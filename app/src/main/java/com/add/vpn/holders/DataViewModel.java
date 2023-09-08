@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
-import com.add.vpn.adapters.ReportItem;
+import com.add.vpn.roomDB.ReportItem;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.model.Model;
 import org.jetbrains.annotations.NotNull;

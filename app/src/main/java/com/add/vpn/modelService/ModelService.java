@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
-import com.add.vpn.adapters.ReportItem;
 import com.add.vpn.model.AlarmSound;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -27,7 +26,6 @@ public class ModelService extends Service {
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<>());
     public static final MutableLiveData<LinkedList<String>> logListLiveData = new MutableLiveData<>(new LinkedList<>());
-    public static final MutableLiveData<LinkedList<ReportItem>> reportListLiveData = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<Boolean> enableAlarm = new MutableLiveData<>(Boolean.FALSE);
 
     @Override
@@ -40,7 +38,6 @@ public class ModelService extends Service {
 
             thread = new ModelThread(dataListLiveData,
                     logListLiveData,
-                    reportListLiveData,
                     getApplicationContext(),
                     notificationHelper,
                     alarmSound,

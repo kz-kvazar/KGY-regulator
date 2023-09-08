@@ -1,10 +1,11 @@
 package com.add.vpn.modelService;
 
 import android.content.Context;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
-import com.add.vpn.adapters.ReportItem;
+import com.add.vpn.roomDB.ReportItem;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.*;
 
@@ -33,7 +34,6 @@ public class ModelThread extends Thread{
 
     public ModelThread(MutableLiveData<List<String>> dataListLiveData,
                        MutableLiveData<LinkedList<String>> logListLiveData,
-                       MutableLiveData<LinkedList<ReportItem>> reportListLiveDat,
                        Context applicationContext,
                        NotificationHelper notification,
                        AlarmSound alarmSound,
@@ -49,7 +49,7 @@ public class ModelThread extends Thread{
         this.alarmReceiver = new AlarmReceiver();
         this.applicationContext = applicationContext;
         this.alarmSound = alarmSound;
-        this.regulator = new ModelRegulator(logListLiveData,reportListLiveDat,applicationContext,notification, alarmSound,alarm);
+        this.regulator = new ModelRegulator(logListLiveData, applicationContext, notification, alarmSound, alarm);
     }
 
     @Override

@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
 import com.add.vpn.adapters.ReportAdapter;
-import com.add.vpn.modelService.ModelService;
+import com.add.vpn.roomDB.DatabaseManager;
 
 public class ReportFragment extends Fragment {
     private RecyclerView reportView;
     private ReportAdapter adapter;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,12 +35,17 @@ public class ReportFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new ReportAdapter(ModelService.reportListLiveData.getValue());
-        reportView.setAdapter(adapter);
+        DatabaseManager.getInstance(requireContext()).reportDao().getAllLiveData().observe(getViewLifecycleOwner(), reportItems -> {
 
-        reportView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        ModelService.reportListLiveData.observe(getViewLifecycleOwner(), reportItems -> adapter.notifyItemInserted(0));
+                if (adapter != null){
+                    if (!reportItems.isEmpty()) adapter.addItem(reportItems.get(0));
+                    adapter.notifyItemInserted(0);
+                }else {
+                    adapter = new ReportAdapter(reportItems);
+                    reportView.setAdapter(adapter);
+                    reportView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                }
+        });
     }
     @Override
     public void onResume() {

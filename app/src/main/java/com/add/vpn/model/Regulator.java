@@ -2,15 +2,12 @@ package com.add.vpn.model;
 
 import android.content.Context;
 import com.add.vpn.R;
-import com.add.vpn.adapters.ReportItem;
+import com.add.vpn.roomDB.ReportItem;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.holders.DataViewModel;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Locale;
+import java.util.*;
 
 public class Regulator {
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -37,9 +34,9 @@ public class Regulator {
         checkMaxPower();
 
         Date now = new Date();
-        LinkedList<ReportItem> value = dataViewModel.getReportListLiveData().getValue();
+        List<ReportItem> value = dataViewModel.getReportListLiveData().getValue();
 
-        if ((value != null && value.isEmpty()) || (value != null && isNotSameHour(now, value.getFirst().getDate()))) {
+        if ((value != null && value.isEmpty()) || (value != null && isNotSameHour(now, value.get(value.size()-1).getDate()))) {
             dataViewModel.addToReportList(new ReportItem(now,
                     DataHolder.getCH4Concentration().toString(),
                     DataHolder.getGasFlow().toString(),String.valueOf(DataHolder.getConstPower())));
