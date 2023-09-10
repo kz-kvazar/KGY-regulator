@@ -9,12 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class ReportBot {
+public class TelegramReportBot {
     private static final String BOT_TOKEN = "6604238506:AAE6ckDJVAkjN00sq1NMHzTXVMldnKyuq7A";
     private static final String BASE_URL = "https://api.telegram.org/bot" + BOT_TOKEN + "/";
     private static final String CHAT_ID = "-4014080129";
 
-    public ReportBot(AppCompatActivity activity) {
+    public TelegramReportBot(AppCompatActivity activity) {
         DatabaseManager.getInstance(activity).reportDao().getLastLiveData().observe(activity, reportItem ->
                 sendTextMessage(reportItem.toString()));
     }

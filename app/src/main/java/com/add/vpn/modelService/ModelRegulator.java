@@ -2,7 +2,7 @@ package com.add.vpn.modelService;
 
 import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
-import com.add.vpn.ReportBot;
+import com.add.vpn.TelegramReportBot;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
 import com.add.vpn.roomDB.DatabaseManager;
@@ -50,7 +50,7 @@ public class ModelRegulator {
         }
         reportDao = DatabaseManager.getInstance(applicationContext).reportDao();
         lastReport = reportDao.getLast();
-        ReportBot.sendReport(lastReport.toString());
+        TelegramReportBot.sendReport(lastReport.toString());
     }
 
     public Integer regulate() {
