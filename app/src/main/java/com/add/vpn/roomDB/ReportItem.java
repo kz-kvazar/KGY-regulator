@@ -1,6 +1,7 @@
 package com.add.vpn.roomDB;
 
 import androidx.room.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,4 +52,13 @@ public class ReportItem {
         return time;
     }
     public String getConstPower(){return constPower;}
+
+    @NotNull
+    @Override
+    public String toString() {
+        return  "Время: " + timeString + '\n' +
+                "CH4: " + CH4 + " %"+ '\n' +
+                "Расход: " + consumption + " m3"+ '\n' +
+                "Мощность: " + constPower + " kW" + '\n';
+    }
 }

@@ -13,6 +13,8 @@ public interface ReportDao {
     List<ReportItem> getAll();
     @Query("SELECT * FROM report ORDER BY id DESC LIMIT 1")
     ReportItem getLast();
+    @Query("SELECT * FROM report ORDER BY id DESC LIMIT 1")
+    LiveData<ReportItem> getLastLiveData();
     @Query("SELECT * FROM report WHERE strftime('%Y-%m', datetime(date/1000, 'unixepoch')) = strftime('%Y-%m', datetime('now', 'localtime')) ORDER BY id DESC")
     LiveData<List<ReportItem>> getCurrentMonthLiveData();
     @Query("SELECT * FROM report WHERE strftime('%Y-%W', datetime(date/1000, 'unixepoch')) = strftime('%Y-%W', datetime('now', 'localtime')) ORDER BY id DESC")
