@@ -46,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         generatorErrors = SettingsManager.getErrorSetting(MainActivity.this);
 
-
         ModelService.enableAlarm.setValue(generatorErrors);
-
     }
 
     @Override
