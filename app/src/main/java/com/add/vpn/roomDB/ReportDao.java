@@ -13,7 +13,7 @@ public interface ReportDao {
     @Query("SELECT * FROM report ORDER BY id DESC")
     ListenableFuture<List<ReportItem>> getAll();
     @Query("SELECT * FROM report ORDER BY id DESC LIMIT 1")
-    LiveData<ReportItem> getLast();
+    ReportItem getLast();
     @Query("SELECT * FROM report WHERE strftime('%Y-%m', time_and_date) = strftime('%Y-%m', 'now')")
     List<ReportItem> getReportsForCurrentMonth();
     // Для текущей недели

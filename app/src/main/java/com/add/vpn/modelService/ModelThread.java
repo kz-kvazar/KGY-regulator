@@ -24,7 +24,7 @@ public class ModelThread extends Thread{
     private volatile boolean interrupt = true;
     private final DataReceiver dataReceiver;
     private final DataSender dataSender;
-    private final ModelRegulator regulator;
+    private ModelRegulator regulator;
     private final AlarmReceiver alarmReceiver;
     private final Context applicationContext;
     private final MutableLiveData<List<String>> dataListLiveData;
@@ -49,11 +49,11 @@ public class ModelThread extends Thread{
         this.alarmReceiver = new AlarmReceiver();
         this.applicationContext = applicationContext;
         this.alarmSound = alarmSound;
-        this.regulator = new ModelRegulator(logListLiveData, applicationContext, notification, alarmSound, alarm);
     }
 
     @Override
     public void run() {
+        this.regulator = new ModelRegulator(logListLiveData, applicationContext, notification, alarmSound, alarm);
         while (interrupt) {
             try {
                 checkInterrupt();

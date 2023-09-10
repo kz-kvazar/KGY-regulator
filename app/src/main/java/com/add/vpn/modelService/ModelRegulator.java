@@ -17,7 +17,6 @@ public class ModelRegulator {
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private final MutableLiveData<LinkedList<String>> logListLiveDat;
-    //private final MutableLiveData<LinkedList<ReportItem>> reportListLiveDat;
     private final Context applicationContext;
     private final MutableLiveData<Boolean> alarm;
     private final NotificationHelper notificationHelper;
@@ -49,7 +48,7 @@ public class ModelRegulator {
             value.addFirst(applicationContext.getString(R.string.KGY_start,sdf.format(lastTimeRegulated)));
         }
         reportDao = DatabaseManager.getInstance(applicationContext).reportDao();
-        lastReport = reportDao.getLast().getValue();
+        lastReport = reportDao.getLast();
     }
 
     public Integer regulate() {
