@@ -2,7 +2,6 @@ package com.add.vpn.roomDB;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
-import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
 
@@ -11,16 +10,16 @@ public interface ReportDao {
     @Query("SELECT * FROM report ORDER BY id DESC")
     LiveData<List<ReportItem>> getAllLiveData();
     @Query("SELECT * FROM report ORDER BY id DESC")
-    ListenableFuture<List<ReportItem>> getAll();
+    List<ReportItem> getAll();
     @Query("SELECT * FROM report ORDER BY id DESC LIMIT 1")
     ReportItem getLast();
-    @Query("SELECT * FROM report WHERE strftime('%Y-%m', time_and_date) = strftime('%Y-%m', 'now')")
-    List<ReportItem> getReportsForCurrentMonth();
-    // Для текущей недели
-    @Query("SELECT * FROM report WHERE strftime('%Y-%W', time_and_date) = strftime('%Y-%W', 'now')")
-    List<ReportItem> getReportsForCurrentWeek();
-    @Query("SELECT * FROM report WHERE strftime('%Y-%m-%d', time_and_date) = strftime('%Y-%m-%d', 'now')")
-    List<ReportItem> getReportsForCurrentDay();
+    @Query("SELECT * FROM report WHERE strftime('%Y-%m', datetime(date/1000, 'unixepoch')) = strftime('%Y-%m', datetime('now', 'localtime')) ORDER BY id DESC")
+    LiveData<List<ReportItem>> getCurrentMonthLiveData();
+    @Query("SELECT * FROM report WHERE strftime('%Y-%W', datetime(date/1000, 'unixepoch')) = strftime('%Y-%W', datetime('now', 'localtime')) ORDER BY id DESC")
+    LiveData<List<ReportItem>> getCurrentWeekLiveData();
+    @Query("SELECT * FROM report WHERE strftime('%Y-%m-%d', datetime(date/1000, 'unixepoch')) = strftime('%Y-%m-%d', datetime('now', 'localtime')) ORDER BY id DESC")
+    LiveData<List<ReportItem>> getCurrentDayLiveData();
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(ReportItem... reportItems);

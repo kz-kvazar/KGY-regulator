@@ -52,4 +52,12 @@
     <string name="max_power_Error">Неверно введенное значение</string>
     <string name="KGY_error_title">Ошибка КГУ</string>
     <string name="KGY_error_msg">Обнаружена ошибка КГУ требующая вашего внимания</string>
+    <string name="time_period">Временной период:</string>
+
+    <string-array name="time_period">
+        <item>Сегодня</item>
+        <item>Эта неделя</item>
+        <item>Этот месяц</item>
+        <item>Весь период</item>
+    </string-array>
 </resources>

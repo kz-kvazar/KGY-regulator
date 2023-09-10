@@ -12,10 +12,16 @@ import com.add.vpn.roomDB.ReportItem;
 import java.util.List;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder> {
-    private final List<ReportItem> reportItems;
+    private List<ReportItem> reportItems;
 
     public ReportAdapter(List<ReportItem> reportItems) {
         this.reportItems = reportItems;
+    }
+    public void setReportItems(List<ReportItem> reportItems){
+        this.reportItems = reportItems;
+    }
+    public boolean isEmpty(){
+        return reportItems.isEmpty();
     }
 
     @NonNull

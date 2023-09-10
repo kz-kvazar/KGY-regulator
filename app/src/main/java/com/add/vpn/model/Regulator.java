@@ -36,7 +36,7 @@ public class Regulator {
         Date now = new Date();
         List<ReportItem> value = dataViewModel.getReportListLiveData().getValue();
 
-        if ((value != null && value.isEmpty()) || (value != null && isNotSameHour(now, value.get(value.size()-1).getDate()))) {
+        if ((value != null && value.isEmpty()) || (value != null && isNotSameHour(now, value.get(value.size()-1).getTime()))) {
             dataViewModel.addToReportList(new ReportItem(now,
                     DataHolder.getCH4Concentration().toString(),
                     DataHolder.getGasFlow().toString(),String.valueOf(DataHolder.getConstPower())));

@@ -58,7 +58,7 @@ public class ModelRegulator {
 
         Date now = new Date();
 
-        if (lastReport == null || isNotSameHour(now, lastReport.getDate())) {
+        if (lastReport == null || isNotSameHour(now, lastReport.getTime())) {
             ReportItem reportItem = new ReportItem(now,
                     DataHolder.getCH4Concentration().toString(),
                     DataHolder.getGasFlow().toString(), String.valueOf(DataHolder.getConstPower()));
