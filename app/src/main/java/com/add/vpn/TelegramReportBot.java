@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class TelegramReportBot {
     private static final String BOT_TOKEN = "6604238506:AAE6ckDJVAkjN00sq1NMHzTXVMldnKyuq7A";
     private static final String BASE_URL = "https://api.telegram.org/bot" + BOT_TOKEN + "/";
-    private static final String CHAT_ID = "-4014080129";
+    private static final String CHAT_ID = "-1001981116655";
 
     public TelegramReportBot(AppCompatActivity activity) {
         DatabaseManager.getInstance(activity).reportDao().getLastLiveData().observe(activity, reportItem ->
@@ -61,6 +61,8 @@ public class TelegramReportBot {
                 try (OutputStream os = conn.getOutputStream()) {
                     os.write(input, 0, input.length);
                 }
+                int responseCode = conn.getResponseCode();
+
                 conn.disconnect();
             } catch (IOException ignored) {
             }

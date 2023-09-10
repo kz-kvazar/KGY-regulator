@@ -50,7 +50,6 @@ public class ModelRegulator {
         }
         reportDao = DatabaseManager.getInstance(applicationContext).reportDao();
         lastReport = reportDao.getLast();
-        TelegramReportBot.sendReport(lastReport.toString());
     }
 
     public Integer regulate() {
@@ -66,6 +65,7 @@ public class ModelRegulator {
                     DataHolder.getGasFlow().toString(), String.valueOf(DataHolder.getConstPower()));
             reportDao.insertAll(reportItem);
             lastReport = reportItem;
+            TelegramReportBot.sendReport(lastReport.toString());
         }
 
         if (actPower > 0 && (now.getTime() - this.lastTimeRegulated) >= 20_000) {
