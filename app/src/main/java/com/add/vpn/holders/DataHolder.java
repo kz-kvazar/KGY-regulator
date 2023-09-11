@@ -29,8 +29,6 @@ public class DataHolder {
     public static void setMaxPower(int maxPower) {
         if (maxPower >= 800 && maxPower <= 1560) DataHolder.maxPower = maxPower;
     }
-
-    //TODO reparse hardcode strings with strings.xml
     public static List<String> toLis(Context context) {
         dataList.clear();
 

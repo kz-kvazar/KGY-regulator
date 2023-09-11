@@ -56,8 +56,8 @@
 
     <string-array name="time_period">
         <item>Сегодня</item>
-        <item>Эта неделя</item>
         <item>Этот месяц</item>
+        <item>Этот год</item>
         <item>Весь период</item>
     </string-array>
 </resources>

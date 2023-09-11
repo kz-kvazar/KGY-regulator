@@ -15,13 +15,12 @@ public interface ReportDao {
     ReportItem getLast();
     @Query("SELECT * FROM report ORDER BY id DESC LIMIT 1")
     LiveData<ReportItem> getLastLiveData();
-    @Query("SELECT * FROM report WHERE strftime('%Y-%m', datetime(date/1000, 'unixepoch')) = strftime('%Y-%m', datetime('now', 'localtime')) ORDER BY id DESC")
+    @Query("SELECT * FROM report WHERE strftime('%Y-%m', datetime(date/1000, 'unixepoch', 'localtime')) = strftime('%Y-%m', 'now', 'localtime') ORDER BY id DESC")
     LiveData<List<ReportItem>> getCurrentMonthLiveData();
-    @Query("SELECT * FROM report WHERE strftime('%Y-%W', datetime(date/1000, 'unixepoch')) = strftime('%Y-%W', datetime('now', 'localtime')) ORDER BY id DESC")
-    LiveData<List<ReportItem>> getCurrentWeekLiveData();
-    @Query("SELECT * FROM report WHERE strftime('%Y-%m-%d', datetime(date/1000, 'unixepoch')) = strftime('%Y-%m-%d', datetime('now', 'localtime')) ORDER BY id DESC")
+    @Query("SELECT * FROM report WHERE strftime('%Y', datetime(date/1000, 'unixepoch', 'localtime')) = strftime('%Y', 'now', 'localtime') ORDER BY id DESC")
+    LiveData<List<ReportItem>> getCurrentYearLiveData();
+    @Query("SELECT * FROM report WHERE strftime('%Y-%m-%d', datetime(date/1000, 'unixepoch', 'localtime')) = strftime('%Y-%m-%d', 'now', 'localtime') ORDER BY id DESC")
     LiveData<List<ReportItem>> getCurrentDayLiveData();
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(ReportItem... reportItems);

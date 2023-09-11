@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
@@ -58,19 +57,19 @@ public class ReportFragment extends Fragment {
                        break;
                    }
                    case 1: {
-                       DatabaseManager.getInstance(requireContext()).reportDao().getCurrentWeekLiveData().observe(getViewLifecycleOwner(), reportItems -> {
-                           adapter.setReportItems(reportItems);
-                           adapter.notifyDataSetChanged();
-                       });
-                       break;
-                   }
-                   case 2: {
                        DatabaseManager.getInstance(requireContext()).reportDao().getCurrentMonthLiveData().observe(getViewLifecycleOwner(), reportItems -> {
                            adapter.setReportItems(reportItems);
                            adapter.notifyDataSetChanged();
                    });
                        break;
                    }
+                    case 2: {
+                        DatabaseManager.getInstance(requireContext()).reportDao().getCurrentYearLiveData().observe(getViewLifecycleOwner(), reportItems -> {
+                            adapter.setReportItems(reportItems);
+                            adapter.notifyDataSetChanged();
+                        });
+                        break;
+                    }
                    case 3: {
                        DatabaseManager.getInstance(requireContext()).reportDao().getAllLiveData().observe(getViewLifecycleOwner(), reportItems -> {
                            adapter.setReportItems(reportItems);
@@ -85,7 +84,7 @@ public class ReportFragment extends Fragment {
 
             private void removeObservers() {
                 DatabaseManager.getInstance(requireContext()).reportDao().getCurrentDayLiveData().removeObservers(getViewLifecycleOwner());
-                DatabaseManager.getInstance(requireContext()).reportDao().getCurrentWeekLiveData().removeObservers(getViewLifecycleOwner());
+                DatabaseManager.getInstance(requireContext()).reportDao().getCurrentYearLiveData().removeObservers(getViewLifecycleOwner());
                 DatabaseManager.getInstance(requireContext()).reportDao().getCurrentMonthLiveData().removeObservers(getViewLifecycleOwner());
                 DatabaseManager.getInstance(requireContext()).reportDao().getAllLiveData().removeObservers(getViewLifecycleOwner());
             }
