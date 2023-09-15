@@ -17,8 +17,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         super(fragmentActivity);
         this.fragments = fragments;
     }
-
-
     @NotNull
     @Override
     public Fragment createFragment(int position) {

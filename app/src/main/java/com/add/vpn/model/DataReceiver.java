@@ -52,7 +52,8 @@ public class DataReceiver {
         int protocolId = 0; // ID протокола (нули для Modbus/TCP)
         int dataLength = 6; // Длина данных в пакете (байты)
         int slaveAddress = 1; // Адрес устройства
-        byte[] request = new byte[]{(byte) (transactionId >> 8), // Старший байт ID транзакции
+        byte[] request = new byte[]{
+                (byte) (transactionId >> 8), // Старший байт ID транзакции
                 (byte) (transactionId & 0xFF), // Младший байт ID транзакции
                 (byte) (protocolId >> 8), // Старший байт ID протокола
                 (byte) (protocolId & 0xFF), // Младший байт ID протокола

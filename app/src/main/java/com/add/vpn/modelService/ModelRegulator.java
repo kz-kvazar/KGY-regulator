@@ -2,7 +2,7 @@ package com.add.vpn.modelService;
 
 import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
-import com.add.vpn.TelegramReportBot;
+import com.add.vpn.telegramBot.TelegramReportBot;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
 import com.add.vpn.roomDB.DatabaseManager;

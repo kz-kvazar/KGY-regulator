@@ -1,11 +1,9 @@
 package com.add.vpn.modelService;
 
 import android.content.Context;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
-import com.add.vpn.roomDB.ReportItem;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.*;
 
@@ -24,7 +22,6 @@ public class ModelThread extends Thread{
     private volatile boolean interrupt = true;
     private final DataReceiver dataReceiver;
     private final DataSender dataSender;
-    private ModelRegulator regulator;
     private final AlarmReceiver alarmReceiver;
     private final Context applicationContext;
     private final MutableLiveData<List<String>> dataListLiveData;
@@ -53,7 +50,7 @@ public class ModelThread extends Thread{
 
     @Override
     public void run() {
-        this.regulator = new ModelRegulator(logListLiveData, applicationContext, notification, alarmSound, alarm);
+        ModelRegulator regulator = new ModelRegulator(logListLiveData, applicationContext, notification, alarmSound, alarm);
         while (interrupt) {
             try {
                 checkInterrupt();
@@ -63,7 +60,7 @@ public class ModelThread extends Thread{
                 if (regulateConstant != null) {
                     dataSender.setPowerConstant(regulateConstant);
                 }
-                Thread.sleep(1200);
+                //Thread.sleep(1000);
             } catch (InterruptedException i) {
                 interrupt = false;
             } catch (IOException e) {
@@ -86,22 +83,22 @@ public class ModelThread extends Thread{
 
     public void receiveData() throws IOException, InterruptedException {
 
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         DataHolder.setThrottlePosition(dataReceiver.getThrottlePosition());
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         DataHolder.setOpPressure(dataReceiver.getOpPressure());
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         DataHolder.setActPower(dataReceiver.getPowerActive());
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         DataHolder.setConstPower(dataReceiver.getPowerConstant());
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         DataHolder.setCH4Concentration(dataReceiver.getCH4Concentration());
-        Thread.sleep(100);
+        Thread.sleep(300);
 
         dataListLiveData.postValue(DataHolder.toLis(applicationContext));
 
@@ -110,7 +107,7 @@ public class ModelThread extends Thread{
 
     public void checkGeneratorErrors() throws IOException, InterruptedException {
         boolean alarmReceiverAlarm = alarmReceiver.getAlarm();
-        Thread.sleep(100);
+        Thread.sleep(300);
         if (alarmReceiverAlarm && !isAlarmPlaying && Boolean.TRUE.equals(alarm.getValue())) {
             isAlarmPlaying = true;
             alarmSound.alarmPlay();
@@ -121,7 +118,7 @@ public class ModelThread extends Thread{
         //Thread.sleep(1200);
     }
     public void checkConnectionErrors(int trays) {
-        if (trays == 3) {
+        if (trays == 4) {
             retry = 0;
             LinkedList<String> list = logListLiveData.getValue();
             if (list != null) {

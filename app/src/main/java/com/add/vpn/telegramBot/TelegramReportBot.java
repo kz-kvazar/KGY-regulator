@@ -1,4 +1,4 @@
-package com.add.vpn;
+package com.add.vpn.telegramBot;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.add.vpn.roomDB.DatabaseManager;
