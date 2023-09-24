@@ -14,6 +14,7 @@ import com.add.vpn.fragments.LogFragment;
 import com.add.vpn.fragments.ReportFragment;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.modelService.ModelService;
+import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseApp.initializeApp(getApplicationContext());
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new DataFragment());

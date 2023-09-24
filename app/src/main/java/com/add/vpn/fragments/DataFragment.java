@@ -21,11 +21,13 @@ import com.add.vpn.AdManager;
 import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
+import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseApp;
 
 public class DataFragment extends Fragment {
 
@@ -79,6 +81,7 @@ public class DataFragment extends Fragment {
             AlarmSound alarmSound = ModelService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
         });
+        new RealtimeDatabase(this.fragmentActivity,dataAdapter);
     }
 
     @Override
