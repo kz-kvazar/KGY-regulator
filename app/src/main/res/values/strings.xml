@@ -8,6 +8,14 @@
     <string name="gas_Flow">Расход ГВС: %s m3</string>
     <string name="max_power">Макс. мощность: %s kW</string>
     <string name="CH4">Концентрация СН4: %s %%</string>
+    <string name="kgy_pressure">Давление перед КГУ: %s kPa</string>
+    <string name="gts_pressure">Давление перед GTS: %s kPa</string>
+    <string name="VNS_2">СН4 ВНС-№2: %s %%</string>
+    <string name="VNS_1">СН4 ВНС-№1: %s %%</string>
+    <string name="month_generated">Генерация за месяц: %s MW</string>
+
+
+
 
 
     <string name="alarmEnable">Сигнал при ошибках связи</string>
@@ -53,6 +61,8 @@
     <string name="KGY_error_title">Ошибка КГУ</string>
     <string name="KGY_error_msg">Обнаружена ошибка КГУ требующая вашего внимания</string>
     <string name="time_period">Временной период:</string>
+
+
 
     <string-array name="time_period">
         <item>Сегодня</item>

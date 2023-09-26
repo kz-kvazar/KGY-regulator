@@ -45,7 +45,9 @@ public class DataFragment extends Fragment {
 
         fragmentActivity = requireActivity();
 
-        dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
+        //dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
+        dataAdapter = new DataAdapter(ModelService.dataListLiveData.getValue());
+
 
         dataAdapter.setOnItemClickListener(position -> {
             if (position == 4) {
@@ -81,7 +83,15 @@ public class DataFragment extends Fragment {
             AlarmSound alarmSound = ModelService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
         });
-        new RealtimeDatabase(this.fragmentActivity,dataAdapter);
+
+        RealtimeDatabase realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
+        ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                realtimeDatabase.disconnect();
+            } else {
+                realtimeDatabase.connect();
+            }
+        });
     }
 
     @Override

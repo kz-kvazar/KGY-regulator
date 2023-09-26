@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseApp.initializeApp(getApplicationContext());
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new DataFragment());

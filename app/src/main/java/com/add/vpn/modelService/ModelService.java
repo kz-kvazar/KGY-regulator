@@ -24,7 +24,9 @@ public class ModelService extends Service {
     public static AlarmSound alarmSound;
 
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
-    public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<>());
+    public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
+        add("Loading... Please wait.");
+    }});
     public static final MutableLiveData<LinkedList<String>> logListLiveData = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<Boolean> enableAlarm = new MutableLiveData<>(Boolean.FALSE);
 
