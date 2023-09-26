@@ -1,4 +1,5 @@
 package com.add.vpn.adapters;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,12 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     private List<String> stringList;
     private OnItemClickListener listener;
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
-    }
-
     public DataAdapter(List<String> stringList) {
         this.stringList = stringList;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -43,11 +44,14 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-       stringList = ModelService.dataListLiveData.getValue();
+        stringList = ModelService.dataListLiveData.getValue();
         if (stringList != null) {
             return stringList.size();
-        }
-        else return 0;
+        } else return 0;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -57,9 +61,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             super(itemView);
             textView = itemView.findViewById(R.id.itemDataView);
         }
-    }
-    public interface OnItemClickListener {
-        void onItemClick(int position);
     }
 }
 
