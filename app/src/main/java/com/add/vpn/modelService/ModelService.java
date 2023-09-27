@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.R;
+import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ public class ModelService extends Service {
     }});
     public static final MutableLiveData<LinkedList<String>> logListLiveData = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<Boolean> enableAlarm = new MutableLiveData<>(Boolean.FALSE);
+    private Thread wrightToFirebase;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -38,21 +40,38 @@ public class ModelService extends Service {
         if (action.equals(START) && Boolean.FALSE.equals(value)) {
             running.postValue(Boolean.TRUE);
 
-            thread = new ModelThread(dataListLiveData,
-                    logListLiveData,
-                    getApplicationContext(),
-                    notificationHelper,
-                    alarmSound,
-                    enableAlarm);
-
-            thread.start();
+//            thread = new ModelThread(dataListLiveData,
+//                    logListLiveData,
+//                    getApplicationContext(),
+//                    notificationHelper,
+//                    alarmSound,
+//                    enableAlarm);
+//
+//            thread.start();
+            RealtimeDatabase realtimeDatabase = new RealtimeDatabase(getApplicationContext());
+            realtimeDatabase.connect();
+            wrightToFirebase = new Thread(() -> {
+                boolean run = true;
+                while (run) {
+                    realtimeDatabase.wrightUnixTime();
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ignored) {
+                        run = false;
+                    }
+                }
+            });
+            wrightToFirebase.start();
 
         } else if (action.equals(STOP)) {
             running.setValue(Boolean.FALSE);
 
-            if (thread != null) {
-                thread.interrupt();
-                thread.setInterrupt();
+//            if (thread != null) {
+//                thread.interrupt();
+//                thread.setInterrupt();
+//            }
+            if (wrightToFirebase != null){
+                wrightToFirebase.interrupt();
             }
             stopSelf(startId);
         } else if (action.equals(SOUND_OFF)) {

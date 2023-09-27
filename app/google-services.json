@@ -13,7 +13,20 @@
           "package_name": "com.add.vpn"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "569959857857-gm67fdat5fsh66i3u4ilm04tshdupe05.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.add.vpn",
+            "certificate_hash": "df9ed36d5e7a16ad43077f52cca2213f8c21747a"
+          }
+        },
+        {
+          "client_id": "569959857857-gmlc53n86pcrji3gfp57blqiiki41lm5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD6xWy5PemAaKZLViXEsfKixggn4p1svZ8"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569959857857-gmlc53n86pcrji3gfp57blqiiki41lm5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

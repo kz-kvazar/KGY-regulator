@@ -61,7 +61,9 @@
     <string name="KGY_error_title">Ошибка КГУ</string>
     <string name="KGY_error_msg">Обнаружена ошибка КГУ требующая вашего внимания</string>
     <string name="time_period">Временной период:</string>
-
+    <string name="web_client_id">569959857857-gmlc53n86pcrji3gfp57blqiiki41lm5.apps.googleusercontent.com</string>
+    <string name="google_sign_in_failed">Ошибка аутентификации. \nРегулирование невозможно!!!</string>
+    <string name="denied_message">Доступ заблокирован не авторизированным пользователям. Регулирование невозможно.</string>
 
 
     <string-array name="time_period">

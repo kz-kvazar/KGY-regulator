@@ -1,23 +1,27 @@
 package com.add.vpn.firebase;
 
 
+import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import com.add.vpn.R;
 import com.add.vpn.holders.DataHolder;
 import com.add.vpn.modelService.ModelService;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RealtimeDatabase {
-    private final FragmentActivity context;
+    private final Context context;
     ValueEventListener eventListener;
     DatabaseReference databaseReference;
 
-    public RealtimeDatabase(FragmentActivity context) {
+    public RealtimeDatabase(Context context) {
         this.context = context;
         FirebaseApp.initializeApp(context.getApplicationContext());
     }
@@ -56,6 +60,20 @@ public class RealtimeDatabase {
             }
         };
         databaseReference.addValueEventListener(eventListener);
+    }
+    public void wrightUnixTime(){
+        // Write Unix time to the database root
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+       // DatabaseReference myRef = database.getReference(); // Получаем корневой узел базы данных
+        databaseReference.child("UnixTime").setValue(new Date().getTime()/1000).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                //
+            }
+        });
+//        myRef.child("UnixTime").setValue(new Date().getTime()/1000).addOnFailureListener(e -> {
+//
+//        }); // Записываем Unix-время в узел "UnixTime" в корне
     }
 
     public void disconnect() {

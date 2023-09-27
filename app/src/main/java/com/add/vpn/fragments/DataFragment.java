@@ -39,6 +39,7 @@ public class DataFragment extends Fragment {
     private Button btnSoundOff;
     private FragmentActivity fragmentActivity;
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -87,7 +88,7 @@ public class DataFragment extends Fragment {
         RealtimeDatabase realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
         ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
-                realtimeDatabase.disconnect();
+                //realtimeDatabase.disconnect();
             } else {
                 realtimeDatabase.connect();
             }
