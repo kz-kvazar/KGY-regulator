@@ -18,7 +18,7 @@
         android:orderInCategory="100"
         android:title="@string/alarmEnable"
         app:showAsAction="never"
-            android:visible="false"/>
+        android:visible="false"/>
     <item
         android:id="@+id/max_power"
         android:checkable="false"
@@ -26,5 +26,6 @@
         android:enabled="true"
         android:orderInCategory="200"
         android:title="@string/max_power"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:visible="false"/>
 </menu>

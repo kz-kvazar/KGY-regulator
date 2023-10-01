@@ -1,5 +1,6 @@
 package com.add.vpn.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,12 +26,20 @@ import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.firebase.RealtimeDatabase;
-import com.add.vpn.holders.DataHolder;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class DataFragment extends Fragment {
 
@@ -38,6 +50,9 @@ public class DataFragment extends Fragment {
     private AdManager adManager;
     private Button btnSoundOff;
     private FragmentActivity fragmentActivity;
+    private FirebaseAuth mAuth;
+    private RealtimeDatabase realtimeDatabase;
+    private String operator = "";
 
 
     @Override
@@ -48,15 +63,6 @@ public class DataFragment extends Fragment {
 
         //dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
         dataAdapter = new DataAdapter(ModelService.dataListLiveData.getValue());
-
-
-        dataAdapter.setOnItemClickListener(position -> {
-            if (position == 4) {
-                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-                numberPickerDialog.setOnNumberSetListener(DataHolder::setMaxPower);
-                numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
-            }
-        });
 
         dataList.setAdapter(dataAdapter);
         dataList.setLayoutManager(new LinearLayoutManager(fragmentActivity));
@@ -74,8 +80,6 @@ public class DataFragment extends Fragment {
             adManager = new AdManager(fragmentActivity);
             adManager.loadBannerAd();
             adManager.loadInterstitialAd();
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
         });
 
         btnOnOff.setOnClickListener(v -> startRegulate());
@@ -85,12 +89,64 @@ public class DataFragment extends Fragment {
             if (alarmSound != null) alarmSound.alarmStop();
         });
 
-        RealtimeDatabase realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
-        ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
-                //realtimeDatabase.disconnect();
+        realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
+        realtimeDatabase.connect();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.web_client_id)).requestEmail().build();
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+        mAuth = FirebaseAuth.getInstance();
+
+        // Google Sign In was successful, authenticate with Firebase
+        // Обработка ошибки аутентификации
+        ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    try {
+                        // Google Sign In was successful, authenticate with Firebase
+                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                        firebaseAuthWithGoogle(account.getIdToken());
+                    } catch (ApiException e) {
+                        // Обработка ошибки аутентификации
+                        Toast.makeText(fragmentActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            signInLauncher.launch(signInIntent);
+        } else {
+            operator = ": " + currentUser.getDisplayName();
+            accessGranted();
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(fragmentActivity, task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                operator = user != null ? " " + user.getDisplayName() : "";
+                accessGranted();
             } else {
-                realtimeDatabase.connect();
+                Toast.makeText(fragmentActivity, getString(R.string.google_sign_in_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void accessGranted() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
+        onResume();
+
+        dataAdapter.setOnItemClickListener(position -> {
+            if (position == 4) {
+                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+                numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+                numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
             }
         });
     }
@@ -100,7 +156,7 @@ public class DataFragment extends Fragment {
         super.onResume();
         AppCompatActivity activity = (AppCompatActivity) fragmentActivity;
         if (activity != null && activity.getSupportActionBar() != null) {
-            activity.getSupportActionBar().setTitle(R.string.app_name);
+            activity.getSupportActionBar().setTitle(getString(R.string.app_name) + operator);
         }
     }
 

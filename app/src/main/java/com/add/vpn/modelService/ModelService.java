@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
@@ -74,7 +75,7 @@ public class ModelService extends Service {
                 wrightToFirebase.interrupt();
             }
             stopSelf(startId);
-        } else if (action.equals(SOUND_OFF)) {
+        } else if (action.equals(SOUND_OFF) && alarmSound != null) {
             alarmSound.alarmStop();
         }
         return START_REDELIVER_INTENT;
@@ -92,7 +93,6 @@ public class ModelService extends Service {
         } else {
             startForeground(888, notificationHelper.serviceNotification());
         }
-
     }
 
     @Nullable
@@ -112,8 +112,13 @@ public class ModelService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         notificationHelper.showNotification(getString(R.string.app_name), getString(R.string.backgrounded_message));
-        thread.interrupt();
-        thread.setInterrupt();
+        if (thread != null){
+            thread.interrupt();
+            thread.setInterrupt();
+        }
+        if (wrightToFirebase != null){
+            wrightToFirebase.interrupt();
+        }
         running.postValue(false);
         stopSelf();
     }

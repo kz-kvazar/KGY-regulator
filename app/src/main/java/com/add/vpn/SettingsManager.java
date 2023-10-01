@@ -15,7 +15,7 @@ public class SettingsManager {
 
     public static boolean getErrorSetting(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(KEY_ERROR, false); // Значение по умолчанию false
+        return sharedPreferences.getBoolean(KEY_ERROR, true); // Значение по умолчанию false
     }
 
     public static void setAlarmSetting(Context context, boolean value) {
