@@ -197,7 +197,7 @@ public class DataFragment extends Fragment {
     @Override
     public void onStop() {
         adManager.release();
-        //serviceIntent(ModelService.STOP);
+        serviceIntent(ModelService.STOP);
         super.onStop();
     }
 }

@@ -62,8 +62,11 @@ public class RealtimeDatabase {
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                ModelService.dataListLiveData.postValue(DataHolder.toLis(context));
+                ModelService.dataListLiveData.postValue(new ArrayList<String>(){{
+                    add(context.getString(R.string.connection_error_message));
+                }});
             }
+
         };
         databaseReference.addValueEventListener(eventListener);
     }
