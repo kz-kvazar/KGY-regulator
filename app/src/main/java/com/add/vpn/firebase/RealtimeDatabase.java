@@ -43,14 +43,12 @@ public class RealtimeDatabase {
                 arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("gtsPresher").getValue(Double.class))));
                 arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("kgyPresher").getValue(Double.class))));
 
-
-
-                Long monthStartGenerated = dataSnapshot.child("monthStartGenerated").getValue(Long.class);
-                Long totalActivePower = dataSnapshot.child("totalActivePower").getValue(Long.class);
-
-                if (monthStartGenerated != null && totalActivePower != null) {
-                    arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
-                }
+//                Long monthStartGenerated = dataSnapshot.child("monthStartGenerated").getValue(Long.class);
+//                Long totalActivePower = dataSnapshot.child("totalActivePower").getValue(Long.class);
+//
+//                if (monthStartGenerated != null && totalActivePower != null) {
+//                    arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
+//                }
                 if (Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class))) {
                     if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
                         ModelService.alarmSound.alarmPlay();
