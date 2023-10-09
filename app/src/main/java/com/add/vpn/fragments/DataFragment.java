@@ -55,6 +55,7 @@ public class DataFragment extends Fragment {
     private RealtimeDatabase realtimeDatabase;
     private String operator = "";
     private PowerMeter pwrMetr;
+    private PowerMeter opPe;
 
 
     @Override
@@ -79,9 +80,10 @@ public class DataFragment extends Fragment {
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
             dataAdapter.notifyItemRangeChanged(0, 10);
             if (strings.size() > 2){
-            String power = strings.get(2);
-            String[] pwr = power.split(" ");
-            pwrMetr.setValueAnimated(Integer.parseInt(pwr[2]));
+            String[] pwr = strings.get(2).split(" ");
+            pwrMetr.setValueAnimated(Float.parseFloat(pwr[2]));
+            String[] opPr = strings.get(0).split(" ");
+            opPe.setValueAnimated(Float.parseFloat(opPr[3]));
             }
         });
 
@@ -176,6 +178,7 @@ public class DataFragment extends Fragment {
         btnOnOff = rootView.findViewById(R.id.on_off);
         btnSoundOff = rootView.findViewById(R.id.soundOff);
         pwrMetr = rootView.findViewById(R.id.wat);
+        opPe = rootView.findViewById(R.id.opMetr);
         return rootView;
     }
 
