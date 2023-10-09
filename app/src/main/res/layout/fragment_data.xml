@@ -9,18 +9,18 @@
         android:orientation="vertical"
         android:id="@+id/linearLayout">
 
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dataListView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:keepScreenOn="true"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/on_off"
+            app:layout_constraintBottom_toTopOf="@id/wat"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="1dp"
-            />
-
+            app:layout_constraintHorizontal_bias="1.0"/>
 
     <Button
             android:id="@+id/on_off"
@@ -49,7 +49,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/on_off"
+            app:layout_constraintTop_toBottomOf="@+id/wat"
+            android:layout_marginHorizontal="2dp"
+            />
+
+    <com.add.vpn.view.PowerMeter
+            android:id="@+id/wat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/soundOff"
             app:layout_constraintTop_toBottomOf="@+id/dataListView"
-            android:layout_marginHorizontal="2dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

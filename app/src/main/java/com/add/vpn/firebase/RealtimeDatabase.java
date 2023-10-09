@@ -90,7 +90,7 @@ public class RealtimeDatabase {
     }
 
     public void getReportList(){
-        new ValueEventListener() {
+        ValueEventListener reportListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 DataSnapshot hourReport = snapshot.child("HourReport");
@@ -106,7 +106,7 @@ public class RealtimeDatabase {
                         reportItem.setCH4_1(ch4_1);
                         Float ch4_2 = data.child("CH4_2").getValue(Float.class);
                         reportItem.setCH4_2(ch4_2);
-                        reportItem.setGasFlow(GasFlow.calculateGasFlow(ch4_1,ch4_2,powerActive));
+                        reportItem.setGasFlow(GasFlow.calculateGasFlow(ch4_1, ch4_2, powerActive));
                     }
                 }
             }
@@ -116,6 +116,7 @@ public class RealtimeDatabase {
 
             }
         };
+        databaseReference.addValueEventListener(reportListener);
     }
     public void disconnect() {
         databaseReference.removeEventListener(eventListener);
