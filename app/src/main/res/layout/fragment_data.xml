@@ -51,15 +51,38 @@
             app:layout_constraintStart_toEndOf="@id/on_off"
             app:layout_constraintTop_toBottomOf="@+id/wat"
             android:layout_marginHorizontal="2dp"
-            />
+            android:fontFamily="@font/metal_mania"/>
 
     <com.add.vpn.view.PowerMeter
             android:id="@+id/wat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@string/kw"
+            app:maxValue="1700"
+            app:value="0"
+            app:markRange="20"
+            app:markRangeText="200"
+            app:markRangeLong="100"
+            app:textColor="@color/white"
+            app:isInteger="true"
             app:layout_constraintBottom_toTopOf="@+id/soundOff"
             app:layout_constraintTop_toBottomOf="@+id/dataListView"
             app:layout_constraintStart_toStartOf="parent"
+            />
+
+    <com.add.vpn.view.PowerMeter
+            android:id="@+id/opMetr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/kPa"
+            app:textColor="@color/white"
+            app:maxValue="20"
+            app:value="0"
+            app:markRange="1"
+            app:markRangeText="2"
+            app:markRangeLong="2"
+            app:isInteger="false"
+            app:layout_constraintBottom_toBottomOf="@+id/wat"
             app:layout_constraintEnd_toEndOf="parent"/>
 
 

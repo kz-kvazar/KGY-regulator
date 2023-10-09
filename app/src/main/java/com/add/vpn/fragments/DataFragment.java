@@ -28,6 +28,7 @@ import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
+import com.add.vpn.view.PowerMeter;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -53,6 +54,7 @@ public class DataFragment extends Fragment {
     private FirebaseAuth mAuth;
     private RealtimeDatabase realtimeDatabase;
     private String operator = "";
+    private PowerMeter pwrMetr;
 
 
     @Override
@@ -74,7 +76,14 @@ public class DataFragment extends Fragment {
             regulate = aBoolean;
         });
 
-        ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> dataAdapter.notifyItemRangeChanged(0, 10));
+        ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
+            dataAdapter.notifyItemRangeChanged(0, 10);
+            if (strings.size() > 2){
+            String power = strings.get(2);
+            String[] pwr = power.split(" ");
+            pwrMetr.setValueAnimated(Integer.parseInt(pwr[2]));
+            }
+        });
 
         MobileAds.initialize(fragmentActivity, initializationStatus -> {
             adManager = new AdManager(fragmentActivity);
@@ -166,6 +175,7 @@ public class DataFragment extends Fragment {
         dataList = rootView.findViewById(R.id.dataListView);
         btnOnOff = rootView.findViewById(R.id.on_off);
         btnSoundOff = rootView.findViewById(R.id.soundOff);
+        pwrMetr = rootView.findViewById(R.id.wat);
         return rootView;
     }
 

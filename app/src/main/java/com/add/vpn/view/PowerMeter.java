@@ -2,6 +2,7 @@ package com.add.vpn.view;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.*;
 
 import android.os.*;
@@ -10,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.Nullable;
+import com.add.vpn.R;
 
 public class PowerMeter extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -26,20 +28,46 @@ public class PowerMeter extends View {
     private Paint rimPaint = new Paint();
     private Paint  rimCirclePaint = new Paint();
 
-    private int maxValue = 1700;
-    private int value = 1700;
+    private int maxValue = 20;
+    private float value = 0;
     private String text = "kW";
     private int colorBackground = Color.DKGRAY;
     private int textColor = Color.WHITE;
-    private int markRange = 200;
+    private int markRange = 2;
+    private int markRangeText = 1;
+    private int markRangeLong = 10;
+    private boolean isInteger = false;
 
     public PowerMeter(Context context) {
         super(context);
+
     }
     public PowerMeter(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        init(context,attrs);
     }
+    private void init(Context context, AttributeSet attrs) {
+        if (attrs != null) {
+            try {
+                TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PowerMeter);
+                CharSequence chars = a.getText(R.styleable.PowerMeter_android_text);
+                text = chars != null ? chars.toString() : "km/h";
+
+                maxValue = a.getInt(R.styleable.PowerMeter_maxValue, 1700);
+                value = a.getInt(R.styleable.PowerMeter_value, 800);
+                markRange = a.getInt(R.styleable.PowerMeter_markRange, 20);
+                markRangeText = a.getInt(R.styleable.PowerMeter_markRangeText, 200);
+                markRangeLong = a.getInt(R.styleable.PowerMeter_markRangeLong, 100);
+                colorBackground = a.getColor(R.styleable.PowerMeter_colorBackground, Color.DKGRAY);
+                textColor = a.getColor(R.styleable.PowerMeter_textColor, Color.WHITE);
+                isInteger = a.getBoolean(R.styleable.PowerMeter_isInteger, false);
+                a.recycle();
+            } catch (Exception ignored) {
+
+            }
+        }
+    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -113,12 +141,12 @@ public class PowerMeter extends View {
         float textPadding = 0.8f;
 
         double step = 1.5 * Math.PI / maxValue; // Изменено значение шага
-        for (int i = 0; i <= maxValue; i += markRange/10) {
+        for (int i = 0; i <= maxValue; i += markRange) {
             float x1 = (float) Math.cos(Math.PI * 1.25 - step * i); // Изменено на полный круг
             float y1 = (float) Math.sin(Math.PI * 1.25 - step * i); // Изменено на полный круг
             float x2;
             float y2;
-            if (i % (markRange/2) == 0) {
+            if (i % markRangeLong == 0) {
                 x2 = x1 * scale * longScale;
                 y2 = y1 * scale * longScale;
             } else {
@@ -143,7 +171,7 @@ public class PowerMeter extends View {
 
         float factor = height * scale * longScale * textPadding;
 
-        for (int i = 0; i <= maxValue; i += markRange) {
+        for (int i = 0; i <= maxValue; i += markRangeText) {
             float x = (float) Math.cos(Math.PI * 1.25 - step*i) * factor;
             float y = (float) Math.sin(Math.PI * 1.25 - step*i) * factor;
             String text = Integer.toString(i);
@@ -151,7 +179,9 @@ public class PowerMeter extends View {
             canvas.drawText(Integer.toString(i), x  - (float) textLen / 2, height - y, paint);
         }
         paint.setTextSize(height/3);
-        canvas.drawText(String.valueOf(value), -paint.measureText(String.valueOf(value)) /2 , height + height * 0.65f, paint);
+
+        String valueText = isInteger ? String.valueOf((int) Math.round(value * 10) / 10) : String.valueOf((float) Math.round(value * 10) / 10);
+        canvas.drawText(valueText, -paint.measureText(valueText) /2 , height + height * 0.65f, paint);
         paint.setTextSize(height/5);
         canvas.drawText(String.valueOf(text), -paint.measureText(String.valueOf(text)) /2 , height + height * 0.85f, paint);
 
@@ -229,19 +259,20 @@ public class PowerMeter extends View {
         invalidate();
     }
 
-    private void setValue(int value) {
+    private void setValue(float value) {
         this.value = Math.min(value, maxValue);
         invalidate();
         //setValueAnimated(value);
     }
 
     ObjectAnimator objectAnimator;
-    public void setValueAnimated(int value) {
+    public void setValueAnimated(float value) {
         if (objectAnimator != null) {
             objectAnimator.cancel();
         }
-        objectAnimator = ObjectAnimator.ofInt(this, "value", this.value, value);
-        objectAnimator.setDuration(100 + Math.abs(this.value - value) * 5L);
+        objectAnimator = ObjectAnimator.ofFloat(this, "value", this.value, value);
+        //objectAnimator.setDuration(100 + Math.abs(this.value - value) * 5L);
+        objectAnimator.setDuration(1000);
         objectAnimator.setInterpolator(new DecelerateInterpolator());
         objectAnimator.start();
     }
@@ -250,7 +281,7 @@ public class PowerMeter extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                int newValue = getTouchValue(event.getX(), event.getY());
+                float newValue = getTouchValue(event.getX(), event.getY());
                 setValueAnimated(newValue);
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -263,7 +294,7 @@ public class PowerMeter extends View {
 
     }
 
-    private int getTouchValue(float x, float y) {
+    private float getTouchValue(float x, float y) {
         if (x != 0 && y != 0) {
             float startX = (float) getWidth() / 2;
             float startY = getHeight();
@@ -273,7 +304,7 @@ public class PowerMeter extends View {
 
             float angle = (float) Math.acos(dirX / Math.sqrt(dirX * dirX + dirY * dirY));
 
-            return Math.round(maxValue * (angle / (float) Math.PI));
+            return (float) Math.round((maxValue * (angle / (float) Math.PI)) * 10) /10;
         } else {
             return value;
         }
@@ -296,7 +327,7 @@ public class PowerMeter extends View {
 
     private static class SavedState extends BaseSavedState {
 
-        int value;
+        float value;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -310,7 +341,7 @@ public class PowerMeter extends View {
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeInt(value);
+            out.writeFloat(value);
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR

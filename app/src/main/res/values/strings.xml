@@ -64,6 +64,8 @@
     <string name="web_client_id">569959857857-gmlc53n86pcrji3gfp57blqiiki41lm5.apps.googleusercontent.com</string>
     <string name="google_sign_in_failed">Ошибка аутентификации. \nРегулирование невозможно!!!</string>
     <string name="denied_message">Доступ заблокирован не авторизированным пользователям. Регулирование невозможно.</string>
+    <string name="kw">kW</string>
+    <string name="kPa">kPa</string>
 
 
     <string-array name="time_period">
