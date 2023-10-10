@@ -25,8 +25,8 @@ public class PowerMeter extends View {
             Color.rgb(0x95, 0x95, 0x95),
             Color.rgb(0xb0, 0xb5, 0xb0),
             Shader.TileMode.CLAMP);
-    private Paint rimPaint = new Paint();
-    private Paint  rimCirclePaint = new Paint();
+    private Paint rimPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private Paint  rimCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private int maxValue = 20;
     private float value = 0;
