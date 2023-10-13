@@ -78,7 +78,7 @@ public class DataFragment extends Fragment {
         });
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
-            dataAdapter.notifyItemRangeChanged(0, 10);
+            dataAdapter.notifyItemRangeChanged(0, 20);
             if (strings.size() > 2){
             String[] pwr = strings.get(2).split(" ");
             pwrMetr.setValueAnimated(Float.parseFloat(pwr[2]));
@@ -210,7 +210,7 @@ public class DataFragment extends Fragment {
     @Override
     public void onStop() {
         adManager.release();
-        serviceIntent(ModelService.STOP);
+        //serviceIntent(ModelService.STOP);
         super.onStop();
     }
 }

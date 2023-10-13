@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new DataFragment());
-        //fragments.add(new LogFragment());
+        fragments.add(new LogFragment());
         //fragments.add(new ReportFragment());
 
         viewPager2 = findViewById(R.id.pager);
