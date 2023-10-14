@@ -1,7 +1,7 @@
 package com.add.vpn;
 
 public class GasFlow {
-    public static float calculateGasFlow(float CH4_1, float CH4_2, int power) {
+    public static float calculateGasFlow(Float CH4_1, Float CH4_2, Integer power) {
         float concentration = 0;
         if(CH4_1 > 0 && CH4_2 > 0) {
             concentration = (CH4_1 + CH4_2)/2;

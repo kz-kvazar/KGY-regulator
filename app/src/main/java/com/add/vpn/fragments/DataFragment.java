@@ -19,16 +19,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.AdManager;
 import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
+import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
-import com.add.vpn.view.PowerMeter;
+import com.add.vpn.view.AnalogView;
+import com.add.vpn.view.ChartView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -42,6 +45,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Collections;
+import java.util.LinkedList;
+
 public class DataFragment extends Fragment {
 
     private RecyclerView dataList;
@@ -54,8 +60,9 @@ public class DataFragment extends Fragment {
     private FirebaseAuth mAuth;
     private RealtimeDatabase realtimeDatabase;
     private String operator = "";
-    private PowerMeter pwrMetr;
-    private PowerMeter opPe;
+    private AnalogView pwrMetr;
+    private AnalogView opPe;
+    private ChartView ch4;
 
 
     @Override
@@ -133,6 +140,8 @@ public class DataFragment extends Fragment {
             operator = ": " + currentUser.getDisplayName();
             accessGranted();
         }
+        realtimeDatabase.getReportList();
+
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
@@ -179,6 +188,7 @@ public class DataFragment extends Fragment {
         btnSoundOff = rootView.findViewById(R.id.soundOff);
         pwrMetr = rootView.findViewById(R.id.wat);
         opPe = rootView.findViewById(R.id.opMetr);
+        //ch4 = rootView.findViewById(R.id.chart);
         return rootView;
     }
 

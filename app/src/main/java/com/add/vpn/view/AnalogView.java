@@ -13,7 +13,7 @@ import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.Nullable;
 import com.add.vpn.R;
 
-public class PowerMeter extends View {
+public class AnalogView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final int[] colors = {Color.GREEN, Color.YELLOW, Color.RED, Color.GREEN};
@@ -38,11 +38,11 @@ public class PowerMeter extends View {
     private int markRangeLong = 10;
     private boolean isInteger = false;
 
-    public PowerMeter(Context context) {
+    public AnalogView(Context context) {
         super(context);
 
     }
-    public PowerMeter(Context context, AttributeSet attrs) {
+    public AnalogView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context,attrs);
     }
