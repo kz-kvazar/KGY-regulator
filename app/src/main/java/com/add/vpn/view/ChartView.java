@@ -154,7 +154,7 @@ public class ChartView extends View {
         canvas.drawText(timeUnit, (float) (width-1.2*timeUnitWidth),height - (startPoint / 4),paint);
 
         // Рисуем линии тренда
-        paint.setShadowLayer(radius, 3*radius,radius,Color.GRAY);
+        paint.setShadowLayer(radius, radius,radius,Color.GRAY);
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(radius);

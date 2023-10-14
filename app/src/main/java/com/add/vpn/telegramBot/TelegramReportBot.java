@@ -1,7 +1,6 @@
 package com.add.vpn.telegramBot;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.add.vpn.roomDB.DatabaseManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,11 +12,6 @@ public class TelegramReportBot {
     private static final String BOT_TOKEN = "6604238506:AAE6ckDJVAkjN00sq1NMHzTXVMldnKyuq7A";
     private static final String BASE_URL = "https://api.telegram.org/bot" + BOT_TOKEN + "/";
     private static final String CHAT_ID = "-1001981116655";
-
-    public TelegramReportBot(AppCompatActivity activity) {
-        DatabaseManager.getInstance(activity).reportDao().getLastLiveData().observe(activity, reportItem ->
-                sendTextMessage(reportItem.toString()));
-    }
 
     public void sendTextMessage(String text) {
         new Thread(() -> {

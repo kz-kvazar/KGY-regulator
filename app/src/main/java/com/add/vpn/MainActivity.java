@@ -11,8 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.add.vpn.adapters.ViewPagerAdapter;
 import com.add.vpn.fragments.DataFragment;
 import com.add.vpn.fragments.LogFragment;
-import com.add.vpn.fragments.ReportFragment;
-import com.add.vpn.holders.DataHolder;
+
 import com.add.vpn.modelService.ModelService;
 
 import java.util.ArrayList;

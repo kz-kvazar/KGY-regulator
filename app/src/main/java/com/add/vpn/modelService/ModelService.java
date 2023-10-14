@@ -23,7 +23,7 @@ public class ModelService extends Service {
     public static final String STOP = "STOP";
     public static final String START = "START";
 
-    private ModelThread thread;
+    //private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
 
@@ -122,10 +122,10 @@ public class ModelService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         notificationHelper.showNotification(getString(R.string.app_name), getString(R.string.backgrounded_message));
-        if (thread != null){
-            thread.interrupt();
-            thread.setInterrupt();
-        }
+//        if (thread != null){
+//            thread.interrupt();
+//            thread.setInterrupt();
+//        }
         if (wrightToFirebase != null){
             wrightToFirebase.interrupt();
         }

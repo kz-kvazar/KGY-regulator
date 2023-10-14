@@ -48,9 +48,9 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
-    implementation "androidx.room:room-runtime:2.5.2"
-    annotationProcessor "androidx.room:room-compiler:2.5.2"
-    implementation "androidx.room:room-guava:2.5.2"
+//    implementation "androidx.room:room-runtime:2.5.2"
+//    annotationProcessor "androidx.room:room-compiler:2.5.2"
+//    implementation "androidx.room:room-guava:2.5.2"
 
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:32.3.1')
