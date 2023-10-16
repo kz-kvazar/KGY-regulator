@@ -7,7 +7,6 @@ import android.graphics.*;
 
 import android.os.*;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.Nullable;
@@ -21,12 +20,12 @@ public class AnalogView extends View {
     private final SweepGradient gradient = new SweepGradient(0, 0, colors, positions);
     private final RectF oval = new RectF(-1, -1, 1, 1);
     private final PorterDuffXfermode porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
-    private LinearGradient rimGradient = new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f,
+    private final LinearGradient rimGradient = new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f,
             Color.rgb(0x95, 0x95, 0x95),
             Color.rgb(0xb0, 0xb5, 0xb0),
             Shader.TileMode.CLAMP);
-    private Paint rimPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint  rimCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint rimPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint  rimCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private int maxValue = 20;
     private float value = 0;
@@ -182,7 +181,7 @@ public class AnalogView extends View {
         }
         paint.setTextSize(height/3);
 
-        String valueText = isInteger ? String.valueOf((int) Math.round(value * 10) / 10) : String.valueOf((float) Math.round(value * 10) / 10);
+        String valueText = isInteger ? String.valueOf( Math.round(value * 10) / 10) : String.valueOf((float) Math.round(value * 10) / 10);
         canvas.drawText(valueText, -paint.measureText(valueText) /2 , height + height * 0.65f, paint);
         paint.setTextSize(height/5);
         canvas.drawText(String.valueOf(text), -paint.measureText(String.valueOf(text)) /2 , height + height * 0.85f, paint);

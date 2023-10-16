@@ -19,19 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.AdManager;
 import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
-import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
 import com.add.vpn.view.AnalogView;
-import com.add.vpn.view.ChartView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -45,9 +42,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.Collections;
-import java.util.LinkedList;
-
 public class DataFragment extends Fragment {
 
     private RecyclerView dataList;
@@ -60,9 +54,8 @@ public class DataFragment extends Fragment {
     private FirebaseAuth mAuth;
     private RealtimeDatabase realtimeDatabase;
     private String operator = "";
-    private AnalogView pwrMetr;
+    private AnalogView parMeter;
     private AnalogView opPe;
-    private ChartView ch4;
 
 
     @Override
@@ -83,20 +76,17 @@ public class DataFragment extends Fragment {
             } else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
         });
-        pwrMetr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-                numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
-                numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
-            }
+        parMeter.setOnClickListener(view1 -> {
+            NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+            numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+            numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
         });
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
             dataAdapter.notifyItemRangeChanged(0, 20);
             if (strings.size() > 2){
             String[] pwr = strings.get(2).split(" ");
-            pwrMetr.setValueAnimated(Float.parseFloat(pwr[2]));
+            parMeter.setValueAnimated(Float.parseFloat(pwr[2]));
             String[] opPr = strings.get(0).split(" ");
             opPe.setValueAnimated(Float.parseFloat(opPr[3]));
             }
@@ -193,7 +183,7 @@ public class DataFragment extends Fragment {
         dataList = rootView.findViewById(R.id.dataListView);
         btnOnOff = rootView.findViewById(R.id.on_off);
         btnSoundOff = rootView.findViewById(R.id.soundOff);
-        pwrMetr = rootView.findViewById(R.id.wat);
+        parMeter = rootView.findViewById(R.id.wat);
         opPe = rootView.findViewById(R.id.opMetr);
         //ch4 = rootView.findViewById(R.id.chart);
         return rootView;
