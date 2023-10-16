@@ -104,7 +104,6 @@ public class RealtimeDatabase {
                 LinkedList<FBreportItem> reportList = new LinkedList<>();
                 int i = 0;
                 for (DataSnapshot item : children) {
-                    Log.println(Log.DEBUG,"DATABASE","count = " + i++);
                     String date = item.child("date").getValue(String.class);
                     Integer powerActive = item.child("powerActive").getValue(Integer.class);
                     Float ch4_1 = item.child("CH4_1").getValue(Float.class);

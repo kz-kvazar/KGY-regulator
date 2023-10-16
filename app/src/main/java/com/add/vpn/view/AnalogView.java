@@ -105,24 +105,26 @@ public class AnalogView extends View {
         canvas.translate(centerX, centerY); // Переносим центр круга
         canvas.scale(minScale, minScale);
 
+        circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.FILL);
-
+        circlePaint.setStrokeWidth(0);
 
         // Устанавливаем градиентный шейдер для круга
         circlePaint.setShader(gradient);
-        paint.setXfermode(porterDuffXfermode);
+        circlePaint.setXfermode(porterDuffXfermode);
 
         // Рисуем верхние 270 градусов с градиентом
         canvas.drawArc(oval, -45, 270, true, circlePaint);
 
         // Возвращаем обычный режим рисования
-        paint.setXfermode(null);
+        circlePaint.setXfermode(null);
 
+        circlePaint.setColor(colorBackground);
         paint.setColor(colorBackground);
 
         canvas.drawArc(oval, -135, 90, true, paint);
 
-
+        paint.setColor(colorBackground);
         canvas.drawCircle(0, 0, 0.75f, paint);
 
         paint.setColor(Color.BLACK);
