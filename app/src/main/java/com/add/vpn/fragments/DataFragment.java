@@ -140,7 +140,6 @@ public class DataFragment extends Fragment {
             operator = ": " + currentUser.getDisplayName();
             accessGranted();
         }
-        realtimeDatabase.getReportList();
 
     }
 

@@ -4,9 +4,11 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import com.add.vpn.GasFlow;
+import com.add.vpn.UtilCalculation;
 import com.add.vpn.R;
 import com.add.vpn.modelService.ModelService;
 import com.google.firebase.FirebaseApp;
@@ -20,15 +22,15 @@ import java.util.LinkedList;
 public class RealtimeDatabase {
     private final Context context;
     ValueEventListener eventListener;
+    ValueEventListener reportListener;
     DatabaseReference databaseReference;
 
     public RealtimeDatabase(Context context) {
         this.context = context;
         FirebaseApp.initializeApp(context.getApplicationContext());
-    }
-
-    public void connect() {
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://kgy-regulator-default-rtdb.europe-west1.firebasedatabase.app/");
+    }
+     public void connect() {
         eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -90,31 +92,34 @@ public class RealtimeDatabase {
         databaseReference.child("MaxPower").setValue(maxPower);
     }
 
-    public void getReportList() {
+    public void getReportList(int hours) {
         DatabaseReference hourReport = databaseReference.child("HourReport");
-        Query query = hourReport.orderByKey().limitToLast(24); // Здесь устанавливается количество элементов (последних 50)
+        Query query = hourReport.orderByKey().limitToLast(hours); // Здесь устанавливается количество элементов (последних 50)
+        if(reportListener != null) query.removeEventListener(reportListener);
 
-        ValueEventListener reportListener = new ValueEventListener() {
+        reportListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 LinkedList<FBreportItem> reportList = new LinkedList<>();
+                int i = 0;
                 for (DataSnapshot item : children) {
-                    String key = item.getKey();
+                    Log.println(Log.DEBUG,"DATABASE","count = " + i++);
                     String date = item.child("date").getValue(String.class);
-                    FBreportItem reportItem = new FBreportItem(date);
                     Integer powerActive = item.child("powerActive").getValue(Integer.class);
-                    reportItem.setPowerActive(powerActive);
                     Float ch4_1 = item.child("CH4_1").getValue(Float.class);
-                    reportItem.setCH4_1(ch4_1);
                     Float ch4_2 = item.child("CH4_2").getValue(Float.class);
-                    reportItem.setCH4_2(ch4_2);
-                    if (ch4_1 != null && ch4_2 != null && powerActive != null){
-                        reportItem.setGasFlow(GasFlow.calculateGasFlow(ch4_1, ch4_2, powerActive));
+
+                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null){
+                        FBreportItem reportItem = new FBreportItem(date);
+                        reportItem.setPowerActive(powerActive);
+                        reportItem.setCH4_1(ch4_1);
+                        reportItem.setCH4_2(ch4_2);
+                        reportItem.setGasFlow(UtilCalculation.calculateGasFlow(ch4_1, ch4_2, powerActive));
                         reportList.add(reportItem);
                     }
                 }
-                ModelService.ch4List.setValue(reportList);
+                ModelService.reportList.setValue(reportList);
             }
 
             @Override

@@ -13,6 +13,7 @@ import com.add.vpn.fragments.DataFragment;
 import com.add.vpn.fragments.LogFragment;
 
 import com.add.vpn.modelService.ModelService;
+import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.List;

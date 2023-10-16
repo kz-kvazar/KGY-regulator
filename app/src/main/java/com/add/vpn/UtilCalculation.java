@@ -1,6 +1,6 @@
 package com.add.vpn;
 
-public class GasFlow {
+public class UtilCalculation {
     public static float calculateGasFlow(Float CH4_1, Float CH4_2, Integer power) {
         float concentration = 0;
         if(CH4_1 > 0 && CH4_2 > 0) {
@@ -28,5 +28,18 @@ public class GasFlow {
 
             return Math.round(interpolatedFlow * 10.0f) / 10.0f;
         } else return 0;
+    }
+    public static float averageConcentration(Float ch41, Float ch42){
+        float result = 0f;
+        if (ch41 == null && ch42 == null){
+            result = 0f;
+        } else if (ch41 == null || ((ch41 > 100 || ch41 < 0) && ch42 < 100 && ch42 > 0)) {
+            result = ch42;
+        } else if (ch42 == null || ((ch42 > 100 || ch42 < 0) && ch41 < 100 && ch41 > 0)) {
+            result = ch41;
+        } else if (ch42 < 100 && ch42 > 0 && ch41 < 100 && ch41 > 0) {
+            result = (ch41 + ch42)/2;
+        }
+        return result - 4f;
     }
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
@@ -14,7 +13,6 @@ import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class ModelService extends Service {
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
         add("Loading... Please wait.");
     }});
-    public static final MutableLiveData<LinkedList<FBreportItem>> ch4List = new MutableLiveData<>(new LinkedList<FBreportItem>(){{
+    public static final MutableLiveData<LinkedList<FBreportItem>> reportList = new MutableLiveData<>(new LinkedList<FBreportItem>(){{
 //        FBreportItem fBreportItem = new FBreportItem(String.valueOf(new Date().getTime() / 1000));
 //        fBreportItem.setCH4_1(10f);
 //        fBreportItem.setCH4_2(20f);

@@ -49,18 +49,18 @@ public class AnalogView extends View {
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             try {
-                TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PowerMeter);
-                CharSequence chars = a.getText(R.styleable.PowerMeter_android_text);
+                TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AnalogView);
+                CharSequence chars = a.getText(R.styleable.AnalogView_android_text);
                 text = chars != null ? chars.toString() : "km/h";
 
-                maxValue = a.getInt(R.styleable.PowerMeter_maxValue, 1700);
-                value = a.getInt(R.styleable.PowerMeter_value, 800);
-                markRange = a.getInt(R.styleable.PowerMeter_markRange, 20);
-                markRangeText = a.getInt(R.styleable.PowerMeter_markRangeText, 200);
-                markRangeLong = a.getInt(R.styleable.PowerMeter_markRangeLong, 100);
-                colorBackground = a.getColor(R.styleable.PowerMeter_colorBackground, Color.DKGRAY);
-                textColor = a.getColor(R.styleable.PowerMeter_textColor, Color.WHITE);
-                isInteger = a.getBoolean(R.styleable.PowerMeter_isInteger, false);
+                maxValue = a.getInt(R.styleable.AnalogView_maxValue, 1700);
+                value = a.getInt(R.styleable.AnalogView_value, 800);
+                markRange = a.getInt(R.styleable.AnalogView_markRange, 20);
+                markRangeText = a.getInt(R.styleable.AnalogView_markRangeText, 200);
+                markRangeLong = a.getInt(R.styleable.AnalogView_markRangeLong, 100);
+                colorBackground = a.getColor(R.styleable.AnalogView_colorBackground, Color.DKGRAY);
+                textColor = a.getColor(R.styleable.AnalogView_textColor, Color.WHITE);
+                isInteger = a.getBoolean(R.styleable.AnalogView_isInteger, false);
                 a.recycle();
             } catch (Exception ignored) {
 

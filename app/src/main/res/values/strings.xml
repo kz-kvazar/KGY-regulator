@@ -69,9 +69,8 @@
 
 
     <string-array name="time_period">
-        <item>Сегодня</item>
-        <item>Этот месяц</item>
-        <item>Этот год</item>
-        <item>Весь период</item>
+        <item>24 часа</item>
+        <item>Неделя</item>
+        <item>Месяц</item>
     </string-array>
 </resources>
