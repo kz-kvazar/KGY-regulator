@@ -4,11 +4,9 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import com.add.vpn.UtilCalculation;
+import com.add.vpn.UtilCalculations;
 import com.add.vpn.R;
 import com.add.vpn.modelService.ModelService;
 import com.google.firebase.FirebaseApp;
@@ -114,7 +112,7 @@ public class RealtimeDatabase {
                         reportItem.setPowerActive(powerActive);
                         reportItem.setCH4_1(ch4_1);
                         reportItem.setCH4_2(ch4_2);
-                        reportItem.setGasFlow(UtilCalculation.calculateGasFlow(ch4_1, ch4_2, powerActive));
+                        reportItem.setGasFlow(UtilCalculations.calculateGasFlow(ch4_1, ch4_2, powerActive));
                         reportList.add(reportItem);
                     }
                 }

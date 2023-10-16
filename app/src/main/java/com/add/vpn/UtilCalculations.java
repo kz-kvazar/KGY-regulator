@@ -1,6 +1,6 @@
 package com.add.vpn;
 
-public class UtilCalculation {
+public class UtilCalculations {
     public static float calculateGasFlow(Float CH4_1, Float CH4_2, Integer power) {
         float concentration = 0;
         if(CH4_1 > 0 && CH4_2 > 0) {
