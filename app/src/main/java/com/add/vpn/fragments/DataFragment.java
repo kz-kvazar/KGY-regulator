@@ -83,6 +83,14 @@ public class DataFragment extends Fragment {
             } else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
         });
+        pwrMetr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+                numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+                numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
+            }
+        });
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
             dataAdapter.notifyItemRangeChanged(0, 20);
@@ -219,7 +227,7 @@ public class DataFragment extends Fragment {
     @Override
     public void onStop() {
         if (adManager != null) adManager.release();
-        serviceIntent(ModelService.STOP);
+        //serviceIntent(ModelService.STOP);
         super.onStop();
     }
 }

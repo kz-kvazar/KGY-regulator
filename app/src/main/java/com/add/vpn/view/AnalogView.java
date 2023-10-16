@@ -279,22 +279,22 @@ public class AnalogView extends View {
         objectAnimator.start();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                float newValue = getTouchValue(event.getX(), event.getY());
-                setValueAnimated(newValue);
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                return true;
-            case MotionEvent.ACTION_UP:
-                return true;
-            default:
-                return super.onTouchEvent(event);
-        }
-
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                float newValue = getTouchValue(event.getX(), event.getY());
+//                setValueAnimated(newValue);
+//                return true;
+//            case MotionEvent.ACTION_MOVE:
+//                return true;
+//            case MotionEvent.ACTION_UP:
+//                return true;
+//            default:
+//                return super.onTouchEvent(event);
+//        }
+//
+//    }
 
     private float getTouchValue(float x, float y) {
         if (x != 0 && y != 0) {
