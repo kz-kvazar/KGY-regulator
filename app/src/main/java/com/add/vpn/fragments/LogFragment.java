@@ -5,16 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.R;
 import com.add.vpn.UtilCalculations;
-import com.add.vpn.adapters.ChartAdapter;
-import com.add.vpn.adapters.LogAdapter;
 import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.modelService.ModelService;
@@ -23,13 +19,13 @@ import com.add.vpn.view.ChartView;
 import java.util.LinkedList;
 
 public class LogFragment extends Fragment {
-    private RecyclerView reportView;
-    private LogAdapter logAdapter;
+    //private RecyclerView reportView;
+   // private LogAdapter logAdapter;
 
     private ChartView ch4View;
     private ChartView powerView;
-    private Spinner timePicker;
-    private ChartAdapter adapter;
+    //private Spinner timePicker;
+   // private ChartAdapter adapter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

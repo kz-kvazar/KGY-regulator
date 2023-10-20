@@ -54,10 +54,9 @@ public class RealtimeDatabase {
                     if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
                         ModelService.alarmSound.alarmPlay();
                     }
-                    arrayList.add("");
-                    arrayList.add(context.getString(R.string.KGY_error_msg));
+//                    arrayList.add("");
+//                    arrayList.add(context.getString(R.string.KGY_error_msg));
                 }
-
                 ModelService.dataListLiveData.setValue(arrayList);
             }
 

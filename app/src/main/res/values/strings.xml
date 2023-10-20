@@ -14,10 +14,6 @@
     <string name="VNS_1">СН4 ВНС-№1: %s %%</string>
     <string name="month_generated">Генерация за месяц: %s MW</string>
 
-
-
-
-
     <string name="alarmEnable">Сигнал при ошибках связи</string>
     <string name="errorEnable">Сигнал при ошибках</string>
 
