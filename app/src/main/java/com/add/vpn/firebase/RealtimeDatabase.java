@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import com.add.vpn.UtilCalculations;
 import com.add.vpn.R;
+import com.add.vpn.UtilCalculations;
 import com.add.vpn.modelService.ModelService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
@@ -22,13 +22,15 @@ public class RealtimeDatabase {
     ValueEventListener eventListener;
     ValueEventListener reportListener;
     DatabaseReference databaseReference;
+    private Boolean stopAlarm = false;
 
     public RealtimeDatabase(Context context) {
         this.context = context;
         FirebaseApp.initializeApp(context.getApplicationContext());
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://kgy-regulator-default-rtdb.europe-west1.firebasedatabase.app/");
     }
-     public void connect() {
+
+    public void connect() {
         eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -36,7 +38,8 @@ public class RealtimeDatabase {
 
                 arrayList.add(context.getString(R.string.op_Pressure, String.valueOf(dataSnapshot.child("opPresher").getValue(Double.class))));
                 arrayList.add(context.getString(R.string.throttlePosition, String.valueOf(dataSnapshot.child("trottlePosition").getValue(Integer.class))));
-                arrayList.add(context.getString(R.string.act_Power, String.valueOf(dataSnapshot.child("powerActive").getValue(Integer.class))));
+                Integer powerActive = dataSnapshot.child("powerActive").getValue(Integer.class);
+                arrayList.add(context.getString(R.string.act_Power, String.valueOf(powerActive)));
                 arrayList.add(context.getString(R.string.const_Power, String.valueOf(dataSnapshot.child("powerConstant").getValue(Integer.class))));
                 arrayList.add(context.getString(R.string.max_power, String.valueOf(dataSnapshot.child("MaxPower").getValue(Integer.class))));
                 arrayList.add(context.getString(R.string.VNS_1, String.valueOf(dataSnapshot.child("CH4_1").getValue(Double.class))));
@@ -50,12 +53,14 @@ public class RealtimeDatabase {
                 if (monthStartGenerated != null && totalActivePower != null) {
                     arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
                 }
-                if (Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class))) {
+                if (powerActive != null && powerActive > 0) stopAlarm = true;
+
+                if (Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class)) || (powerActive != null && powerActive == 0 && stopAlarm)) {
                     if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
                         ModelService.alarmSound.alarmPlay();
+                        stopAlarm = false;
                     }
-//                    arrayList.add("");
-//                    arrayList.add(context.getString(R.string.KGY_error_msg));
+                    arrayList.add(context.getString(R.string.KGY_error_msg));
                 }
                 ModelService.dataListLiveData.setValue(arrayList);
             }
@@ -92,21 +97,20 @@ public class RealtimeDatabase {
     public void getReportList(int hours) {
         DatabaseReference hourReport = databaseReference.child("HourReport");
         Query query = hourReport.orderByKey().limitToLast(hours); // Здесь устанавливается количество элементов (последних 50)
-        if(reportListener != null) query.removeEventListener(reportListener);
+        if (reportListener != null) query.removeEventListener(reportListener);
 
         reportListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 LinkedList<FBreportItem> reportList = new LinkedList<>();
-                int i = 0;
                 for (DataSnapshot item : children) {
                     String date = item.child("date").getValue(String.class);
                     Integer powerActive = item.child("powerActive").getValue(Integer.class);
                     Float ch4_1 = item.child("CH4_1").getValue(Float.class);
                     Float ch4_2 = item.child("CH4_2").getValue(Float.class);
 
-                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null){
+                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null) {
                         FBreportItem reportItem = new FBreportItem(date);
                         reportItem.setPowerActive(powerActive);
                         reportItem.setCH4_1(ch4_1);
