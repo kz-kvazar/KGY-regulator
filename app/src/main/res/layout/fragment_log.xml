@@ -7,53 +7,40 @@
               tools:context=".fragments.LogFragment"
               android:orientation="vertical">
 
-<!--    <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal">-->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-<!--        <TextView-->
-<!--                android:id="@+id/title"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/time_period"-->
-<!--                android:textSize="16sp"-->
-<!--                android:layout_marginHorizontal="2dp"-->
-<!--                app:layout_constraintBaseline_toBaselineOf="@+id/time_period_picker"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintBottom_toBottomOf="@+id/time_period_picker"/>-->
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_period"
+                android:textSize="16sp"
+                android:layout_marginHorizontal="2dp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/time_period_picker"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/time_period_picker"/>
 
-<!--        <Spinner-->
-<!--                android:id="@+id/time_period_picker"-->
-<!--                android:entries="@array/time_period"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:spinnerMode="dialog"-->
-<!--                android:layout_margin="2dp"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/title"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                android:minHeight="48dp"/>-->
-<!--    </LinearLayout>-->
-
-
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/rv_chart"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_margin="2dp"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/time_period_picker"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            />-->
+        <Spinner
+                android:id="@+id/time_period_picker"
+                android:entries="@array/time_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
+                android:layout_margin="2dp"
+                app:layout_constraintStart_toEndOf="@+id/title"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:minHeight="48dp"/>
+    </LinearLayout>
 
     <com.add.vpn.view.ChartView
             android:id="@+id/cv_CH41"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:timeUnit="Час"
             app:valueUnit=" %"
             app:valueMarker="28"
@@ -62,7 +49,7 @@
     <com.add.vpn.view.ChartView
             android:id="@+id/cv_power"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:timeUnit="Час"
             app:valueUnit="kW"
             android:layout_weight="1"

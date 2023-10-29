@@ -14,10 +14,10 @@ import java.util.LinkedList;
 
 public class ChartView extends View {
     private final Path trendLine = new Path();
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final PointF prevPoint = new PointF();
     private final ArrayList<PointF> points = new ArrayList<>();
     private final Paint paintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private LinkedList<Float> reportValue = new LinkedList<Float>() {{
         add(1f);
         add(3f);
@@ -45,6 +45,14 @@ public class ChartView extends View {
         init(context, attrs);
     }
 
+    public void setValueMarker(Integer valueMarker) {
+        this.valueMarker = valueMarker;
+    }
+
+    public void setValueUnit(String valueUnit) {
+        this.valueUnit = valueUnit;
+    }
+
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             try {
@@ -60,6 +68,10 @@ public class ChartView extends View {
 
             }
         }
+    }
+
+    public void setTimeUnit(String timeUnit) {
+        this.timeUnit = timeUnit;
     }
 
     @Override
@@ -104,12 +116,10 @@ public class ChartView extends View {
 
         for (int i = 0, reportValueSize = reportValue.size(); i < reportValueSize; i++) {
             Float value = reportValue.get(i);
-//            Float time = entry.getKey();
-//            Float value = entry.getValue();
             float x;
-            if (i == 0){
-                x =  startPoint;
-            }else {
+            if (i == 0) {
+                x = startPoint;
+            } else {
                 x = startPoint + timeScale * offset;
             }
             float y = height - startPoint - valueScale * value;
@@ -135,7 +145,7 @@ public class ChartView extends View {
             float textWith = paint.measureText(timeText);
 
             //float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
-            float textX = x - textWith/2;
+            float textX = x - textWith / 2;
             float textY = height - (startPoint / 4);
             if (textPointX == 0 || x - textPointX > 1.5f * space) {
                 canvas.drawText(timeText, textX, textY, paint);
@@ -162,29 +172,38 @@ public class ChartView extends View {
             canvas.drawLine(startPoint - radius, valueY, width - startPoint / 3, valueY, paintLine);
         }
         //рисуем маркер значение
-        if (valueMarker != null && maxValue > valueMarker){
-            paintLine.setColor(Color.argb(100,0, 255, 0));
+        if (valueMarker != null && maxValue > valueMarker) {
+            paintLine.setColor(Color.argb(100, 0, 255, 0));
             paintLine.setStrokeWidth((float) height / 50);
-            canvas.drawLine(startPoint - radius, height - startPoint - valueScale * valueMarker,width - startPoint / 3,height - startPoint - valueScale * valueMarker,paintLine);
+            canvas.drawLine(startPoint - radius, height - startPoint - valueScale * valueMarker, width - startPoint / 3, height - startPoint - valueScale * valueMarker, paintLine);
         }
-        paint.setTextSize((float) height / 14);
+        paint.setTextSize((float) height / 20);
         paint.setColor(Color.RED);
 
         float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
         //float valueUnitWidth = paint.measureText(valueUnit);
         float timeUnitWidth = paint.measureText(timeUnit);
         canvas.drawText(valueUnit, textHeight / 6, textHeight * 0.8f, paint);
-        canvas.drawText(timeUnit, (float) (width - 1.2 * timeUnitWidth), height - (startPoint / 4), paint);
+        canvas.drawText(timeUnit, (float) (width - 1.05 * timeUnitWidth), height - (startPoint / 4), paint);
 
+
+        paint.setShadowLayer((float) radius / 2, 2 * radius, 2 * radius, Color.GRAY);
+        paint.setColor(Color.BLUE);
+        paint.setStyle(Paint.Style.FILL);
+        for (PointF point : points) {
+            canvas.drawCircle(point.x, point.y, radius, paint);
+        }
         // Рисуем линии тренда
-        paint.setShadowLayer(radius, radius, radius, Color.GRAY);
+        paint.setShadowLayer(radius, 2 * radius, 2 * radius, Color.GRAY);
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(radius);
         canvas.drawPath(trendLine, paint);
 
         //Рисуем точки
-        paint.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
+        //paint.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
+        paint.clearShadowLayer();
+        //paint.setShadowLayer((float) radius / 2, 2 * radius, 2 * radius, Color.GRAY);
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
         for (PointF point : points) {

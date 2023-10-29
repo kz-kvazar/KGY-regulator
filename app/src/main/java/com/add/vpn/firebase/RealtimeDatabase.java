@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 public class RealtimeDatabase {
     private final Context context;
@@ -119,7 +120,8 @@ public class RealtimeDatabase {
                         reportList.add(reportItem);
                     }
                 }
-                ModelService.reportList.setValue(reportList);
+                LinkedList<FBreportItem> prunedList = pruneList(reportList, 31);
+                ModelService.reportList.setValue(prunedList);
             }
 
             @Override
@@ -134,4 +136,26 @@ public class RealtimeDatabase {
     public void disconnect() {
         databaseReference.removeEventListener(eventListener);
     }
+    public LinkedList<FBreportItem> pruneList(LinkedList<FBreportItem> list, int maxItems) {
+        if (list.size() <= maxItems) {
+            return list; // Если список уже не больше 48, не требуется прореживание
+        }
+
+        int interval = list.size() / maxItems;
+
+        LinkedList<FBreportItem> prunedList = new LinkedList<>();
+        int avgGenerated = 0;
+        for (int i = 0; i < list.size(); i++) {
+            avgGenerated += list.get(i).getPowerActive();
+            if (i % interval == 0) {
+                list.get(i).setPowerActive(avgGenerated/interval);
+                prunedList.add(list.get(i));
+                avgGenerated = 0;
+            }
+        }
+
+        return prunedList;
+    }
+
 }
+

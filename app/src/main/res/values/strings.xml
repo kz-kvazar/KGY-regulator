@@ -62,11 +62,13 @@
     <string name="denied_message">Доступ заблокирован не авторизированным пользователям. Регулирование невозможно.</string>
     <string name="kw">kW</string>
     <string name="kPa">kPa</string>
+    <string name="Hour">Час</string>
+    <string name="Day">День</string>
 
 
     <string-array name="time_period">
+        <item>12 часов</item>
         <item>24 часа</item>
-        <item>Неделя</item>
         <item>Месяц</item>
     </string-array>
 </resources>

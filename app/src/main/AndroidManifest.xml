@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          android:versionCode="17"
-          android:versionName="10.7"
+          android:versionCode="18"
+          android:versionName="10.8"
         >
 
     <!-- Include required permissions for Google Mobile Ads to run. -->
