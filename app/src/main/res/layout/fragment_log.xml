@@ -40,7 +40,7 @@
     <com.add.vpn.view.ChartView
             android:id="@+id/cv_CH41"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:timeUnit="Час"
             app:valueUnit=" %"
             app:valueMarker="28"
@@ -49,7 +49,7 @@
     <com.add.vpn.view.ChartView
             android:id="@+id/cv_power"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:timeUnit="Час"
             app:valueUnit="kW"
             android:layout_weight="1"

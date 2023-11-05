@@ -18,14 +18,16 @@ public class ChartView extends View {
     private final ArrayList<PointF> points = new ArrayList<>();
     private final Paint paintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private LinkedList<Float> reportValue = new LinkedList<Float>() {{
+    LinkedList<Float> dataValue;
+    LinkedList<String> time;
+    private LinkedList<Float> tempReportValue = new LinkedList<Float>() {{
         add(1f);
         add(3f);
         add(5f);
         add(2f);
         add(3f);
     }};
-    private LinkedList<String> reportDate = new LinkedList<String>() {{
+    private LinkedList<String> temoReportDate = new LinkedList<String>() {{
         add("1");
         add("3");
         add("5");
@@ -88,6 +90,8 @@ public class ChartView extends View {
         if (height >= width) {
             height = width / 2;
         }
+        dataValue = pruneList(tempReportValue,24 *((width/height)));
+        time = pruneList(temoReportDate,24 *((width/height)));
 
         //canvas.drawRect(0, 0, width, height, paint);
 
@@ -97,13 +101,13 @@ public class ChartView extends View {
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
 
-        if (reportValue == null || reportValue.isEmpty()) return;
+        if (dataValue == null || dataValue.isEmpty()) return;
 
-        float maxValue = Collections.max(reportValue);
+        float maxValue = Collections.max(dataValue);
         //float maxTime = Collections.max(reportDate);
 
         float startPoint = (height - (height * 0.85f));
-        float timeScale = ((width - 1.6f * startPoint) / reportValue.size());
+        float timeScale = ((width - 1.6f * startPoint) / dataValue.size());
         float valueScale = ((height - 2f * startPoint) / maxValue);
 
         //рисуем оси графика
@@ -114,8 +118,8 @@ public class ChartView extends View {
         canvas.drawRoundRect(startPoint - radius, (float) radius / 2, width - startPoint / 3, height - startPoint + 1.5f * radius, round, round, paintLine);
 
 
-        for (int i = 0, reportValueSize = reportValue.size(); i < reportValueSize; i++) {
-            Float value = reportValue.get(i);
+        for (int i = 0, reportValueSize = dataValue.size(); i < reportValueSize; i++) {
+            Float value = dataValue.get(i);
             float x;
             if (i == 0) {
                 x = startPoint;
@@ -139,7 +143,7 @@ public class ChartView extends View {
             }
 
             // Рисуем текст (время)
-            String timeText = String.valueOf(reportDate.get(i));
+            String timeText = String.valueOf(time.get(i));
             paint.setTextSize((float) height / 20); // Установите желаемый размер шрифта
             float space = paint.measureText("00");
             float textWith = paint.measureText(timeText);
@@ -148,7 +152,7 @@ public class ChartView extends View {
             float textX = x - textWith / 2;
             float textY = height - (startPoint / 4);
             if (textPointX == 0 || x - textPointX > 1.5f * space) {
-                canvas.drawText(timeText, textX, textY, paint);
+                    canvas.drawText(timeText, textX, textY, paint);
                 if (textPointX != 0)
                     //canvas.drawLine(textX + space / 2, height - startPoint + 1.5f * radius, textX + space / 2, (float) radius / 2, paintLine);
                     canvas.drawLine(x, height - startPoint + 1.5f * radius, x, (float) radius / 2, paintLine);
@@ -253,8 +257,38 @@ public class ChartView extends View {
     }
 
     public void setData(LinkedList<Float> dataValue, LinkedList<String> time) {
-        reportValue = dataValue;
-        reportDate = time;
+        tempReportValue = dataValue;
+        temoReportDate = time;
         invalidate();
+    }
+    public <T> LinkedList<T> pruneList(LinkedList<T> list, int maxItems) {
+        if (list.size() <= maxItems || list.isEmpty()) {
+            return list; // Если список уже не больше 48, не требуется прореживание
+        }
+
+        int interval = list.size() / maxItems;
+
+        LinkedList<T> prunedList = new LinkedList<>();
+        int avg = 0;
+        int count = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof Float) {
+                Number number = (Number) list.get(i);
+                avg += number.floatValue();
+                count++;
+
+                if (i % interval == 0) {
+                    float averageValue = count > 0 ? avg / count : 0.0f;
+                    prunedList.add((T) (Number) averageValue);
+                    avg = 0;
+                    count = 0;
+                }
+            } else {
+                if (i % interval == 0) {
+                    prunedList.add(list.get(i));
+                }
+            }
+        }
+        return prunedList;
     }
 }

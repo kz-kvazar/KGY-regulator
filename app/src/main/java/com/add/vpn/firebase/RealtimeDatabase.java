@@ -120,8 +120,8 @@ public class RealtimeDatabase {
                         reportList.add(reportItem);
                     }
                 }
-                LinkedList<FBreportItem> prunedList = pruneList(reportList, 31);
-                ModelService.reportList.setValue(prunedList);
+                //LinkedList<FBreportItem> prunedList = pruneList(reportList, 31);
+                ModelService.reportList.setValue(reportList);
             }
 
             @Override
