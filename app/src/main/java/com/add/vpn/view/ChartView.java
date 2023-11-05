@@ -261,19 +261,18 @@ public class ChartView extends View {
         temoReportDate = time;
         invalidate();
     }
-    public <T> LinkedList<T> pruneList(LinkedList<T> list, int maxItems) {
-        if (list.size() <= maxItems || list.isEmpty()) {
-            return list; // Если список уже не больше 48, не требуется прореживание
+    public <T> LinkedList<T> pruneList(LinkedList<T> floatValueList, int maxItems) {
+        if (floatValueList.size() <= maxItems || floatValueList.isEmpty()) {
+            return floatValueList; // Если список уже не больше 48, не требуется прореживание
         }
-
-        int interval = list.size() / maxItems;
+        int interval = floatValueList.size() / maxItems;
 
         LinkedList<T> prunedList = new LinkedList<>();
         int avg = 0;
         int count = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Float) {
-                Number number = (Number) list.get(i);
+        for (int i = 0; i < floatValueList.size(); i++) {
+            if (floatValueList.get(i) instanceof Float) {
+                Number number = (Number) floatValueList.get(i);
                 avg += number.floatValue();
                 count++;
 
@@ -285,7 +284,7 @@ public class ChartView extends View {
                 }
             } else {
                 if (i % interval == 0) {
-                    prunedList.add(list.get(i));
+                    prunedList.add(floatValueList.get(i));
                 }
             }
         }
