@@ -24,6 +24,8 @@
         <attr name="timeUnit" format="string"/>
         <attr name="valueUnit" format="string"/>
         <attr name="valueMarker" format="integer"/>
+        <attr name="description" format="string"/>
+
     </declare-styleable>
 
 </resources>

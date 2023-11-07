@@ -23,12 +23,14 @@ import java.util.LinkedList;
 
 public class LogFragment extends Fragment {
     //private RecyclerView reportView;
-   // private LogAdapter logAdapter;
+    // private LogAdapter logAdapter;
 
     private ChartView ch4View;
     private ChartView powerView;
     private Spinner timePicker;
-   // private ChartAdapter adapter;
+    //private RecyclerView logList;
+    //private ChartAdapter adapter;
+    // private ChartAdapter adapter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -36,7 +38,18 @@ public class LogFragment extends Fragment {
 
         Context context = requireContext();
         RealtimeDatabase realtimeDatabase = new RealtimeDatabase(context);
-        //realtimeDatabase.getReportList(24);
+//
+//        ArrayList<ChartView> chartViews = new ArrayList<>();
+//        ch4View = new ChartView(context);
+//        ch4View.setTimeUnit("day");
+//        powerView = new ChartView(context);
+//
+//        chartViews.add(ch4View);
+//        chartViews.add(powerView);
+//
+//        adapter = new ChartAdapter(chartViews);
+//        logList.setAdapter(adapter);
+//        logList.setLayoutManager(new LinearLayoutManager(context));
         timePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -57,23 +70,12 @@ public class LogFragment extends Fragment {
                         Toast.makeText(context, "Unexpected value:" + position, Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-//        ArrayList<ChartView> chartViews = new ArrayList<>();
-//        ch4View = new ChartView(context);
-//        powerView = new ChartView(context);
-
-
-
-//        chartViews.add(ch4View);
-//        chartViews.add(powerView);
-//
-//        adapter = new ChartAdapter(chartViews);
-//        reportView.setAdapter(adapter);
-//        reportView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     private void report(boolean isDayDeport) {
@@ -89,13 +91,13 @@ public class LogFragment extends Fragment {
                 Float ch4_1 = item.getCH4_1();
                 Float ch4_2 = item.getCH4_2();
                 floats.add(UtilCalculations.averageConcentration(ch4_1, ch4_2));
-                if (!isDayDeport){
+                if (!isDayDeport) {
                     String[] strings = item.getDate().split("-");
                     String[] resultTime = strings[1].split(":");
                     time.add(resultTime[0]);
                     ch4View.setTimeUnit(getString(R.string.Hour));
                     powerView.setTimeUnit(getString(R.string.Hour));
-                }else {
+                } else {
                     String[] strings = item.getDate().split("-");
                     String[] resultTime = strings[0].split("\\.");
                     time.add(resultTime[2]);
@@ -105,6 +107,7 @@ public class LogFragment extends Fragment {
             }
             ch4View.setData(floats, time);
             powerView.setData(powers, time);
+            //adapter.notifyItemRangeChanged(0,20);
         });
     }
 
@@ -116,6 +119,7 @@ public class LogFragment extends Fragment {
         powerView = inflate.findViewById(R.id.cv_power);
         timePicker = inflate.findViewById(R.id.time_period_picker);
         //reportView = inflate.findViewById(R.id.rv_chart);
+        //logList = inflate.findViewById(R.id.logListView);
         return inflate;
     }
 

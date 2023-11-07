@@ -7,7 +7,7 @@
     <string name="const_Power">Заданная мощность: %s kW</string>
     <string name="gas_Flow">Расход ГВС: %s m3</string>
     <string name="max_power">Макс. мощность: %s kW</string>
-    <string name="CH4">Концентрация СН4: %s %%</string>
+    <string name="CH4_concentration">Концентрация СН4: %s %%</string>
     <string name="kgy_pressure">Давление перед КГУ: %s kPa</string>
     <string name="gts_pressure">Давление перед GTS: %s kPa</string>
     <string name="VNS_2">СН4 ВНС-№2: %s %%</string>
@@ -64,6 +64,8 @@
     <string name="kPa">kPa</string>
     <string name="Hour">Час</string>
     <string name="Day">День</string>
+    <string name="CH4">CH4</string>
+
 
 
     <string-array name="time_period">

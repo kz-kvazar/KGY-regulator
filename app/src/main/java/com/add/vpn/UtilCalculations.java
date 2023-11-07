@@ -2,14 +2,7 @@ package com.add.vpn;
 
 public class UtilCalculations {
     public static float calculateGasFlow(Float CH4_1, Float CH4_2, Integer power) {
-        float concentration = 0;
-        if(CH4_1 > 0 && CH4_2 > 0) {
-            concentration = (CH4_1 + CH4_2)/2;
-        }else if(CH4_1 <= 0 && CH4_2 > 0){
-            concentration = CH4_2;
-        } else if (CH4_1 > 0 && CH4_2 <= 0) {
-            concentration = CH4_1;
-        }
+        float concentration = averageConcentration(CH4_1,CH4_2);
 
         if (power > 0 && concentration > 0) {
             float concentration1 = 27.24f;

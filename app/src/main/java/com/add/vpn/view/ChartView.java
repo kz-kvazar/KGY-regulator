@@ -37,15 +37,39 @@ public class ChartView extends View {
     private Integer valueMarker;
     private String timeUnit = "час";
     private String valueUnit = "kW";
+    private String description = "Power Constant";
+//    private final Matrix matrix;
+//    private final ScaleGestureDetector scaleGestureDetector;
+//    private final GestureDetector gestureDetector;
+//
+//    private float scaleFactor = 1.0f;
+//    private float focusX = 0f;
+//    private float focusY = 0f;
+//    private float lastX;
+//    private float lastY;
 
     public ChartView(Context context) {
         super(context);
+        //scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+//        matrix = new Matrix();
+//        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+//        gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     public ChartView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
+//        matrix = new Matrix();
+//        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+//        gestureDetector = new GestureDetector(context, new GestureListener());
     }
+
+//    public boolean onTouchEvent(MotionEvent event) {
+//        boolean scaleHandled = scaleGestureDetector.onTouchEvent(event);
+//        boolean scrollHandled = gestureDetector.onTouchEvent(event);
+//        return scaleHandled || scrollHandled || super.onTouchEvent(event);
+//        getParent().requestDisallowInterceptTouchEvent(true);
+//    }
 
     public void setValueMarker(Integer valueMarker) {
         this.valueMarker = valueMarker;
@@ -53,6 +77,10 @@ public class ChartView extends View {
 
     public void setValueUnit(String valueUnit) {
         this.valueUnit = valueUnit;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -65,6 +93,8 @@ public class ChartView extends View {
                 valueUnit = chars != null ? chars.toString() : "kW";
                 chars = a.getText(R.styleable.ChartView_valueMarker);
                 valueMarker = chars != null ? Integer.valueOf((String) chars) : null;
+                chars = a.getText(R.styleable.ChartView_description);
+                description = chars!= null ? chars.toString() : "Power Constant";
                 a.recycle();
             } catch (Exception ignored) {
 
@@ -79,6 +109,8 @@ public class ChartView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.save();
+        //canvas.concat(matrix);
         paint.setColor(Color.WHITE);
 
         points.clear();
@@ -90,8 +122,8 @@ public class ChartView extends View {
         if (height >= width) {
             height = width / 2;
         }
-        dataValue = pruneList(tempReportValue,24 *((width/height)));
-        time = pruneList(temoReportDate,24 *((width/height)));
+        dataValue = pruneList(tempReportValue, 24 * ((width / height)));
+        time = pruneList(temoReportDate, 24 * ((width / height)));
 
         //canvas.drawRect(0, 0, width, height, paint);
 
@@ -109,6 +141,16 @@ public class ChartView extends View {
         float startPoint = (height - (height * 0.85f));
         float timeScale = ((width - 1.6f * startPoint) / dataValue.size());
         float valueScale = ((height - 2f * startPoint) / maxValue);
+
+        float descriptionX = startPoint + 2*radius;
+        float descriptionY = (float) height - startPoint - 2*radius;
+        paint.setTextSize((float) height/8);
+        paint.setColor(Color.GREEN);
+        paint.setAlpha(90);
+        canvas.drawText(description,descriptionX,descriptionY,paint);
+        paint.setAlpha(100);
+
+        paint.setColor(Color.BLUE);
 
         //рисуем оси графика
         paintLine.setColor(Color.argb(0xaa, 0xaa, 0xaa, 0xaa));
@@ -152,7 +194,7 @@ public class ChartView extends View {
             float textX = x - textWith / 2;
             float textY = height - (startPoint / 4);
             if (textPointX == 0 || x - textPointX > 1.5f * space) {
-                    canvas.drawText(timeText, textX, textY, paint);
+                canvas.drawText(timeText, textX, textY, paint);
                 if (textPointX != 0)
                     //canvas.drawLine(textX + space / 2, height - startPoint + 1.5f * radius, textX + space / 2, (float) radius / 2, paintLine);
                     canvas.drawLine(x, height - startPoint + 1.5f * radius, x, (float) radius / 2, paintLine);
@@ -190,7 +232,6 @@ public class ChartView extends View {
         canvas.drawText(valueUnit, textHeight / 6, textHeight * 0.8f, paint);
         canvas.drawText(timeUnit, (float) (width - 1.05 * timeUnitWidth), height - (startPoint / 4), paint);
 
-
         paint.setShadowLayer((float) radius / 2, 2 * radius, 2 * radius, Color.GRAY);
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
@@ -213,6 +254,7 @@ public class ChartView extends View {
         for (PointF point : points) {
             canvas.drawCircle(point.x, point.y, radius, paint);
         }
+        canvas.restore();
 
     }
 
@@ -261,6 +303,7 @@ public class ChartView extends View {
         temoReportDate = time;
         invalidate();
     }
+
     public <T> LinkedList<T> pruneList(LinkedList<T> floatValueList, int maxItems) {
         if (floatValueList.size() <= maxItems || floatValueList.isEmpty()) {
             return floatValueList; // Если список уже не больше 48, не требуется прореживание
@@ -290,4 +333,53 @@ public class ChartView extends View {
         }
         return prunedList;
     }
+
+//    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+//        @Override
+//        public boolean onScale(ScaleGestureDetector detector) {
+//            scaleFactor *= detector.getScaleFactor();
+//            scaleFactor = Math.max(MIN_SCALE, Math.min(scaleFactor, MAX_SCALE));
+//            matrix.setScale(scaleFactor, scaleFactor, focusX, focusY);
+//            invalidate();
+//            return false;
+//        }
+//    }
+//
+//    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+//        @Override
+//        public boolean onDoubleTap(MotionEvent e) {
+//            float targetScale = (scaleFactor == MAX_SCALE) ? MIN_SCALE : MAX_SCALE;
+//            focusX = e.getX();
+//            focusY = e.getY();
+//            matrix.setScale(targetScale, targetScale, focusX, focusY);
+//            scaleFactor = targetScale;
+//            invalidate();
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onDown(MotionEvent e) {
+//            lastX = e.getX();
+//            lastY = e.getY();
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//            // Рассчитайте смещение
+//            float dx = e2.getX() - lastX;
+//            float dy = e2.getY() - lastY;
+//
+//            // Примените смещение к матрице
+//            matrix.postTranslate(dx, dy);
+//            invalidate();
+//
+//            // Сохраните текущие координаты
+//            lastX = e2.getX();
+//            lastY = e2.getY();
+//
+//            return true;
+//        }
+//
+//    }
 }
