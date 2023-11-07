@@ -27,7 +27,11 @@ public class LogFragment extends Fragment {
 
     private ChartView ch4View;
     private ChartView powerView;
+    private ChartView cleanOil;
+    private ChartView resTemp;
+    private ChartView avgTemp;
     private Spinner timePicker;
+    private ChartView gasFlow;
     //private RecyclerView logList;
     //private ChartAdapter adapter;
     // private ChartAdapter adapter;
@@ -84,6 +88,10 @@ public class LogFragment extends Fragment {
             LinkedList<Float> floats = new LinkedList<>();
             LinkedList<String> time = new LinkedList<>();
             LinkedList<Float> powers = new LinkedList<>();
+            LinkedList<Float> res = new LinkedList<>();
+            LinkedList<Float> avg = new LinkedList<>();
+            LinkedList<Float> oil = new LinkedList<>();
+            LinkedList<Float> gas = new LinkedList<>();
 
             for (FBreportItem item : reportItems) {
                 if (item == null) return;
@@ -91,35 +99,59 @@ public class LogFragment extends Fragment {
                 Float ch4_1 = item.getCH4_1();
                 Float ch4_2 = item.getCH4_2();
                 floats.add(UtilCalculations.averageConcentration(ch4_1, ch4_2));
+                gas.add(item.getGasFlow());
+                try{
+                    avg.add(Float.valueOf(item.getAvgTemp()));
+                    oil.add(Float.valueOf(item.getCleanOil()));
+                    res.add(item.getResTemp());
+                }catch (Exception e){
+                    avg.add(390f);
+                    oil.add(71f);
+                    res.add(49.6f);
+                }
+
                 if (!isDayDeport) {
                     String[] strings = item.getDate().split("-");
                     String[] resultTime = strings[1].split(":");
                     time.add(resultTime[0]);
                     ch4View.setTimeUnit(getString(R.string.Hour));
                     powerView.setTimeUnit(getString(R.string.Hour));
+                    resTemp.setTimeUnit(getString(R.string.Hour));
+                    avgTemp.setTimeUnit(getString(R.string.Hour));
+                    cleanOil.setTimeUnit(getString(R.string.Hour));
+                    gasFlow.setTimeUnit(getString(R.string.Hour));
                 } else {
                     String[] strings = item.getDate().split("-");
                     String[] resultTime = strings[0].split("\\.");
                     time.add(resultTime[2]);
                     ch4View.setTimeUnit(getString(R.string.Day));
                     powerView.setTimeUnit(getString(R.string.Day));
+                    resTemp.setTimeUnit(getString(R.string.Day));
+                    avgTemp.setTimeUnit(getString(R.string.Day));
+                    cleanOil.setTimeUnit(getString(R.string.Day));
+                    gasFlow.setTimeUnit(getString(R.string.Day));
                 }
             }
             ch4View.setData(floats, time);
             powerView.setData(powers, time);
-            //adapter.notifyItemRangeChanged(0,20);
+            resTemp.setData(res,time);
+            avgTemp.setData(avg,time);
+            cleanOil.setData(oil,time);
+            gasFlow.setData(gas,time);
         });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.fragment_log, container, false);
-        //logView = inflate.findViewById(R.id.logListView);
         ch4View = inflate.findViewById(R.id.cv_CH41);
         powerView = inflate.findViewById(R.id.cv_power);
+        resTemp = inflate.findViewById(R.id.cv_resTemp);
+        avgTemp = inflate.findViewById(R.id.cv_avgTemp);
+        cleanOil = inflate.findViewById(R.id.cv_cleanOil);
+        gasFlow = inflate.findViewById(R.id.cv_gasFlow);
+
         timePicker = inflate.findViewById(R.id.time_period_picker);
-        //reportView = inflate.findViewById(R.id.rv_chart);
-        //logList = inflate.findViewById(R.id.logListView);
         return inflate;
     }
 

@@ -73,6 +73,38 @@
                         app:valueUnit="kW"
                         app:description="Активная мощность"
                         />
+                <com.add.vpn.view.ChartView
+                        android:id="@+id/cv_avgTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:timeUnit="Час"
+                        app:valueUnit="C"
+                        app:description="Температура цилиндров"
+                        />
+                <com.add.vpn.view.ChartView
+                        android:id="@+id/cv_resTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:timeUnit="Час"
+                        app:valueUnit="С"
+                        app:description="Температура ресивера"
+                        />
+                <com.add.vpn.view.ChartView
+                        android:id="@+id/cv_gasFlow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:timeUnit="Час"
+                        app:valueUnit="м3/ч"
+                        app:description="Расход ГВС"
+                        />
+                <com.add.vpn.view.ChartView
+                        android:id="@+id/cv_cleanOil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:timeUnit="Час"
+                        app:valueUnit="%"
+                        app:description="Уровень чистого масла"
+                        />
             </LinearLayout>
 
     </ScrollView>

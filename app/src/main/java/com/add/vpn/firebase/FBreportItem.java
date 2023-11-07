@@ -6,6 +6,41 @@ public class FBreportItem {
     private Float CH4_1;
     private Float gasFlow;
     private Float CH4_2;
+    private Integer cleanOil;
+    private Integer avgTemp;
+    private Float resTemp;
+
+    public Integer getPowerConstant() {
+        return powerConstant;
+    }
+
+    public void setPowerConstant(Integer powerConstant) {
+        this.powerConstant = powerConstant;
+    }
+
+    public Integer getCleanOil() {
+        return cleanOil;
+    }
+
+    public void setCleanOil(Integer cleanOil) {
+        this.cleanOil = cleanOil;
+    }
+
+    public Integer getAvgTemp() {
+        return avgTemp;
+    }
+
+    public void setAvgTemp(Integer avgTemp) {
+        this.avgTemp = avgTemp;
+    }
+
+    public Float getResTemp() {
+        return resTemp;
+    }
+
+    public void setResTemp(Float resTemp) {
+        this.resTemp = resTemp;
+    }
 
     public FBreportItem(String date) {
         this.date = date;
