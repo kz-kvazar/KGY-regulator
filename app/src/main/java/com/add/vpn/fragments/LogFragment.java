@@ -54,6 +54,8 @@ public class LogFragment extends Fragment {
 //        adapter = new ChartAdapter(chartViews);
 //        logList.setAdapter(adapter);
 //        logList.setLayoutManager(new LinearLayoutManager(context));
+        realtimeDatabase.getAvgTemp();
+        avgTemp();
         timePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -79,6 +81,20 @@ public class LogFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
+        });
+    }
+    private void avgTemp(){
+        ModelService.reportList.removeObservers(requireActivity());
+        ModelService.avgTemp.observe(requireActivity(),temp ->{
+            LinkedList<String> time = new LinkedList<>();
+            for (int i = 0; i <= 45; i++) {
+                if(i == 0){
+                    time.addFirst("0");
+                }else{
+                    time.addFirst(String.valueOf(i/3));
+                }
+            }
+            avgTemp.setData(temp,time);
         });
     }
 
@@ -117,7 +133,6 @@ public class LogFragment extends Fragment {
                     ch4View.setTimeUnit(getString(R.string.Hour));
                     powerView.setTimeUnit(getString(R.string.Hour));
                     resTemp.setTimeUnit(getString(R.string.Hour));
-                    avgTemp.setTimeUnit(getString(R.string.Hour));
                     cleanOil.setTimeUnit(getString(R.string.Hour));
                     gasFlow.setTimeUnit(getString(R.string.Hour));
                 } else {
@@ -127,7 +142,7 @@ public class LogFragment extends Fragment {
                     ch4View.setTimeUnit(getString(R.string.Day));
                     powerView.setTimeUnit(getString(R.string.Day));
                     resTemp.setTimeUnit(getString(R.string.Day));
-                    avgTemp.setTimeUnit(getString(R.string.Day));
+                    //avgTemp.setTimeUnit(getString(R.string.Day));
                     cleanOil.setTimeUnit(getString(R.string.Day));
                     gasFlow.setTimeUnit(getString(R.string.Day));
                 }
@@ -135,7 +150,7 @@ public class LogFragment extends Fragment {
             ch4View.setData(floats, time);
             powerView.setData(powers, time);
             resTemp.setData(res,time);
-            avgTemp.setData(avg,time);
+            //avgTemp.setData(avg,time);
             cleanOil.setData(oil,time);
             gasFlow.setData(gas,time);
         });

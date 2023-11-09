@@ -143,12 +143,12 @@ public class ChartView extends View {
         float valueScale = ((height - 2f * startPoint) / maxValue);
 
         float descriptionX = startPoint + 2*radius;
-        float descriptionY = (float) height - startPoint - 2*radius;
+        float descriptionY = startPoint - 2*radius;
         paint.setTextSize((float) height/8);
         paint.setColor(Color.GREEN);
         paint.setAlpha(90);
         canvas.drawText(description,descriptionX,descriptionY,paint);
-        paint.setAlpha(100);
+        paint.setAlpha(100); // рисуем назавние графика
 
         paint.setColor(Color.BLUE);
 
@@ -185,21 +185,25 @@ public class ChartView extends View {
             }
 
             // Рисуем текст (время)
-            String timeText = String.valueOf(time.get(i));
-            paint.setTextSize((float) height / 20); // Установите желаемый размер шрифта
-            float space = paint.measureText("00");
-            float textWith = paint.measureText(timeText);
+            try {
+                String timeText = String.valueOf(time.get(i));
+                paint.setTextSize((float) height / 20); // Установите желаемый размер шрифта
+                float space = paint.measureText("00");
+                float textWith = paint.measureText(timeText);
 
-            //float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
-            float textX = x - textWith / 2;
-            float textY = height - (startPoint / 4);
-            if (textPointX == 0 || x - textPointX > 1.5f * space) {
-                canvas.drawText(timeText, textX, textY, paint);
-                if (textPointX != 0)
-                    //canvas.drawLine(textX + space / 2, height - startPoint + 1.5f * radius, textX + space / 2, (float) radius / 2, paintLine);
-                    canvas.drawLine(x, height - startPoint + 1.5f * radius, x, (float) radius / 2, paintLine);
-                textPointX = (int) x;
+                //float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
+                float textX = x - textWith / 2;
+                float textY = height - (startPoint / 4);
+                if (textPointX == 0 || x - textPointX > 1.5f * space) {
+                    canvas.drawText(timeText, textX, textY, paint);
+                    if (textPointX != 0)
+                        //canvas.drawLine(textX + space / 2, height - startPoint + 1.5f * radius, textX + space / 2, (float) radius / 2, paintLine);
+                        canvas.drawLine(x, height - startPoint + 1.5f * radius, x, (float) radius / 2, paintLine);
+                    textPointX = (int) x;
+                }
+            }catch (Exception ignored){
             }
+
 
 
             offset++;

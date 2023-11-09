@@ -26,6 +26,9 @@ public class ModelService extends Service {
     public static AlarmSound alarmSound;
 
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
+    public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<Float>(){{
+        add(1f);
+    }});
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
         add("Loading... Please wait.");
     }});

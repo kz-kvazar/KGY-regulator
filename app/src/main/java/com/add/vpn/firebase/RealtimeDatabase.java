@@ -22,6 +22,7 @@ public class RealtimeDatabase {
     private final Context context;
     ValueEventListener eventListener;
     ValueEventListener reportListener;
+    ValueEventListener avgTempListener;
     DatabaseReference databaseReference;
     private Boolean stopAlarm = false;
 
@@ -138,7 +139,29 @@ public class RealtimeDatabase {
         };
         query.addValueEventListener(reportListener);
     }
+    public void getAvgTemp(){
+        if (avgTempListener != null) databaseReference.removeEventListener(avgTempListener);
+        DatabaseReference avgTempReport = databaseReference.child("avgTemp");
 
+        avgTempListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                LinkedList<Float> avgTemp = new LinkedList<>();
+                Iterable<DataSnapshot> children = snapshot.getChildren();
+                for (DataSnapshot item : children) {
+                    try{
+                        avgTemp.addFirst(Float.valueOf(item.getValue(Integer.class)));
+                    }catch (Exception ignored){}
+                }
+                if(avgTemp.size() == 45) ModelService.avgTemp.setValue(avgTemp);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            }
+        };
+        avgTempReport.addValueEventListener(avgTempListener);
+    }
 
     public void disconnect() {
         databaseReference.removeEventListener(eventListener);

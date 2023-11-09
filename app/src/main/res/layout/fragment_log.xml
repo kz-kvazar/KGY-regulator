@@ -57,6 +57,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                 <com.add.vpn.view.ChartView
+                        android:id="@+id/cv_avgTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:timeUnit="Мин"
+                        app:valueUnit="C"
+                        app:description="Температура цилиндров"
+                        />
+                <com.add.vpn.view.ChartView
                         android:id="@+id/cv_CH41"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -72,14 +80,6 @@
                         app:timeUnit="Час"
                         app:valueUnit="kW"
                         app:description="Активная мощность"
-                        />
-                <com.add.vpn.view.ChartView
-                        android:id="@+id/cv_avgTemp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:timeUnit="Час"
-                        app:valueUnit="C"
-                        app:description="Температура цилиндров"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_resTemp"
