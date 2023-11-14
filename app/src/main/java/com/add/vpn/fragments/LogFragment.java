@@ -32,16 +32,23 @@ public class LogFragment extends Fragment {
     private ChartView avgTemp;
     private Spinner timePicker;
     private ChartView gasFlow;
+    private RealtimeDatabase realtimeDatabase;
     //private RecyclerView logList;
     //private ChartAdapter adapter;
     // private ChartAdapter adapter;
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        realtimeDatabase.disconnect();
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Context context = requireContext();
-        RealtimeDatabase realtimeDatabase = new RealtimeDatabase(context);
+
 //
 //        ArrayList<ChartView> chartViews = new ArrayList<>();
 //        ch4View = new ChartView(context);
@@ -54,8 +61,15 @@ public class LogFragment extends Fragment {
 //        adapter = new ChartAdapter(chartViews);
 //        logList.setAdapter(adapter);
 //        logList.setLayoutManager(new LinearLayoutManager(context));
-        realtimeDatabase.getAvgTemp();
-        avgTemp();
+
+        realtimeDatabase = ModelService.realtimeDatabase.getValue();
+        if (realtimeDatabase == null) {
+            realtimeDatabase = new RealtimeDatabase(context);
+            ModelService.realtimeDatabase.setValue(realtimeDatabase);
+        }
+        //realtimeDatabase.getAvgTemp(300);
+        //avgTemp();
+
         timePicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -83,20 +97,20 @@ public class LogFragment extends Fragment {
             }
         });
     }
-    private void avgTemp(){
-        ModelService.reportList.removeObservers(requireActivity());
-        ModelService.avgTemp.observe(requireActivity(),temp ->{
-            LinkedList<String> time = new LinkedList<>();
-            for (int i = 0; i <= 45; i++) {
-                if(i == 0){
-                    time.addFirst("0");
-                }else{
-                    time.addFirst(String.valueOf(i/3));
-                }
-            }
-            avgTemp.setData(temp,time);
-        });
-    }
+//    private void avgTemp(){
+//        ModelService.avgTemp.removeObservers(requireActivity());
+//        ModelService.avgTemp.observe(requireActivity(),temp ->{
+//            LinkedList<String> time = new LinkedList<>();
+//            for (int i = 0; i < temp.size(); i++) {
+//                if(i == 0){
+//                    time.addFirst("0");
+//                }else{
+//                    time.addFirst(String.valueOf(i));
+//                }
+//            }
+//            avgTemp.setData(temp,time);
+//        });
+//    }
 
     private void report(boolean isDayDeport) {
         ModelService.reportList.removeObservers(requireActivity());
@@ -105,7 +119,6 @@ public class LogFragment extends Fragment {
             LinkedList<String> time = new LinkedList<>();
             LinkedList<Float> powers = new LinkedList<>();
             LinkedList<Float> res = new LinkedList<>();
-            LinkedList<Float> avg = new LinkedList<>();
             LinkedList<Float> oil = new LinkedList<>();
             LinkedList<Float> gas = new LinkedList<>();
 
@@ -117,11 +130,11 @@ public class LogFragment extends Fragment {
                 floats.add(UtilCalculations.averageConcentration(ch4_1, ch4_2));
                 gas.add(item.getGasFlow());
                 try{
-                    avg.add(Float.valueOf(item.getAvgTemp()));
+                    //avg.add(Float.valueOf(item.getAvgTemp()));
                     oil.add(Float.valueOf(item.getCleanOil()));
                     res.add(item.getResTemp());
                 }catch (Exception e){
-                    avg.add(390f);
+                    //avg.add(390f);
                     oil.add(71f);
                     res.add(49.6f);
                 }
@@ -162,7 +175,7 @@ public class LogFragment extends Fragment {
         ch4View = inflate.findViewById(R.id.cv_CH41);
         powerView = inflate.findViewById(R.id.cv_power);
         resTemp = inflate.findViewById(R.id.cv_resTemp);
-        avgTemp = inflate.findViewById(R.id.cv_avgTemp);
+        //avgTemp = inflate.findViewById(R.id.cv_avgTemp);
         cleanOil = inflate.findViewById(R.id.cv_cleanOil);
         gasFlow = inflate.findViewById(R.id.cv_gasFlow);
 

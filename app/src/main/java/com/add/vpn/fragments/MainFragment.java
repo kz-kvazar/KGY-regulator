@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.AdManager;
 import com.add.vpn.NumberPickerDialog;
@@ -29,6 +28,7 @@ import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.ModelService;
 import com.add.vpn.view.AnalogView;
+import com.add.vpn.view.ChartView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -42,7 +42,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class DataFragment extends Fragment {
+import java.util.LinkedList;
+
+public class MainFragment extends Fragment {
 
     private RecyclerView dataList;
     private Button btnOnOff;
@@ -56,6 +58,7 @@ public class DataFragment extends Fragment {
     private String operator = "";
     private AnalogView parMeter;
     private AnalogView opPe;
+    private ChartView avgTemp;
 
 
     @Override
@@ -65,10 +68,10 @@ public class DataFragment extends Fragment {
         fragmentActivity = requireActivity();
 
         //dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
-        dataAdapter = new DataAdapter(ModelService.dataListLiveData.getValue());
-
-        dataList.setAdapter(dataAdapter);
-        dataList.setLayoutManager(new LinearLayoutManager(fragmentActivity));
+//        dataAdapter = new DataAdapter(ModelService.dataListLiveData.getValue());
+//
+//        dataList.setAdapter(dataAdapter);
+//        dataList.setLayoutManager(new LinearLayoutManager(fragmentActivity));
 
         ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
@@ -83,7 +86,7 @@ public class DataFragment extends Fragment {
         });
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
-            dataAdapter.notifyItemRangeChanged(0, 20);
+            //dataAdapter.notifyItemRangeChanged(0, 20);
             if (strings.size() > 2){
             String[] pwr = strings.get(2).split(" ");
             parMeter.setValueAnimated(Float.parseFloat(pwr[2]));
@@ -104,9 +107,15 @@ public class DataFragment extends Fragment {
             AlarmSound alarmSound = ModelService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
         });
-
-        realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
+        realtimeDatabase = ModelService.realtimeDatabase.getValue();
+        if (realtimeDatabase == null) {
+            realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
+            ModelService.realtimeDatabase.setValue(realtimeDatabase);
+        }
+        //realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
         realtimeDatabase.connect();
+        realtimeDatabase.getAvgTemp(300);
+        avgTemp();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.web_client_id)).requestEmail().build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
@@ -141,6 +150,21 @@ public class DataFragment extends Fragment {
 
     }
 
+    private void avgTemp(){
+        ModelService.avgTemp.removeObservers(requireActivity());
+        ModelService.avgTemp.observe(requireActivity(),temp ->{
+            LinkedList<String> time = new LinkedList<>();
+            for (int i = 0; i < temp.size(); i++) {
+                if(i == 0){
+                    time.addFirst("0");
+                }else{
+                    time.addFirst(String.valueOf(i));
+                }
+            }
+            avgTemp.setData(temp,time);
+        });
+    }
+
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential).addOnCompleteListener(fragmentActivity, task -> {
@@ -159,13 +183,7 @@ public class DataFragment extends Fragment {
         handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
         onResume();
 
-        dataAdapter.setOnItemClickListener(position -> {
-            if (position == 4) {
-                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-                numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
-                numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
-            }
-        });
+
     }
 
     @Override
@@ -179,8 +197,9 @@ public class DataFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_data, container, false);
-        dataList = rootView.findViewById(R.id.dataListView);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        //dataList = rootView.findViewById(R.id.dataListView);
+        avgTemp = rootView.findViewById(R.id.cv_avgTemp);
         btnOnOff = rootView.findViewById(R.id.on_off);
         btnSoundOff = rootView.findViewById(R.id.soundOff);
         parMeter = rootView.findViewById(R.id.wat);

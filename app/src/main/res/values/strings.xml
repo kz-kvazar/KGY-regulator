@@ -13,6 +13,9 @@
     <string name="VNS_2">СН4 ВНС-№2: %s %%</string>
     <string name="VNS_1">СН4 ВНС-№1: %s %%</string>
     <string name="month_generated">Генерация за месяц: %s MW</string>
+    <string name="cleanOil">Чистого масла: %s %%</string>
+    <string name="resTemp">Температура ресивера: %s С</string>
+    <string name="avgTemp">Температура цилиндров: %s С</string>
 
     <string name="alarmEnable">Сигнал при ошибках связи</string>
     <string name="errorEnable">Сигнал при ошибках</string>
@@ -31,7 +34,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <string name="log_title">История работы</string>
-    <string name="report_title">Отчет за время работы</string>
+    <string name="report_title">Текущие показатели</string>
 
     <string name="connection_error_title">Проблемы с соединением</string>
     <string name="connection_error_message">Обнаружена ошибка связи с КГУ. Проверьте Wi-Fi соединение</string>

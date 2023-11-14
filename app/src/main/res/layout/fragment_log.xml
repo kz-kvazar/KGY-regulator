@@ -56,14 +56,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                <com.add.vpn.view.ChartView
-                        android:id="@+id/cv_avgTemp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:timeUnit="Мин"
-                        app:valueUnit="C"
-                        app:description="Температура цилиндров"
-                        />
+<!--                <com.add.vpn.view.ChartView-->
+<!--                        android:id="@+id/cv_avgTemp"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        app:timeUnit="Сек"-->
+<!--                        app:valueUnit="C"-->
+<!--                        app:description="Температура цилиндров"-->
+<!--                        app:isAvg="false"-->
+<!--                        />-->
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_CH41"
                         android:layout_width="wrap_content"
@@ -71,7 +72,8 @@
                         app:timeUnit="Час"
                         app:valueUnit=" %"
                         app:valueMarker="28"
-                        app:description="CH4"/>
+                        app:description="CH4"
+                        app:isAvg="true"/>
 
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_power"
@@ -80,6 +82,7 @@
                         app:timeUnit="Час"
                         app:valueUnit="kW"
                         app:description="Активная мощность"
+                        app:isAvg="true"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_resTemp"
@@ -88,6 +91,7 @@
                         app:timeUnit="Час"
                         app:valueUnit="С"
                         app:description="Температура ресивера"
+                        app:isAvg="true"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_gasFlow"
@@ -96,6 +100,7 @@
                         app:timeUnit="Час"
                         app:valueUnit="м3/ч"
                         app:description="Расход ГВС"
+                        app:isAvg="true"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_cleanOil"
@@ -104,6 +109,7 @@
                         app:timeUnit="Час"
                         app:valueUnit="%"
                         app:description="Уровень чистого масла"
+                        app:isAvg="true"
                         />
             </LinearLayout>
 

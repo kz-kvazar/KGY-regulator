@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import com.add.vpn.R;
 
@@ -38,6 +39,13 @@ public class ChartView extends View {
     private String timeUnit = "час";
     private String valueUnit = "kW";
     private String description = "Power Constant";
+    private boolean isAvg = true;
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    private int maxSize = 72;
 //    private final Matrix matrix;
 //    private final ScaleGestureDetector scaleGestureDetector;
 //    private final GestureDetector gestureDetector;
@@ -95,15 +103,23 @@ public class ChartView extends View {
                 valueMarker = chars != null ? Integer.valueOf((String) chars) : null;
                 chars = a.getText(R.styleable.ChartView_description);
                 description = chars!= null ? chars.toString() : "Power Constant";
+                isAvg = a.getBoolean(R.styleable.ChartView_isAvg,true);
                 a.recycle();
             } catch (Exception ignored) {
-
             }
         }
     }
 
     public void setTimeUnit(String timeUnit) {
         this.timeUnit = timeUnit;
+    }
+
+    public LinkedList<Float> getDataValue() {
+        return dataValue;
+    }
+
+    public LinkedList<String> getTime() {
+        return time;
     }
 
     @Override
@@ -122,25 +138,40 @@ public class ChartView extends View {
         if (height >= width) {
             height = width / 2;
         }
-        dataValue = pruneList(tempReportValue, 24 * ((width / height)));
-        time = pruneList(temoReportDate, 24 * ((width / height)));
+        maxSize = 48 * (width / height);
+        if (isAvg){
+            dataValue = pruneList(tempReportValue, maxSize);
+            time = pruneList(temoReportDate, maxSize);
+        }else {
+            dataValue = tempReportValue;
+            time = temoReportDate;
+            maxData(maxSize);
+        }
 
         //canvas.drawRect(0, 0, width, height, paint);
-
 
         int offset = 0;
         int radius = height / 80;
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
 
-        if (dataValue == null || dataValue.isEmpty()) return;
+        float maxValue = 1;
+        float minValue = 1;
 
-        float maxValue = Collections.max(dataValue);
+        if (dataValue != null && !dataValue.isEmpty()){
+             maxValue = Collections.max(dataValue);
+             minValue = Collections.min(dataValue);
+        }
+
+//        float maxValue = Collections.max(dataValue);
+//        float minValue = Collections.min(dataValue);
         //float maxTime = Collections.max(reportDate);
 
-        float startPoint = (height - (height * 0.85f));
-        float timeScale = ((width - 1.6f * startPoint) / dataValue.size());
-        float valueScale = ((height - 2f * startPoint) / maxValue);
+        float startPoint = (height - (height * 0.82f));
+        float timeScale = ((width - 2f * startPoint) / dataValue.size());
+        float val = maxValue - minValue;
+        if (maxValue - minValue == 0) val = 1;
+        float valueScale = ((height - 2f * startPoint) / val);
 
         float descriptionX = startPoint + 2*radius;
         float descriptionY = startPoint - 2*radius;
@@ -148,7 +179,7 @@ public class ChartView extends View {
         paint.setColor(Color.GREEN);
         paint.setAlpha(90);
         canvas.drawText(description,descriptionX,descriptionY,paint);
-        paint.setAlpha(100); // рисуем назавние графика
+        paint.setAlpha(100); // рисуем название графика
 
         paint.setColor(Color.BLUE);
 
@@ -168,7 +199,7 @@ public class ChartView extends View {
             } else {
                 x = startPoint + timeScale * offset;
             }
-            float y = height - startPoint - valueScale * value;
+            float y = height - startPoint - valueScale * (value - minValue);
 
             // Рисуем кружок
             //canvas.drawCircle(x, y, radius, paint);
@@ -187,8 +218,8 @@ public class ChartView extends View {
             // Рисуем текст (время)
             try {
                 String timeText = String.valueOf(time.get(i));
-                paint.setTextSize((float) height / 20); // Установите желаемый размер шрифта
-                float space = paint.measureText("00");
+                paint.setTextSize((float) (height / 20) + ((float) width /height)); // Установите желаемый размер шрифта
+                float space = paint.measureText("000");
                 float textWith = paint.measureText(timeText);
 
                 //float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
@@ -204,30 +235,32 @@ public class ChartView extends View {
             }catch (Exception ignored){
             }
 
-
-
             offset++;
             prevPoint.set(x, y);
         }
 
         // рисуем график на оси Y
-        for (float i = maxValue; i > 0.1; i -= (maxValue / 4)) {
-            String valueText = String.valueOf(Math.round(i));
+        for (float i = val; i > 0.1f; i -= (val / 4)) {
+            String valueText = String.valueOf(Math.round(i + minValue));
             float valueHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
             //float valueWidth = paint.measureText(valueText);
 
-            float valueY = height - startPoint - valueScale * i;
+            float valueY = height - startPoint - valueScale * (i);
             float valueX = valueHeight / 6;
-            canvas.drawText(valueText, valueX, valueY + valueHeight / 4, paint);
+            canvas.drawText(valueText, (float) radius /4, valueY + (valueHeight/4), paint);
             canvas.drawLine(startPoint - radius, valueY, width - startPoint / 3, valueY, paintLine);
+            if (i == val){
+                canvas.drawText(String.valueOf(Math.round(minValue)), valueX, height - startPoint + (valueHeight/4), paint);
+            }
         }
         //рисуем маркер значение
-        if (valueMarker != null && maxValue > valueMarker) {
+        if (valueMarker != null && maxValue > valueMarker && valueMarker > minValue) {
             paintLine.setColor(Color.argb(100, 0, 255, 0));
             paintLine.setStrokeWidth((float) height / 50);
-            canvas.drawLine(startPoint - radius, height - startPoint - valueScale * valueMarker, width - startPoint / 3, height - startPoint - valueScale * valueMarker, paintLine);
+            canvas.drawLine(startPoint - radius, height - startPoint - valueScale * (valueMarker - minValue), width - startPoint / 3, height - startPoint - valueScale * (valueMarker - minValue), paintLine);
         }
-        paint.setTextSize((float) height / 20);
+        // единицы измерения
+        paint.setTextSize((float) height / 20 + ((float) width /height));
         paint.setColor(Color.RED);
 
         float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
@@ -284,6 +317,7 @@ public class ChartView extends View {
         if (measuredHeight >= measuredWidth) {
             measuredHeight = measuredWidth / 2;
         }
+        //maxSize = 24 * (measuredWidth / measuredHeight);
         setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
@@ -307,10 +341,19 @@ public class ChartView extends View {
         temoReportDate = time;
         invalidate();
     }
+    private void maxData(int maxSize){
+        if (dataValue.size() > maxSize){
+            int deltaSize = dataValue.size() - maxSize;
+            for (int i = 0; i < deltaSize; i++) {
+                this.dataValue.removeFirst();
+                this.time.removeFirst();
+            }
+        }
+    }
 
     public <T> LinkedList<T> pruneList(LinkedList<T> floatValueList, int maxItems) {
         if (floatValueList.size() <= maxItems || floatValueList.isEmpty()) {
-            return floatValueList; // Если список уже не больше 48, не требуется прореживание
+            return floatValueList; // Если список уже не больше maxItems, не требуется прореживание
         }
         int interval = floatValueList.size() / maxItems;
 
@@ -318,13 +361,12 @@ public class ChartView extends View {
         int avg = 0;
         int count = 0;
         for (int i = 0; i < floatValueList.size(); i++) {
-            if (floatValueList.get(i) instanceof Float) {
+            if (floatValueList.get(i) instanceof Float && isAvg) {
                 Number number = (Number) floatValueList.get(i);
-                avg += number.floatValue();
+                avg += (int) number.floatValue();
                 count++;
-
                 if (i % interval == 0) {
-                    float averageValue = count > 0 ? avg / count : 0.0f;
+                    float averageValue = count > 0 ? (float) avg / count : 0.0f;
                     prunedList.add((T) (Number) averageValue);
                     avg = 0;
                     count = 0;

@@ -33,6 +33,6 @@ public class UtilCalculations {
         } else if (ch42 < 100 && ch42 > 0 && ch41 < 100 && ch41 > 0) {
             result = (ch41 + ch42)/2;
         }
-        return result - 4f;
+        return result * 0.9f;
     }
 }

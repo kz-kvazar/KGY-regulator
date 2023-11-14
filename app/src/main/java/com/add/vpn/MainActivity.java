@@ -9,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.add.vpn.adapters.ViewPagerAdapter;
-import com.add.vpn.fragments.DataFragment;
+import com.add.vpn.fragments.MainFragment;
 import com.add.vpn.fragments.LogFragment;
 
+import com.add.vpn.fragments.ReportFragment;
 import com.add.vpn.modelService.ModelService;
-import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new DataFragment());
+        fragments.add(new MainFragment());
         fragments.add(new LogFragment());
-        //fragments.add(new ReportFragment());
+        fragments.add(new ReportFragment());
 
         viewPager2 = findViewById(R.id.pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(this, fragments);

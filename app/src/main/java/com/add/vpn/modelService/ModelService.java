@@ -26,12 +26,11 @@ public class ModelService extends Service {
     public static AlarmSound alarmSound;
 
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
-    public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<Float>(){{
-        add(1f);
-    }});
+    public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<Float>());
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
         add("Loading... Please wait.");
     }});
+    public static final MutableLiveData<RealtimeDatabase> realtimeDatabase = new MutableLiveData<>();
     public static final MutableLiveData<LinkedList<FBreportItem>> reportList = new MutableLiveData<>(new LinkedList<FBreportItem>(){{
 //        FBreportItem fBreportItem = new FBreportItem(String.valueOf(new Date().getTime() / 1000));
 //        fBreportItem.setCH4_1(10f);

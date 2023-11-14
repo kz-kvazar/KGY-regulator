@@ -4,11 +4,13 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.add.vpn.R;
 import com.add.vpn.UtilCalculations;
 import com.add.vpn.modelService.ModelService;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Objects;
 
 public class RealtimeDatabase {
     private final Context context;
@@ -38,26 +40,32 @@ public class RealtimeDatabase {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> arrayList = new ArrayList<>();
 
-                arrayList.add(context.getString(R.string.op_Pressure, String.valueOf(dataSnapshot.child("now").child("opPresher").getValue(Double.class))));
-                arrayList.add(context.getString(R.string.throttlePosition, String.valueOf(dataSnapshot.child("now").child("trottlePosition").getValue(Integer.class))));
-                Integer powerActive = dataSnapshot.child("now").child("powerActive").getValue(Integer.class);
+                arrayList.add(context.getString(R.string.op_Pressure, String.valueOf(dataSnapshot.child("opPresher").getValue(Double.class))));
+                arrayList.add(context.getString(R.string.throttlePosition, String.valueOf(dataSnapshot.child("trottlePosition").getValue(Integer.class))));
+                Integer powerActive = dataSnapshot.child("powerActive").getValue(Integer.class);
                 arrayList.add(context.getString(R.string.act_Power, String.valueOf(powerActive)));
-                arrayList.add(context.getString(R.string.const_Power, String.valueOf(dataSnapshot.child("now").child("powerConstant").getValue(Integer.class))));
-                arrayList.add(context.getString(R.string.max_power, String.valueOf(dataSnapshot.child("now").child("MaxPower").getValue(Integer.class))));
-                arrayList.add(context.getString(R.string.VNS_1, String.valueOf(dataSnapshot.child("now").child("CH4_1").getValue(Double.class))));
-                arrayList.add(context.getString(R.string.VNS_2, String.valueOf(dataSnapshot.child("now").child("CH4_2").getValue(Double.class))));
-                arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("now").child("gtsPresher").getValue(Double.class))));
-                arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("now").child("kgyPresher").getValue(Double.class))));
+                arrayList.add(context.getString(R.string.const_Power, String.valueOf(dataSnapshot.child("powerConstant").getValue(Integer.class))));
+                arrayList.add(context.getString(R.string.max_power, String.valueOf(dataSnapshot.child("MaxPower").getValue(Integer.class))));
+                Double ch4_1 = dataSnapshot.child("CH4_1").getValue(Double.class);
+                arrayList.add(context.getString(R.string.VNS_1, String.valueOf(ch4_1)));
+                Double ch4_2 = dataSnapshot.child("CH4_2").getValue(Double.class);
+                arrayList.add(context.getString(R.string.VNS_2, String.valueOf(ch4_2)));
+                arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("gtsPresher").getValue(Double.class))));
+                arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("kgyPresher").getValue(Double.class))));
+                arrayList.add(context.getString(R.string.gas_Flow, String.valueOf(UtilCalculations.calculateGasFlow(Float.valueOf(String.valueOf(ch4_1)), Float.valueOf(String.valueOf(ch4_2)), powerActive))));
+                arrayList.add(context.getString(R.string.cleanOil, String.valueOf(dataSnapshot.child("cleanOil").getValue(Double.class))));
+                arrayList.add(context.getString(R.string.resTemp, String.valueOf(dataSnapshot.child("resTemp").getValue(Double.class))));
+                arrayList.add(context.getString(R.string.avgTemp, String.valueOf(dataSnapshot.child("avgTemp").getValue(Double.class))));
 
-                Long monthStartGenerated = dataSnapshot.child("now").child("monthStartGenerated").getValue(Long.class);
-                Long totalActivePower = dataSnapshot.child("now").child("totalActivePower").getValue(Long.class);
+                Long monthStartGenerated = dataSnapshot.child("monthStartGenerated").getValue(Long.class);
+                Long totalActivePower = dataSnapshot.child("totalActivePower").getValue(Long.class);
 
                 if (monthStartGenerated != null && totalActivePower != null) {
                     arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
                 }
                 if (powerActive != null && powerActive > 0) stopAlarm = true;
 
-                if (Boolean.TRUE.equals(dataSnapshot.child("now").child("alarm").getValue(Boolean.class)) || (powerActive != null && powerActive == 0 && stopAlarm)) {
+                if (Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class)) || (powerActive != null && powerActive == 0 && stopAlarm)) {
                     if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
                         ModelService.alarmSound.alarmPlay();
                         stopAlarm = false;
@@ -75,7 +83,8 @@ public class RealtimeDatabase {
             }
 
         };
-        databaseReference.addValueEventListener(eventListener);
+        databaseReference.child("now").addValueEventListener(eventListener);
+        //databaseReference.addValueEventListener(eventListener);
     }
 
     public void wrightUnixTime() {
@@ -116,7 +125,8 @@ public class RealtimeDatabase {
                     Float resTemp = item.child("resTemp").getValue(Float.class);
 
 
-                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null) {
+                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null
+                    && cleanOil != null && avgTemp != null && resTemp != null) {
                         FBreportItem reportItem = new FBreportItem(date);
                         reportItem.setPowerActive(powerActive);
                         reportItem.setCH4_1(ch4_1);
@@ -139,33 +149,50 @@ public class RealtimeDatabase {
         };
         query.addValueEventListener(reportListener);
     }
-    public void getAvgTemp(){
-        if (avgTempListener != null) databaseReference.removeEventListener(avgTempListener);
-        DatabaseReference avgTempReport = databaseReference.child("avgTemp");
 
-        avgTempListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                LinkedList<Float> avgTemp = new LinkedList<>();
-                Iterable<DataSnapshot> children = snapshot.getChildren();
-                for (DataSnapshot item : children) {
-                    try{
-                        avgTemp.addFirst(Float.valueOf(item.getValue(Integer.class)));
-                    }catch (Exception ignored){}
+    public void getAvgTemp(int maxItems) {
+        if (avgTempListener == null){
+            DatabaseReference avgTempReport = databaseReference.child("avgTemp").child("time");
+
+            avgTempListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    LinkedList<Float> avgTempValue = ModelService.avgTemp.getValue();
+                    databaseReference.child("avgTemp").child("0").get().addOnSuccessListener(dataSnapshot -> {
+                        Integer value = dataSnapshot.getValue(Integer.class);
+                        if (avgTempValue != null && avgTempValue.size() > maxItems) {
+                            avgTempValue.removeFirst();
+                        }
+                        if (value != null){
+                            if (avgTempValue != null) {
+                                avgTempValue.addLast(Float.valueOf(value));
+                                ModelService.avgTemp.setValue(avgTempValue);
+                            }
+                        }
+                    });
                 }
-                if(avgTemp.size() == 45) ModelService.avgTemp.setValue(avgTemp);
-            }
 
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-            }
-        };
-        avgTempReport.addValueEventListener(avgTempListener);
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                }
+            };
+            avgTempReport.addValueEventListener(avgTempListener);
+        }
+
     }
 
     public void disconnect() {
-        databaseReference.removeEventListener(eventListener);
+        if (eventListener != null){
+            databaseReference.removeEventListener(eventListener);
+        }
+        if (avgTempListener != null){
+            databaseReference.removeEventListener(avgTempListener);
+        }
+        if (reportListener != null){
+            databaseReference.removeEventListener(reportListener);
+        }
     }
+
     public LinkedList<FBreportItem> pruneList(LinkedList<FBreportItem> list, int maxItems) {
         if (list.size() <= maxItems) {
             return list; // Если список уже не больше 48, не требуется прореживание
@@ -178,7 +205,7 @@ public class RealtimeDatabase {
         for (int i = 0; i < list.size(); i++) {
             avgGenerated += list.get(i).getPowerActive();
             if (i % interval == 0) {
-                list.get(i).setPowerActive(avgGenerated/interval);
+                list.get(i).setPowerActive(avgGenerated / interval);
                 prunedList.add(list.get(i));
                 avgGenerated = 0;
             }
