@@ -54,7 +54,7 @@ public class ReportFragment extends Fragment {
             ModelService.realtimeDatabase.setValue(realtimeDatabase);
         }
         //realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
-        realtimeDatabase.connect();
+        //realtimeDatabase.connect();
 
         dataAdapter.setOnItemClickListener(position -> {
             if (position == 4) {

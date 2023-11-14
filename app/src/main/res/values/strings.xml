@@ -37,7 +37,7 @@
     <string name="report_title">Текущие показатели</string>
 
     <string name="connection_error_title">Проблемы с соединением</string>
-    <string name="connection_error_message">Обнаружена ошибка связи с КГУ. Проверьте Wi-Fi соединение</string>
+    <string name="connection_error_message">Обнаружена ошибка связи с КГУ.</string>
     <string name="connection_error_log_msg">%s Ошибка связи. Нестабильное соединение…</string>
 
     <string name="service_notification_message">Автоматическое регулирование КГУ запущенно!</string>
