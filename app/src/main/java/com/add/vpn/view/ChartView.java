@@ -190,12 +190,12 @@ public class ChartView extends View {
         paintLine.setStrokeWidth((float) height / 300);
         paintLine.setStyle(Paint.Style.STROKE);
         float round = 5 * radius;
-        canvas.drawRoundRect(startPointX - radius, (float) radius / 2, width - endPointX / 2 - startPointX/2 + 2*radius, height - startPointX + 1.5f * radius, round, round, paintLine);
+        float right = width - endPointX / 2 - startPointX / 2 + 3 * radius;
+        canvas.drawRoundRect(startPointX - radius, (float) radius / 2, right, height - startPointX + 1.5f * radius, round, round, paintLine);
 
         for (int i = dataValue.size() - 1; i >= 0; i--) {
             Float value = dataValue.get(i);
-            float x;
-            x = startPointX + timeScale * offset;
+            float x = startPointX + timeScale * offset;
             float y = height - startPointX - valueScale * (value - minValue);
 
             // добавляем точки для последующей отрисовки
@@ -228,7 +228,6 @@ public class ChartView extends View {
                 if ((textPointX == 0 || x - textPointX > 1.5f * space) && x  < width - endPointX - radius - textWith && isTimeEquals) {
                     canvas.drawText(timeText, textX, textY, paint);
                     if (textPointX != 0 || x > startPointX + round) // первая черта не рисуется и не рисуется черта в закруглении рамки
-                        //canvas.drawLine(textX + space / 2, height - startPoint + 1.5f * radius, textX + space / 2, (float) radius / 2, paintLine);
                         canvas.drawLine(x, height - startPointX + 1.5f * radius, x, (float) radius / 2, paintLine);
                     textPointX =  x;
                 }
@@ -247,7 +246,7 @@ public class ChartView extends View {
             float valueY = height - startPointX - valueScale * (i);
             float valueX = valueHeight / 6;
             canvas.drawText(valueText, (float) radius /4, valueY + (valueHeight/4), paint);
-            canvas.drawLine(startPointX - radius, valueY, width - endPointX / 2 - startPointX/2 + 2*radius, valueY, paintLine);
+            canvas.drawLine(startPointX - radius, valueY, right, valueY, paintLine);
             if (i == deltaValue){
                 canvas.drawText(String.valueOf(Math.round(minValue)), valueX, height - startPointX + (valueHeight/4), paint);
             }
@@ -256,7 +255,7 @@ public class ChartView extends View {
         if (valueMarker != null && maxValue > valueMarker && valueMarker > minValue) {
             paintLine.setColor(Color.argb(100, 0, 255, 0));
             paintLine.setStrokeWidth((float) height / 50);
-            canvas.drawLine(startPointX - radius, height - startPointX - valueScale * (valueMarker - minValue), width - endPointX / 2 - startPointX/2 + 2*radius, height - startPointX - valueScale * (valueMarker - minValue), paintLine);
+            canvas.drawLine(startPointX - radius, height - startPointX - valueScale * (valueMarker - minValue), right, height - startPointX - valueScale * (valueMarker - minValue), paintLine);
         }
 
         // единицы измерения величины и времени красный текст
