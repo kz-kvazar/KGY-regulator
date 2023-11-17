@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import com.add.vpn.R;
 
@@ -139,6 +138,7 @@ public class ChartView extends View {
             height = width / 2;
         }
         maxSize = 48 * (width / height);
+        if (maxSize < 72) maxSize = 72;
         if (isAvg){
             dataValue = pruneList(tempReportValue, maxSize);
             time = pruneList(temoReportDate, maxSize);
@@ -151,7 +151,7 @@ public class ChartView extends View {
         //canvas.drawRect(0, 0, width, height, paint);
 
         int offset = 0;
-        int radius = height / 80;
+        int radius = (height / 140) + ((width / height)/4);
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
 
@@ -161,45 +161,57 @@ public class ChartView extends View {
         if (dataValue != null && !dataValue.isEmpty()){
              maxValue = Collections.max(dataValue);
              minValue = Collections.min(dataValue);
+        }else {
+            return;
         }
 
 //        float maxValue = Collections.max(dataValue);
 //        float minValue = Collections.min(dataValue);
         //float maxTime = Collections.max(reportDate);
+        paint.setTextSize((float) (height / 20) + ((float) width /height)); // Установите желаемый размер шрифта
+        int rounded = Math.round(maxValue);
+        float startPointX = paint.measureText(String.valueOf(rounded) + radius); // точка начала относительно значения
+        float startPointUnitX = paint.measureText(String.valueOf(valueUnit) +radius);
+        if (startPointX < startPointUnitX) startPointX = startPointUnitX;
+        float endPointX = paint.measureText(String.valueOf(valueUnit) + radius);
 
-        float startPoint = (height - (height * 0.82f));
-        float timeScale = ((width - 2f * startPoint) / dataValue.size());
-        float val = maxValue - minValue;
-        if (maxValue - minValue == 0) val = 1;
-        float valueScale = ((height - 2f * startPoint) / val);
+        float startPointY = paint.getFontMetrics().descent - paint.getFontMetrics().ascent + paint.getFontMetrics().bottom - paint.getFontMetrics().top;
 
-        float descriptionX = startPoint + 2*radius;
-        float descriptionY = startPoint - 2*radius;
+        float descriptionX = startPointX + 2*radius;
+        float descriptionY = startPointX - 2*radius;
         paint.setTextSize((float) height/8);
         paint.setColor(Color.GREEN);
         paint.setAlpha(90);
-        canvas.drawText(description,descriptionX,descriptionY,paint);
+        canvas.drawText(description,descriptionX,startPointY,paint);
         paint.setAlpha(100); // рисуем название графика
+
+        //float startPoint = (height - (height * 0.82f));
+        float timeScale = ((width - endPointX/2 - startPointX/2 - radius) / dataValue.size()-1);
+        float deltaValue = (maxValue - minValue);
+        if (maxValue - minValue == 0) deltaValue = 1;
+        float valueScale = ((height - startPointX - startPointY - radius) / deltaValue);
+
+
 
         paint.setColor(Color.BLUE);
 
-        //рисуем оси графика
+        //рисуем квадрат графика
         paintLine.setColor(Color.argb(0xaa, 0xaa, 0xaa, 0xaa));
         paintLine.setStrokeWidth((float) height / 300);
         paintLine.setStyle(Paint.Style.STROKE);
         float round = 5 * radius;
-        canvas.drawRoundRect(startPoint - radius, (float) radius / 2, width - startPoint / 3, height - startPoint + 1.5f * radius, round, round, paintLine);
+        canvas.drawRoundRect(startPointX - radius, (float) radius / 2, width - startPointX / 3, height - startPointX + 1.5f * radius, round, round, paintLine);
 
 
-        for (int i = 0, reportValueSize = dataValue.size(); i < reportValueSize; i++) {
+        for (int i = dataValue.size() - 1; i >= 0; i--) {
             Float value = dataValue.get(i);
             float x;
             if (i == 0) {
-                x = startPoint;
+                x = startPointX + timeScale * offset;
             } else {
-                x = startPoint + timeScale * offset;
+                x = startPointX + timeScale * offset;
             }
-            float y = height - startPoint - valueScale * (value - minValue);
+            float y = height - startPointX - valueScale * (value - minValue);
 
             // Рисуем кружок
             //canvas.drawCircle(x, y, radius, paint);
@@ -224,14 +236,21 @@ public class ChartView extends View {
 
                 //float textHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
                 float textX = x - textWith / 2;
-                float textY = height - (startPoint / 4);
-                if (textPointX == 0 || x - textPointX > 1.5f * space) {
+                float textY = height - (startPointX / 4);
+
+                boolean isTimeEquals = true;
+                if (i != 0){
+                    isTimeEquals = !time.get(i).equals(time.get(i - 1));
+                }
+
+                if ((textPointX == 0 || x - textPointX > 1.5f * space) && x + endPointX + radius < width && isTimeEquals) {
                     canvas.drawText(timeText, textX, textY, paint);
-                    if (textPointX != 0)
+                    if (textPointX != 0 || x > startPointX + round) // первая черта не рисуется и не рисуется черта в закруглении рамки
                         //canvas.drawLine(textX + space / 2, height - startPoint + 1.5f * radius, textX + space / 2, (float) radius / 2, paintLine);
-                        canvas.drawLine(x, height - startPoint + 1.5f * radius, x, (float) radius / 2, paintLine);
+                        canvas.drawLine(x, height - startPointX + 1.5f * radius, x, (float) radius / 2, paintLine);
                     textPointX = (int) x;
                 }
+
             }catch (Exception ignored){
             }
 
@@ -240,24 +259,24 @@ public class ChartView extends View {
         }
 
         // рисуем график на оси Y
-        for (float i = val; i > 0.1f; i -= (val / 4)) {
+        for (float i = deltaValue; i > 0.1f; i -= (deltaValue / 4)) {
             String valueText = String.valueOf(Math.round(i + minValue));
             float valueHeight = paint.getFontMetrics().bottom - paint.getFontMetrics().top;
             //float valueWidth = paint.measureText(valueText);
 
-            float valueY = height - startPoint - valueScale * (i);
+            float valueY = height - startPointX - valueScale * (i);
             float valueX = valueHeight / 6;
             canvas.drawText(valueText, (float) radius /4, valueY + (valueHeight/4), paint);
-            canvas.drawLine(startPoint - radius, valueY, width - startPoint / 3, valueY, paintLine);
-            if (i == val){
-                canvas.drawText(String.valueOf(Math.round(minValue)), valueX, height - startPoint + (valueHeight/4), paint);
+            canvas.drawLine(startPointX - radius, valueY, width - startPointX / 3, valueY, paintLine);
+            if (i == deltaValue){
+                canvas.drawText(String.valueOf(Math.round(minValue)), valueX, height - startPointX + (valueHeight/4), paint);
             }
         }
         //рисуем маркер значение
         if (valueMarker != null && maxValue > valueMarker && valueMarker > minValue) {
             paintLine.setColor(Color.argb(100, 0, 255, 0));
             paintLine.setStrokeWidth((float) height / 50);
-            canvas.drawLine(startPoint - radius, height - startPoint - valueScale * (valueMarker - minValue), width - startPoint / 3, height - startPoint - valueScale * (valueMarker - minValue), paintLine);
+            canvas.drawLine(startPointX - radius, height - startPointX - valueScale * (valueMarker - minValue), width - startPointX / 3, height - startPointX - valueScale * (valueMarker - minValue), paintLine);
         }
         // единицы измерения
         paint.setTextSize((float) height / 20 + ((float) width /height));
@@ -267,7 +286,7 @@ public class ChartView extends View {
         //float valueUnitWidth = paint.measureText(valueUnit);
         float timeUnitWidth = paint.measureText(timeUnit);
         canvas.drawText(valueUnit, textHeight / 6, textHeight * 0.8f, paint);
-        canvas.drawText(timeUnit, (float) (width - 1.05 * timeUnitWidth), height - (startPoint / 4), paint);
+        canvas.drawText(timeUnit, (float) (width - 1.05 * timeUnitWidth), height - (startPointX / 4), paint);
 
         paint.setShadowLayer((float) radius / 2, 2 * radius, 2 * radius, Color.GRAY);
         paint.setColor(Color.BLUE);
