@@ -27,7 +27,7 @@ public class ChartView extends View {
         add(2f);
         add(3f);
     }};
-    private LinkedList<String> temoReportDate = new LinkedList<String>() {{
+    private LinkedList<String> tempReportDate = new LinkedList<String>() {{
         add("1");
         add("3");
         add("5");
@@ -140,10 +140,10 @@ public class ChartView extends View {
         if (maxSize < 72) maxSize = 72;
         if (isAvg){
             dataValue = pruneList(tempReportValue, maxSize);
-            time = pruneList(temoReportDate, maxSize);
+            time = pruneList(tempReportDate, maxSize);
         }else {
             dataValue = tempReportValue;
-            time = temoReportDate;
+            time = tempReportDate;
             maxData(maxSize);
         }
 
@@ -183,8 +183,6 @@ public class ChartView extends View {
         if (maxValue - minValue == 0) deltaValue = 1;
         float valueScale = ((height - startPointX - startPointY - radius) / deltaValue);
 
-
-
         paint.setColor(Color.BLUE);
 
         //рисуем квадрат графика
@@ -193,7 +191,6 @@ public class ChartView extends View {
         paintLine.setStyle(Paint.Style.STROKE);
         float round = 5 * radius;
         canvas.drawRoundRect(startPointX - radius, (float) radius / 2, width - endPointX / 2 - startPointX/2 + 2*radius, height - startPointX + 1.5f * radius, round, round, paintLine);
-
 
         for (int i = dataValue.size() - 1; i >= 0; i--) {
             Float value = dataValue.get(i);
@@ -228,7 +225,6 @@ public class ChartView extends View {
                 if (i != 0){
                     isTimeEquals = !time.get(i).equals(time.get(i - 1));
                 }
-
                 if ((textPointX == 0 || x - textPointX > 1.5f * space) && x  < width - endPointX - radius - textWith && isTimeEquals) {
                     canvas.drawText(timeText, textX, textY, paint);
                     if (textPointX != 0 || x > startPointX + round) // первая черта не рисуется и не рисуется черта в закруглении рамки
@@ -236,10 +232,8 @@ public class ChartView extends View {
                         canvas.drawLine(x, height - startPointX + 1.5f * radius, x, (float) radius / 2, paintLine);
                     textPointX =  x;
                 }
-
             }catch (Exception ignored){
             }
-
             offset++;
             prevPoint.set(x, y);
         }
@@ -342,7 +336,7 @@ public class ChartView extends View {
 
     public void setData(LinkedList<Float> dataValue, LinkedList<String> time) {
         tempReportValue = dataValue;
-        temoReportDate = time;
+        tempReportDate = time;
         invalidate();
     }
     private void maxData(int maxSize){
