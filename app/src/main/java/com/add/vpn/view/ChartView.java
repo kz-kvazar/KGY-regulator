@@ -180,7 +180,7 @@ public class ChartView extends View {
         paint.setTextSize((float) height/8);
         paint.setColor(Color.GREEN);
         paint.setAlpha(90);
-        canvas.drawText(description,descriptionX,startPointY,paint);
+        canvas.drawText(description,descriptionX,startPointY - 3*radius,paint);
         paint.setAlpha(100); // рисуем название графика
 
         float timeScale = ((width - startPointX - endPointX) / dataValue.size());
@@ -195,9 +195,9 @@ public class ChartView extends View {
 //        }
            deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 1.1f, 1f);
        }else {
-           deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 10f, 1f);
-           //deltaValue = maxValue;
-           //minValue *= 0.5f;
+           //deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 3f, 1f);
+           deltaValue = maxValue;
+           minValue *= 0.1f;
        }
 
 
