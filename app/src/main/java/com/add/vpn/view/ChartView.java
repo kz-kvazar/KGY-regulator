@@ -1,10 +1,12 @@
 package com.add.vpn.view;
 
+import android.animation.FloatEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import androidx.annotation.Nullable;
 import com.add.vpn.R;
 
@@ -20,6 +22,7 @@ public class ChartView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     LinkedList<Float> dataValue;
     LinkedList<String> time;
+    FloatEvaluator floatEvaluator = new FloatEvaluator();
     private LinkedList<Float> tempReportValue = new LinkedList<Float>() {{
         add(1f);
         add(3f);
@@ -181,9 +184,15 @@ public class ChartView extends View {
         float timeScale = ((width - startPointX - endPointX) / dataValue.size());
         float deltaValue = (maxValue - minValue);
         if (maxValue - minValue == 0) deltaValue = 1;
-        if (maxValue * 0.1 > deltaValue){
-            deltaValue *= 3;
-        }
+//        if (maxValue * 0.15 > deltaValue){
+//            deltaValue *= 3;
+//        }
+//        if (deltaValue != 1){
+//            deltaValue = deltaValue / ((deltaValue/maxValue));
+//        }
+
+        deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 3f, 1f);
+
         float valueScale = ((height - startPointX - startPointY - radius) / deltaValue);
 
         paint.setColor(Color.BLUE);
