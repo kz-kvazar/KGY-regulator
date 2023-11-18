@@ -181,6 +181,9 @@ public class ChartView extends View {
         float timeScale = ((width - startPointX - endPointX) / dataValue.size());
         float deltaValue = (maxValue - minValue);
         if (maxValue - minValue == 0) deltaValue = 1;
+        if (maxValue * 0.1 > deltaValue){
+            deltaValue *= 3;
+        }
         float valueScale = ((height - startPointX - startPointY - radius) / deltaValue);
 
         paint.setColor(Color.BLUE);
