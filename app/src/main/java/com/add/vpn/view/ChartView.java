@@ -42,6 +42,7 @@ public class ChartView extends View {
     private String valueUnit = "kW";
     private String description = "Power Constant";
     private boolean isAvg = true;
+    private boolean isAutoScale = true;
 
     public int getMaxSize() {
         return maxSize;
@@ -106,6 +107,7 @@ public class ChartView extends View {
                 chars = a.getText(R.styleable.ChartView_description);
                 description = chars!= null ? chars.toString() : "Power Constant";
                 isAvg = a.getBoolean(R.styleable.ChartView_isAvg,true);
+                isAutoScale = a.getBoolean(R.styleable.ChartView_isAutoScale, true);
                 a.recycle();
             } catch (Exception ignored) {
             }
@@ -184,14 +186,20 @@ public class ChartView extends View {
         float timeScale = ((width - startPointX - endPointX) / dataValue.size());
         float deltaValue = (maxValue - minValue);
         if (maxValue - minValue == 0) deltaValue = 1;
+       if (isAutoScale){
 //        if (maxValue * 0.15 > deltaValue){
 //            deltaValue *= 3;
 //        }
 //        if (deltaValue != 1){
 //            deltaValue = deltaValue / ((deltaValue/maxValue));
 //        }
+           deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 1.1f, 1f);
+       }else {
+           deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 10f, 1f);
+           //deltaValue = maxValue;
+           //minValue *= 0.5f;
+       }
 
-        deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 3f, 1f);
 
         float valueScale = ((height - startPointX - startPointY - radius) / deltaValue);
 

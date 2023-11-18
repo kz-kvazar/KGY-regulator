@@ -73,7 +73,8 @@
                         app:valueUnit=" %"
                         app:valueMarker="28"
                         app:description="CH4"
-                        app:isAvg="true"/>
+                        app:isAvg="true"
+                        app:isAutoScale="true"/>
 
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_power"
@@ -110,6 +111,7 @@
                         app:valueUnit="%"
                         app:description="Уровень чистого масла"
                         app:isAvg="true"
+                        app:isAutoScale="false"
                         />
             </LinearLayout>
 

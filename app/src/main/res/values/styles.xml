@@ -26,6 +26,7 @@
         <attr name="valueMarker" format="integer"/>
         <attr name="description" format="string"/>
         <attr name="isAvg" format="boolean"/>
+        <attr name="isAutoScale" format="boolean"/>
 
     </declare-styleable>
 
