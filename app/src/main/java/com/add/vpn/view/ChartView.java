@@ -193,11 +193,11 @@ public class ChartView extends View {
 //        if (deltaValue != 1){
 //            deltaValue = deltaValue / ((deltaValue/maxValue));
 //        }
-           deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 1.1f, 1f);
+           deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 1f, 1f);
        }else {
-           //deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 3f, 1f);
-           deltaValue = maxValue;
-           minValue *= 0.1f;
+           deltaValue = floatEvaluator.evaluate(deltaValue / maxValue, maxValue/2, maxValue);
+           //deltaValue = maxValue;
+           minValue = minValue/floatEvaluator.evaluate(deltaValue / maxValue, 3, 1);
        }
 
 

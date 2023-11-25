@@ -15,9 +15,11 @@ import com.add.vpn.R;
 public class AnalogView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final int[] colors = {Color.GREEN, Color.YELLOW, Color.RED, Color.GREEN};
-    private final float[] positions = {0f, 0.55f,0.58f, 0.8f};
-    private final SweepGradient gradient = new SweepGradient(0, 0, colors, positions);
+    private final int[] colorsRedStart = {Color.RED,Color.YELLOW,Color.GREEN, Color.YELLOW, Color.RED, Color.RED};
+    private final int[] colorsGreenStart = {Color.GREEN,Color.GREEN,Color.GREEN, Color.YELLOW, Color.RED, Color.GREEN};
+    private final float[] positions = {0f,0.04f,0.17f, 0.55f,0.58f, 0.8f};
+    private final SweepGradient gradientRedStart = new SweepGradient(0, 0, colorsRedStart, positions);
+    private final SweepGradient gradientGreenStart = new SweepGradient(0, 0, colorsGreenStart, positions);
     private final RectF oval = new RectF(-1, -1, 1, 1);
     private final PorterDuffXfermode porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
     private final LinearGradient rimGradient = new LinearGradient(0.40f, 0.0f, 0.60f, 1.0f,
@@ -36,6 +38,7 @@ public class AnalogView extends View {
     private int markRangeText = 1;
     private int markRangeLong = 10;
     private boolean isInteger = false;
+    private boolean isRedStart;
 
     public AnalogView(Context context) {
         super(context);
@@ -60,6 +63,7 @@ public class AnalogView extends View {
                 colorBackground = a.getColor(R.styleable.AnalogView_colorBackground, Color.DKGRAY);
                 textColor = a.getColor(R.styleable.AnalogView_textColor, Color.WHITE);
                 isInteger = a.getBoolean(R.styleable.AnalogView_isInteger, false);
+                isRedStart = a.getBoolean(R.styleable.AnalogView_isRedStart,false);
                 a.recycle();
             } catch (Exception ignored) {
 
@@ -109,7 +113,12 @@ public class AnalogView extends View {
         circlePaint.setStrokeWidth(0);
 
         // Устанавливаем градиентный шейдер для круга
-        circlePaint.setShader(gradient);
+        if (isRedStart){
+            circlePaint.setShader(gradientRedStart);
+        }else {
+            circlePaint.setShader(gradientGreenStart);
+        }
+
 
         //circlePaint.setXfermode(porterDuffXfermode);
         circlePaint.setXfermode(null);

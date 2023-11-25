@@ -18,6 +18,7 @@
         <attr name="markRangeText" format="integer"/>
         <attr name="markRangeLong" format="integer"/>
         <attr name="isInteger" format="boolean"/>
+        <attr name="isRedStart" format="boolean"/>
 
     </declare-styleable>
     <declare-styleable name="ChartView">

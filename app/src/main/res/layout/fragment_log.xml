@@ -84,6 +84,7 @@
                         app:valueUnit="kW"
                         app:description="Активная мощность"
                         app:isAvg="true"
+                        app:isAutoScale="false"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_resTemp"
@@ -93,6 +94,7 @@
                         app:valueUnit="С"
                         app:description="Температура ресивера"
                         app:isAvg="true"
+                        app:isAutoScale="true"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_gasFlow"
@@ -102,6 +104,7 @@
                         app:valueUnit="м3/ч"
                         app:description="Расход ГВС"
                         app:isAvg="true"
+                        app:isAutoScale="true"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_cleanOil"

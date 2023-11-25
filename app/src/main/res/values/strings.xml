@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Оператор КГУ</string>
 
-    <string name="op_Pressure">Давление перед ОП: %s kPa</string>
+    <string name="op_Pressure">Давление после ОП: %s kPa</string>
     <string name="throttlePosition">Положение дросселя: %s %%</string>
     <string name="act_Power">Активная мощность: %s kW</string>
     <string name="const_Power">Заданная мощность: %s kW</string>
