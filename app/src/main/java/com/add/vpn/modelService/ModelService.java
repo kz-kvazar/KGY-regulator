@@ -24,7 +24,6 @@ public class ModelService extends Service {
     //private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
-
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<Float>());
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{

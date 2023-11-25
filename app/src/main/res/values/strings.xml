@@ -46,11 +46,11 @@
 
     <string name="icon">icon</string>
 
-    <string name="KGY_start">%s Запуск регулирования</string>
+    <string name="KGY_start">Запуск регулирования</string>
     <string name="power_down">%s ↓ снижение мощности до %dкВт</string>
     <string name="power_up">%s ↑ повышение мощности до %dкВт</string>
     <string name="power_max">%s изменение границы регулирования мощности до %dкВт</string>
-    <string name="KGY_stop">%s КГУ остановлена</string>
+    <string name="KGY_stop">Остановка регулирования</string>
     <string name="stop_notification">КГУ остановлена, так и задумано?</string>
     <string name="regulate_statusOn">Регулирование запущено</string>
     <string name="regulate_statusOff">Регулирование остановлено</string>
@@ -68,7 +68,10 @@
     <string name="Hour">Час</string>
     <string name="Day">День</string>
     <string name="CH4">CH4</string>
-
+    <string name="dialog_start_regulate">Запустить автоматическое удаленное регулирование?</string>
+    <string name="dialog_stop_regulate">Остановить автоматическое удаленное регулирование?</string>
+    <string name="ok">Да</string>
+    <string name="cancel">Отмена</string>
 
 
     <string-array name="time_period">

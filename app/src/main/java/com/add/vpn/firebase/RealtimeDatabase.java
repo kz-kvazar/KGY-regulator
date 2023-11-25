@@ -86,7 +86,6 @@ public class RealtimeDatabase {
                     }});
                 }
             }
-
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 ModelService.dataListLiveData.postValue(new ArrayList<String>() {{

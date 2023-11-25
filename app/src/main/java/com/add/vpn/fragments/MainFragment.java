@@ -1,6 +1,8 @@
 package com.add.vpn.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -209,17 +211,44 @@ public class MainFragment extends Fragment {
     }
 
     private void startRegulate() {
-        if (regulate) {
-            regulate = false;
-            serviceIntent(ModelService.STOP);
-            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
-
-        } else {
-            regulate = true;
-            serviceIntent(ModelService.START);
-            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
-            adManager.showInterstitialAd();
+//        if (regulate) {
+//
+////            regulate = false;
+////            serviceIntent(ModelService.STOP);
+////            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
+//
+//        } else {
+//            regulate = true;
+//            serviceIntent(ModelService.START);
+//            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
+//            adManager.showInterstitialAd();
+//        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (regulate){
+            builder.setMessage(R.string.dialog_stop_regulate);
+            builder.setTitle(R.string.KGY_stop);
+        }else {
+            builder.setMessage(R.string.dialog_start_regulate);
+            builder.setTitle(R.string.KGY_start);
         }
+
+            // Add the buttons.
+        builder.setPositiveButton(R.string.ok, (dialog, id) -> {
+            if (regulate) {
+                regulate = false;
+                serviceIntent(ModelService.STOP);
+                Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
+            }else {
+                regulate = true;
+                serviceIntent(ModelService.START);
+                Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
+                adManager.showInterstitialAd();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
+            // User cancels the dialog.
+        });
+        builder.create().show();
     }
 
     private void serviceIntent(String action) {

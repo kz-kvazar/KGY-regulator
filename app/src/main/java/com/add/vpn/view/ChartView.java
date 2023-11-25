@@ -195,8 +195,8 @@ public class ChartView extends View {
 //        }
            deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 1f, 1f);
        }else {
-           if (maxValue * 0.15f > deltaValue){
-               deltaValue = maxValue * 0.15f;
+           if (maxValue * 0.2f > deltaValue){
+               deltaValue = maxValue * 0.2f;
            }
            //deltaValue = maxValue;
            //minValue /= 2;
