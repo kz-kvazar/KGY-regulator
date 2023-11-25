@@ -96,9 +96,8 @@ public class ChartView extends View {
 
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
-            try {
                 TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChartView);
-                CharSequence chars = a.getText(R.styleable.ChartView_timeUnit);
+            try {CharSequence chars = a.getText(R.styleable.ChartView_timeUnit);
                 timeUnit = chars != null ? chars.toString() : "Hour";
                 chars = a.getText(R.styleable.ChartView_valueUnit);
                 valueUnit = chars != null ? chars.toString() : "kW";
@@ -108,8 +107,9 @@ public class ChartView extends View {
                 description = chars!= null ? chars.toString() : "Power Constant";
                 isAvg = a.getBoolean(R.styleable.ChartView_isAvg,true);
                 isAutoScale = a.getBoolean(R.styleable.ChartView_isAutoScale, true);
+                //a.recycle();
+            } finally {
                 a.recycle();
-            } catch (Exception ignored) {
             }
         }
     }

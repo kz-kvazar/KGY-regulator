@@ -50,9 +50,9 @@ public class AnalogView extends View {
     }
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
-            try {
+
                 TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AnalogView);
-                CharSequence chars = a.getText(R.styleable.AnalogView_android_text);
+            try {CharSequence chars = a.getText(R.styleable.AnalogView_android_text);
                 text = chars != null ? chars.toString() : "km/h";
 
                 maxValue = a.getInt(R.styleable.AnalogView_maxValue, 1700);
@@ -64,9 +64,9 @@ public class AnalogView extends View {
                 textColor = a.getColor(R.styleable.AnalogView_textColor, Color.WHITE);
                 isInteger = a.getBoolean(R.styleable.AnalogView_isInteger, false);
                 isRedStart = a.getBoolean(R.styleable.AnalogView_isRedStart,false);
+                //a.recycle();
+            } finally {
                 a.recycle();
-            } catch (Exception ignored) {
-
             }
         }
     }
