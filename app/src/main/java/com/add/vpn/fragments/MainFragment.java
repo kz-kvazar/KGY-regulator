@@ -154,7 +154,7 @@ public class MainFragment extends Fragment {
         ModelService.avgTemp.removeObservers(requireActivity());
         ModelService.avgTemp.observe(requireActivity(),temp ->{
             LinkedList<String> time = new LinkedList<>();
-            for (int i = 0; i < temp.size(); i++) {
+            for (int i = 0; i < temp.size() * 2; i+=2) {
                 if(i == 0){
                     time.addFirst("0");
                 }else{

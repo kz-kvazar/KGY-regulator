@@ -195,11 +195,13 @@ public class ChartView extends View {
 //        }
            deltaValue *= floatEvaluator.evaluate(deltaValue / maxValue, 1f, 1f);
        }else {
-           deltaValue = floatEvaluator.evaluate(deltaValue / maxValue, maxValue/2, maxValue);
+           if (maxValue * 0.15f > deltaValue){
+               deltaValue = maxValue * 0.15f;
+           }
            //deltaValue = maxValue;
-           minValue = minValue/floatEvaluator.evaluate(deltaValue / maxValue, 3, 1);
+           //minValue /= 2;
+           //minValue = minValue/floatEvaluator.evaluate(deltaValue / maxValue, 3, 1);
        }
-
 
         float valueScale = ((height - startPointX - startPointY - radius) / deltaValue);
 
