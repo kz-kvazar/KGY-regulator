@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import androidx.annotation.Nullable;
 import com.add.vpn.R;
 
@@ -215,7 +214,7 @@ public class ChartView extends View {
         float right = width - endPointX / 2 - startPointX / 2 + 3 * radius;
         canvas.drawRoundRect(startPointX - radius, (float) radius / 2, right, height - startPointX + 1.5f * radius, round, round, paintLine);
 
-        for (int i = dataValue.size() - 1; i >= 0; i--) {
+        for (int i = 0; i <= dataValue.size()-1; i++) {
             Float value = dataValue.get(i);
             float x = startPointX + timeScale * offset;
             float y = height - startPointX - valueScale * (value - minValue);
