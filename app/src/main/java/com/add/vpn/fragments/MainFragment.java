@@ -89,11 +89,19 @@ public class MainFragment extends Fragment {
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
             //dataAdapter.notifyItemRangeChanged(0, 20);
-            if (strings.size() > 2){
-            String[] pwr = strings.get(2).split(" ");
-            parMeter.setValueAnimated(Float.parseFloat(pwr[2]));
-            String[] opPr = strings.get(0).split(" ");
-            opPe.setValueAnimated(Float.parseFloat(opPr[3]));
+            if (strings.size() > 5){
+                try{
+                    String[] pwr = strings.get(5).split(" ");
+                    parMeter.setValueAnimated(Float.parseFloat(pwr[2]));
+                    String[] opPr = strings.get(0).split(" ");
+                    opPe.setValueAnimated(Float.parseFloat(opPr[3]));
+                }catch (Exception e){
+                    parMeter.setValueAnimated(0);
+                    opPe.setValueAnimated(0);
+                }
+            }else {
+                parMeter.setValueAnimated(0);
+                opPe.setValueAnimated(0);
             }
         });
 

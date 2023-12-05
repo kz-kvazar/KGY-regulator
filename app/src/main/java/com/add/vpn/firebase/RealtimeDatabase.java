@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Objects;
 
 public class RealtimeDatabase {
     private final Context context;
@@ -27,7 +26,7 @@ public class RealtimeDatabase {
     ValueEventListener avgTempListener;
     DatabaseReference databaseReference;
     private Boolean stopAlarm = false;
-    private Boolean isServerOnline = false;
+    private Boolean isServerOnline = true;
 
     public RealtimeDatabase(Context context) {
         this.context = context;
@@ -44,25 +43,38 @@ public class RealtimeDatabase {
                 Long serverUnixTime20 = dataSnapshot.child("serverUnixTime20").getValue(Long.class);
                 long time = new Date().getTime()/1000;
 
-                isServerOnline = serverUnixTime20 == null || time - serverUnixTime20 < 30;
+                isServerOnline = serverUnixTime20 == null || time - serverUnixTime20 > 7250;
+                //Toast.makeText(context, "onConnect " + (serverUnixTime20), Toast.LENGTH_SHORT).show();
 
-                if (isServerOnline){
+                if (!isServerOnline){
                     arrayList.add(context.getString(R.string.op_Pressure, String.valueOf(dataSnapshot.child("opPresher").getValue(Double.class))));
+                    arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("gtsPresher").getValue(Double.class))));
+                    arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("kgyPresher").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.throttlePosition, String.valueOf(dataSnapshot.child("trottlePosition").getValue(Integer.class))));
                     Integer powerActive = dataSnapshot.child("powerActive").getValue(Integer.class);
                     arrayList.add(context.getString(R.string.act_Power, String.valueOf(powerActive)));
                     arrayList.add(context.getString(R.string.const_Power, String.valueOf(dataSnapshot.child("powerConstant").getValue(Integer.class))));
                     arrayList.add(context.getString(R.string.max_power, String.valueOf(dataSnapshot.child("MaxPower").getValue(Integer.class))));
                     Double ch4_1 = dataSnapshot.child("CH4_1").getValue(Double.class);
-                    arrayList.add(context.getString(R.string.VNS_1, String.valueOf(ch4_1)));
                     Double ch4_2 = dataSnapshot.child("CH4_2").getValue(Double.class);
-                    arrayList.add(context.getString(R.string.VNS_2, String.valueOf(ch4_2)));
-                    arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("gtsPresher").getValue(Double.class))));
-                    arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("kgyPresher").getValue(Double.class))));
+                    arrayList.add(context.getString(R.string.VNS, String.valueOf(ch4_1), String.valueOf(ch4_2)));
+                    arrayList.add(context.getString(R.string.ch4_kgy, String.valueOf(dataSnapshot.child("CH4_KGY").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.gas_Flow, String.valueOf(UtilCalculations.calculateGasFlow(Float.valueOf(String.valueOf(ch4_1)), Float.valueOf(String.valueOf(ch4_2)), powerActive))));
+                    arrayList.add(context.getString(R.string.gasTemp, String.valueOf(dataSnapshot.child("gasTemp").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.cleanOil, String.valueOf(dataSnapshot.child("cleanOil").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.resTemp, String.valueOf(dataSnapshot.child("resTemp").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.avgTemp, String.valueOf(dataSnapshot.child("avgTemp").getValue(Double.class))));
+                    String bearing1Temp = String.valueOf(dataSnapshot.child("bearing1Temp").getValue(Double.class));
+                    String bearing2Temp = String.valueOf(dataSnapshot.child("bearing2Temp").getValue(Double.class));
+                    arrayList.add(context.getString(R.string.bearingTemp, bearing1Temp,bearing2Temp ));
+                    String wnding1Temp = String.valueOf(dataSnapshot.child("wnding1Temp").getValue(Double.class));
+                    String wnding2Temp = String.valueOf(dataSnapshot.child("wnding2Temp").getValue(Double.class));
+                    String wnding3Temp = String.valueOf(dataSnapshot.child("wnding3Temp").getValue(Double.class));
+                    arrayList.add(context.getString(R.string.wndingTemp, wnding1Temp,wnding2Temp,wnding3Temp ));
+                    String l1N = String.valueOf(dataSnapshot.child("l1N").getValue(Integer.class));
+                    String l2N = String.valueOf(dataSnapshot.child("l2N").getValue(Integer.class));
+                    String l3N = String.valueOf(dataSnapshot.child("l3N").getValue(Integer.class));
+                    arrayList.add(context.getString(R.string.voltage, l1N,l2N,l3N ));
 
                     Long monthStartGenerated = dataSnapshot.child("monthStartGenerated").getValue(Long.class);
                     Long totalActivePower = dataSnapshot.child("totalActivePower").getValue(Long.class);
@@ -70,9 +82,12 @@ public class RealtimeDatabase {
                     if (monthStartGenerated != null && totalActivePower != null) {
                         arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
                     }
-                    if (powerActive != null && powerActive > 0) stopAlarm = true;
 
-                    if (Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class)) || (powerActive != null && powerActive == 0 && stopAlarm)) {
+                    boolean alarm = Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class));
+
+                    if (powerActive != null && powerActive > 0 && !alarm) stopAlarm = true;
+
+                    if (alarm && powerActive != null && powerActive > 0 && stopAlarm) {
                         if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
                             ModelService.alarmSound.alarmPlay();
                             stopAlarm = false;
@@ -84,6 +99,10 @@ public class RealtimeDatabase {
                     ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
                         add(context.getString(R.string.connection_error_message));
                     }});
+                    ModelService.avgTemp.postValue(new LinkedList<>());
+                    ModelService.dataListLiveData.postValue(new ArrayList<String>(){{
+                        add("Ошибка связи! Сервер не отвечает");
+                    }});
                 }
             }
             @Override
@@ -91,6 +110,7 @@ public class RealtimeDatabase {
                 ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
                     add(context.getString(R.string.connection_error_message));
                 }});
+                ModelService.avgTemp.postValue(new LinkedList<>());
             }
 
         };
@@ -159,6 +179,20 @@ public class RealtimeDatabase {
             }
         };
         query.addValueEventListener(reportListener);
+    }
+
+    public void getServerUnixTime(){
+        DatabaseReference serverTime = databaseReference.child("now").child("serverUnixTime20");
+        serverTime.get().addOnSuccessListener(dataSnapshot ->
+        {
+            Long serverTime20 = dataSnapshot.getValue(Long.class);
+            long time = new Date().getTime()/1000;
+
+            //isServerOnline = serverTime20 == null || time - serverTime20 > 7250;
+
+            ModelService.serverUnixTime20.postValue(serverTime20);
+            //Toast.makeText(context, "getServTime " + (serverTime20) , Toast.LENGTH_SHORT).show();
+        });
     }
 
     public void getAvgTemp(int maxItems) {

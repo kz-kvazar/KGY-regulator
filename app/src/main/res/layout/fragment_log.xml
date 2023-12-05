@@ -91,7 +91,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:timeUnit="Час"
-                        app:valueUnit="С"
+                        app:valueUnit="°C"
                         app:description="Температура ресивера"
                         app:isAvg="true"
                         app:isAutoScale="true"

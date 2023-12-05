@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
@@ -13,6 +14,7 @@ import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,8 +26,9 @@ public class ModelService extends Service {
     //private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
+    public static final MutableLiveData<Long> serverUnixTime20 = new MutableLiveData<>(0L);
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
-    public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<Float>());
+    public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
         add("Loading... Please wait.");
     }});
@@ -63,6 +66,7 @@ public class ModelService extends Service {
             wrightToFirebase = new Thread(() -> {
                 boolean run = true;
                 while (run) {
+                    checkServer();
                     realtimeDatabase.wrightUnixTime();
                     try {
                         Thread.sleep(10000);
@@ -130,5 +134,26 @@ public class ModelService extends Service {
         }
         running.postValue(false);
         stopSelf();
+    }
+    public void checkServer(){
+        RealtimeDatabase database = realtimeDatabase.getValue();
+        if (database != null) {
+            database.getServerUnixTime();
+        }
+        long time = new Date().getTime()/1000;
+
+        boolean isServerOnline = serverUnixTime20.getValue() == null || time - serverUnixTime20.getValue() > 7250;
+
+        if (isServerOnline){
+
+            avgTemp.postValue(new LinkedList<>());
+            dataListLiveData.postValue(new ArrayList<String>(){{
+                add("Ошибка связи! Сервер не отвечает");
+            }});
+
+            if (Boolean.TRUE.equals(running.getValue()) && Boolean.TRUE.equals(enableAlarm.getValue())){
+                alarmSound.alarmPlay();
+            }
+        }
     }
 }

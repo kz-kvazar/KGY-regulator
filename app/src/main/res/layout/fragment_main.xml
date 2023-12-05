@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:timeUnit="Сек"
-            app:valueUnit="C"
+            app:valueUnit="°C"
             app:description="Цилиндры"
             app:isAvg="false"
             app:layout_constraintTop_toBottomOf="@id/wat"
