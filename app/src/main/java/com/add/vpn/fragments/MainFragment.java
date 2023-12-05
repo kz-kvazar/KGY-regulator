@@ -91,7 +91,7 @@ public class MainFragment extends Fragment {
             //dataAdapter.notifyItemRangeChanged(0, 20);
             if (strings.size() > 5){
                 try{
-                    String[] pwr = strings.get(5).split(" ");
+                    String[] pwr = strings.get(4).split(" ");
                     parMeter.setValueAnimated(Float.parseFloat(pwr[2]));
                     String[] opPr = strings.get(0).split(" ");
                     opPe.setValueAnimated(Float.parseFloat(opPr[3]));
