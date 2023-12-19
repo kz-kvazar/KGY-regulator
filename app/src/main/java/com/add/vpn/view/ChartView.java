@@ -169,9 +169,9 @@ public class ChartView extends View {
         paint.setTextSize((float) (height / 20) + ((float) width /height)); // Установите желаемый размер шрифта
         int rounded = Math.round(maxValue);
         float startPointX = paint.measureText(String.valueOf(rounded) + radius); // точка начала относительно значения
-        float startPointUnitX = paint.measureText(String.valueOf(valueUnit) +radius);
+        float startPointUnitX = paint.measureText(String.valueOf(valueUnit) + radius);
         if (startPointX < startPointUnitX) startPointX = startPointUnitX;
-        float endPointX = paint.measureText(String.valueOf(valueUnit) + radius);
+        float endPointX = paint.measureText(String.valueOf(valueUnit) + 2*radius);
 
         float startPointY = paint.getFontMetrics().descent - paint.getFontMetrics().ascent + paint.getFontMetrics().bottom - paint.getFontMetrics().top;
 

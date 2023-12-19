@@ -4,7 +4,7 @@ public class UtilCalculations {
     public static float calculateGasFlow(Float CH4_1, Float CH4_2, Integer power) {
         float concentration = averageConcentration(CH4_1,CH4_2);
 
-        if (power > 0 && concentration > 0) {
+        if (power != null && power > 0 && concentration > 0) {
             float concentration1 = 27.24f;
             float concentration2 = 41.5f;
             float power1 = 1560f;
@@ -20,10 +20,10 @@ public class UtilCalculations {
             float interpolatedFlow = q1 + (q2 - q1) * (concentration - concentration1) / (concentration2 - concentration1);
 
             return Math.round(interpolatedFlow * 10.0f) / 10.0f;
-        } else return 0;
+        } else return 1;
     }
     public static float averageConcentration(Float ch41, Float ch42){
-        float result = 0f;
+        float result = 1f;
         if (ch41 == null && ch42 == null){
             result = 0f;
         } else if (ch41 == null || ((ch41 > 100 || ch41 < 0) && ch42 < 100 && ch42 > 0)) {
