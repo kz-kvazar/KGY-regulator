@@ -28,6 +28,7 @@ public class ModelService extends Service {
     public static AlarmSound alarmSound;
     public static final MutableLiveData<Long> serverUnixTime20 = new MutableLiveData<>(0L);
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
+    public static final MutableLiveData<Boolean> isAccessGranted = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
         add("Loading... Please wait.");

@@ -125,9 +125,10 @@ public class LogFragment extends Fragment {
             for (FBreportItem item : reportItems) {
                 if (item == null) return;
                 powers.add(Float.valueOf(item.getPowerActive()));
-                Float ch4_1 = item.getCH4_1();
-                Float ch4_2 = item.getCH4_2();
-                floats.add(UtilCalculations.averageConcentration(ch4_1, ch4_2));
+                //Float ch4_1 = item.getCH4_1();
+                //Float ch4_2 = item.getCH4_2();
+                //floats.add(UtilCalculations.averageConcentration(ch4_1, ch4_2));
+                floats.add(item.getCH4_KGY());
                 gas.add(item.getGasFlow());
                 try{
                     //avg.add(Float.valueOf(item.getAvgTemp()));

@@ -2,7 +2,6 @@ package com.add.vpn.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +44,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.LinkedList;
+import java.util.Observer;
 
 public class MainFragment extends Fragment {
 
@@ -81,11 +81,11 @@ public class MainFragment extends Fragment {
             } else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
         });
-        parMeter.setOnClickListener(view1 -> {
-            NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-            numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
-            numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
-        });
+//        parMeter.setOnClickListener(view1 -> {
+//            NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+//            numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+//            numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
+//        });
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
             //dataAdapter.notifyItemRangeChanged(0, 20);
@@ -155,9 +155,8 @@ public class MainFragment extends Fragment {
             signInLauncher.launch(signInIntent);
         } else {
             operator = ": " + currentUser.getDisplayName();
-            accessGranted();
+            checkAccess(currentUser.getUid());
         }
-
     }
 
     private void avgTemp(){
@@ -180,20 +179,33 @@ public class MainFragment extends Fragment {
         mAuth.signInWithCredential(credential).addOnCompleteListener(fragmentActivity, task -> {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                operator = user != null ? " " + user.getDisplayName() : "";
-                accessGranted();
+                //user.get
+
+                if (user != null) {
+                    checkAccess(user.getUid());
+                    operator = " " + user.getDisplayName();
+                }
             } else {
                 Toast.makeText(fragmentActivity, getString(R.string.google_sign_in_failed), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void accessGranted() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
+    private void checkAccess(String uid) {
+        realtimeDatabase.isAccessGranted(uid);
+        ModelService.isAccessGranted.observe(requireActivity(), isAuth -> {
+            if (isAuth){
+                parMeter.setOnClickListener(view1 -> {
+                    NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+                    numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+                    numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
+                });
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
+                handler.postDelayed(()-> btnSoundOff.setEnabled(true), 3000);
+            }
+        });
         onResume();
-
-
     }
 
     @Override

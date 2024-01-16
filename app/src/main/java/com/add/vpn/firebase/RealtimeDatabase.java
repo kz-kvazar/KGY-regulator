@@ -34,6 +34,22 @@ public class RealtimeDatabase {
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://kgy-regulator-default-rtdb.europe-west1.firebasedatabase.app/");
     }
 
+    public void isAccessGranted(String uid){
+        DatabaseReference reference = databaseReference.child("AccessGrantedUsers");
+
+        reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    ModelService.isAccessGranted.postValue(true);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError databaseError) {
+            }
+        });
+    }
+
     public void connect() {
         eventListener = new ValueEventListener() {
             @Override
@@ -151,17 +167,19 @@ public class RealtimeDatabase {
                     Integer powerActive = item.child("powerActive").getValue(Integer.class);
                     Float ch4_1 = item.child("CH4_1").getValue(Float.class);
                     Float ch4_2 = item.child("CH4_2").getValue(Float.class);
+                    Float ch4_kgy = item.child("CH4_KGY").getValue(Float.class);
                     Integer cleanOil = item.child("cleanOil").getValue(Integer.class);
                     Integer avgTemp = item.child("avgTemp").getValue(Integer.class);
                     Float resTemp = item.child("resTemp").getValue(Float.class);
 
 
                     if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null
-                    && cleanOil != null && avgTemp != null && resTemp != null) {
+                    && cleanOil != null && avgTemp != null && resTemp != null && ch4_kgy != null) {
                         FBreportItem reportItem = new FBreportItem(date);
                         reportItem.setPowerActive(powerActive);
                         reportItem.setCH4_1(ch4_1);
                         reportItem.setCH4_2(ch4_2);
+                        reportItem.setCH4_KGY(ch4_kgy);
                         reportItem.setGasFlow(UtilCalculations.calculateGasFlow(ch4_1, ch4_2, powerActive));
                         reportItem.setCleanOil(cleanOil);
                         reportItem.setAvgTemp(avgTemp);

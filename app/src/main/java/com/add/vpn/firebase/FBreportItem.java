@@ -9,6 +9,15 @@ public class FBreportItem {
     private Integer cleanOil;
     private Integer avgTemp;
     private Float resTemp;
+    private Float CH4_KGY;
+
+    public Float getCH4_KGY() {
+        return CH4_KGY;
+    }
+
+    public void setCH4_KGY(Float CH4_KGY) {
+        this.CH4_KGY = CH4_KGY;
+    }
 
     public Integer getPowerConstant() {
         return powerConstant;

@@ -56,16 +56,15 @@ public class ReportFragment extends Fragment {
         //realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
         //realtimeDatabase.connect();
 
-        dataAdapter.setOnItemClickListener(position -> {
-            if (position == 4) {
-                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-                numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
-                numberPickerDialog.show(requireActivity().getSupportFragmentManager(), "MaxPower");
-            }
-        });
+//        dataAdapter.setOnItemClickListener(position -> {
+//            if (position == 4) {
+//                NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+//                numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+//                numberPickerDialog.show(requireActivity().getSupportFragmentManager(), "MaxPower");
+//            }
+//        });
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings ->
                 dataAdapter.notifyItemRangeChanged(0,20));
-
     }
 
     @Override

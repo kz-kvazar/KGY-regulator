@@ -3,6 +3,7 @@ package com.add.vpn;
 public class UtilCalculations {
     public static float calculateGasFlow(Float CH4_1, Float CH4_2, Integer power) {
         float concentration = averageConcentration(CH4_1,CH4_2);
+        if(power != null && power == 0) return 1f;
 
         if (power != null && power > 0 && concentration > 0) {
             float concentration1 = 27.24f;
@@ -20,13 +21,11 @@ public class UtilCalculations {
             float interpolatedFlow = q1 + (q2 - q1) * (concentration - concentration1) / (concentration2 - concentration1);
 
             return Math.round(interpolatedFlow * 10.0f) / 10.0f;
-        } else return 1;
+        } else return 1f;
     }
     public static float averageConcentration(Float ch41, Float ch42){
         float result = 1f;
-        if (ch41 == null && ch42 == null){
-            result = 0f;
-        } else if (ch41 == null || ((ch41 > 100 || ch41 < 0) && ch42 < 100 && ch42 > 0)) {
+        if (ch41 == null || ((ch41 > 100 || ch41 < 0) && ch42 < 100 && ch42 > 0)) {
             result = ch42;
         } else if (ch42 == null || ((ch42 > 100 || ch42 < 0) && ch41 < 100 && ch41 > 0)) {
             result = ch41;
