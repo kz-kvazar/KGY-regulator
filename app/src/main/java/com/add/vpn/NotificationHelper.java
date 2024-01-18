@@ -104,7 +104,7 @@ public class NotificationHelper {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setColor(Color.GREEN)
+                .setColor(Color.YELLOW)
                 .setOngoing(true)
                 .build();
     }

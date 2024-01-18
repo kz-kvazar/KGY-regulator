@@ -121,8 +121,6 @@ public class MainFragment extends Fragment {
         realtimeDatabase.getAvgTemp(300);
         avgTemp();
 
-        alarmCH4 = new AlarmSound(fragmentActivity);
-
         AlarmCH4.running.observe(getViewLifecycleOwner(), isRunning -> {
             isAlarmCH4 = isRunning;
             if (isAlarmCH4) {
@@ -265,7 +263,6 @@ public class MainFragment extends Fragment {
                 regulate = true;
                 serviceIntent(ModelService.START, ModelService.class);
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
-                adManager.showInterstitialAd();
             }
         });
         builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
@@ -275,6 +272,7 @@ public class MainFragment extends Fragment {
     }
 
     private <T extends Service> void serviceIntent(String action, Class<T> serviceClass) {
+        adManager.showInterstitialAd();
         Intent intent = new Intent(requireContext(), serviceClass);
         intent.setAction(action);
 
