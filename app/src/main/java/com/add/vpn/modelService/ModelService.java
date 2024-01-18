@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
@@ -26,6 +25,7 @@ public class ModelService extends Service {
     //private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
+    public static final MutableLiveData<Float> CH4kgy = new MutableLiveData<>(0F);
     public static final MutableLiveData<Long> serverUnixTime20 = new MutableLiveData<>(0L);
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<Boolean> isAccessGranted = new MutableLiveData<>(Boolean.FALSE);
@@ -79,7 +79,7 @@ public class ModelService extends Service {
             wrightToFirebase.start();
 
         } else if (action.equals(STOP)) {
-            running.setValue(Boolean.FALSE);
+            running.postValue(Boolean.FALSE);
 
 //            if (thread != null) {
 //                thread.interrupt();
@@ -103,9 +103,9 @@ public class ModelService extends Service {
         notificationHelper = new NotificationHelper(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(888, notificationHelper.serviceNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+            startForeground(888, notificationHelper.serviceRegulateNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
         } else {
-            startForeground(888, notificationHelper.serviceNotification());
+            startForeground(888, notificationHelper.serviceRegulateNotification());
         }
     }
 

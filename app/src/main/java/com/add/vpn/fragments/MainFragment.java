@@ -2,6 +2,7 @@ package com.add.vpn.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
+import com.add.vpn.modelService.AlarmCH4;
 import com.add.vpn.modelService.ModelService;
 import com.add.vpn.view.AnalogView;
 import com.add.vpn.view.ChartView;
@@ -44,7 +46,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.LinkedList;
-import java.util.Observer;
 
 public class MainFragment extends Fragment {
 
@@ -61,6 +62,9 @@ public class MainFragment extends Fragment {
     private AnalogView parMeter;
     private AnalogView opPe;
     private ChartView avgTemp;
+    private Button btnCH4;
+    private AlarmSound alarmCH4;
+    private Boolean isAlarmCH4 = false;
 
 
     @Override
@@ -69,37 +73,25 @@ public class MainFragment extends Fragment {
 
         fragmentActivity = requireActivity();
 
-        //dataAdapter = new DataAdapter(DataHolder.toLis(fragmentActivity.getApplicationContext()));
-//        dataAdapter = new DataAdapter(ModelService.dataListLiveData.getValue());
-//
-//        dataList.setAdapter(dataAdapter);
-//        dataList.setLayoutManager(new LinearLayoutManager(fragmentActivity));
-
         ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 btnOnOff.setText(R.string.btn_regulateOff);
             } else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
         });
-//        parMeter.setOnClickListener(view1 -> {
-//            NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-//            numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
-//            numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
-//        });
 
         ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
-            //dataAdapter.notifyItemRangeChanged(0, 20);
-            if (strings.size() > 5){
-                try{
+            if (strings.size() > 5) {
+                try {
                     String[] pwr = strings.get(4).split(" ");
                     parMeter.setValueAnimated(Float.parseFloat(pwr[2]));
                     String[] opPr = strings.get(0).split(" ");
                     opPe.setValueAnimated(Float.parseFloat(opPr[3]));
-                }catch (Exception e){
+                } catch (Exception e) {
                     parMeter.setValueAnimated(0);
                     opPe.setValueAnimated(0);
                 }
-            }else {
+            } else {
                 parMeter.setValueAnimated(0);
                 opPe.setValueAnimated(0);
             }
@@ -116,7 +108,9 @@ public class MainFragment extends Fragment {
         btnSoundOff.setOnClickListener(v -> {
             AlarmSound alarmSound = ModelService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
+            if (AlarmCH4.alarmCH4 != null) AlarmCH4.alarmCH4.alarmStop();
         });
+
         realtimeDatabase = ModelService.realtimeDatabase.getValue();
         if (realtimeDatabase == null) {
             realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
@@ -126,6 +120,25 @@ public class MainFragment extends Fragment {
         realtimeDatabase.connect();
         realtimeDatabase.getAvgTemp(300);
         avgTemp();
+
+        alarmCH4 = new AlarmSound(fragmentActivity);
+
+        AlarmCH4.running.observe(getViewLifecycleOwner(), isRunning -> {
+            isAlarmCH4 = isRunning;
+            if (isAlarmCH4) {
+                btnCH4.setText(R.string.alarmCH4disable);
+            } else {
+                btnCH4.setText(R.string.alarmCH4enable);
+            }
+
+        });
+        btnCH4.setOnClickListener(view1 -> {
+            if (isAlarmCH4){
+                serviceIntent(AlarmCH4.STOP, AlarmCH4.class);
+            }else {
+                serviceIntent(AlarmCH4.START, AlarmCH4.class);
+            }
+        });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.web_client_id)).requestEmail().build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
@@ -159,18 +172,18 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void avgTemp(){
+    private void avgTemp() {
         ModelService.avgTemp.removeObservers(requireActivity());
-        ModelService.avgTemp.observe(requireActivity(),temp ->{
+        ModelService.avgTemp.observe(requireActivity(), temp -> {
             LinkedList<String> time = new LinkedList<>();
-            for (int i = 0; i < temp.size() * 2; i+=2) {
-                if(i == 0){
+            for (int i = 0; i < temp.size() * 2; i += 2) {
+                if (i == 0) {
                     time.addFirst("0");
-                }else{
+                } else {
                     time.addFirst(String.valueOf(i));
                 }
             }
-            avgTemp.setData(temp,time);
+            avgTemp.setData(temp, time);
         });
     }
 
@@ -194,7 +207,7 @@ public class MainFragment extends Fragment {
     private void checkAccess(String uid) {
         realtimeDatabase.isAccessGranted(uid);
         ModelService.isAccessGranted.observe(requireActivity(), isAuth -> {
-            if (isAuth){
+            if (isAuth) {
                 parMeter.setOnClickListener(view1 -> {
                     NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
                     numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
@@ -202,7 +215,8 @@ public class MainFragment extends Fragment {
                 });
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
-                handler.postDelayed(()-> btnSoundOff.setEnabled(true), 3000);
+                handler.postDelayed(() -> btnSoundOff.setEnabled(true), 3000);
+                handler.postDelayed(() -> btnCH4.setEnabled(true), 3000);
             }
         });
         onResume();
@@ -224,6 +238,7 @@ public class MainFragment extends Fragment {
         avgTemp = rootView.findViewById(R.id.cv_avgTemp);
         btnOnOff = rootView.findViewById(R.id.on_off);
         btnSoundOff = rootView.findViewById(R.id.soundOff);
+        btnCH4 = rootView.findViewById(R.id.alarmCH4);
         parMeter = rootView.findViewById(R.id.wat);
         opPe = rootView.findViewById(R.id.opMetr);
         //ch4 = rootView.findViewById(R.id.chart);
@@ -231,36 +246,24 @@ public class MainFragment extends Fragment {
     }
 
     private void startRegulate() {
-//        if (regulate) {
-//
-////            regulate = false;
-////            serviceIntent(ModelService.STOP);
-////            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
-//
-//        } else {
-//            regulate = true;
-//            serviceIntent(ModelService.START);
-//            Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
-//            adManager.showInterstitialAd();
-//        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (regulate){
+        if (regulate) {
             builder.setMessage(R.string.dialog_stop_regulate);
             builder.setTitle(R.string.KGY_stop);
-        }else {
+        } else {
             builder.setMessage(R.string.dialog_start_regulate);
             builder.setTitle(R.string.KGY_start);
         }
 
-            // Add the buttons.
+        // Add the buttons.
         builder.setPositiveButton(R.string.ok, (dialog, id) -> {
             if (regulate) {
                 regulate = false;
-                serviceIntent(ModelService.STOP);
+                serviceIntent(ModelService.STOP, ModelService.class);
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
-            }else {
+            } else {
                 regulate = true;
-                serviceIntent(ModelService.START);
+                serviceIntent(ModelService.START, ModelService.class);
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
                 adManager.showInterstitialAd();
             }
@@ -271,8 +274,8 @@ public class MainFragment extends Fragment {
         builder.create().show();
     }
 
-    private void serviceIntent(String action) {
-        Intent intent = new Intent(requireContext(), ModelService.class);
+    private <T extends Service> void serviceIntent(String action, Class<T> serviceClass) {
+        Intent intent = new Intent(requireContext(), serviceClass);
         intent.setAction(action);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

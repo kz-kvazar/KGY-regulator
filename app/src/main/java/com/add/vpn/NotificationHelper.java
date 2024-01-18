@@ -8,9 +8,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 
-import android.view.View;
 import androidx.core.app.NotificationCompat;
-import androidx.viewpager2.widget.ViewPager2;
+import com.add.vpn.modelService.AlarmCH4;
 import com.add.vpn.modelService.ModelService;
 
 public class NotificationHelper {
@@ -56,7 +55,7 @@ public class NotificationHelper {
         Notification notification = builder.build();
         notificationManager.notify(777, notification);
     }
-    public Notification serviceNotification() {
+    public Notification serviceRegulateNotification() {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
@@ -71,13 +70,37 @@ public class NotificationHelper {
 
         return new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getString(R.string.service_notification_message))
+                .setContentText(context.getString(R.string.service_regulate_notification_message))
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentIntent(pendingIntent)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .addAction(R.drawable.notification_icon, context.getString(R.string.btn_regulateOff).toUpperCase(), btnPendingIntent)
                 .addAction(R.drawable.notification_icon, context.getString(R.string.btn_soundOff).toUpperCase(), soundPendingIntent)
-                .setTicker(context.getString(R.string.service_notification_message))
+                .setTicker(context.getString(R.string.service_regulate_notification_message))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setColor(Color.GREEN)
+                .setOngoing(true)
+                .build();
+    }
+    public Notification serviceCH4Notification() {
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        Intent btnIntent = new Intent(context, AlarmCH4.class);
+        btnIntent.setAction(AlarmCH4.STOP);
+        PendingIntent btnPendingIntent = PendingIntent.getService(context,1,btnIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        return new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(context.getString(R.string.service_CH4_notification_message))
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentIntent(pendingIntent)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .addAction(R.drawable.notification_icon, context.getString(R.string.btn_regulateOff).toUpperCase(), btnPendingIntent)
+                .setTicker(context.getString(R.string.service_regulate_notification_message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

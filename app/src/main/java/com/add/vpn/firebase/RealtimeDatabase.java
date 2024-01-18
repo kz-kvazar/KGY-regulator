@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.add.vpn.R;
 import com.add.vpn.UtilCalculations;
+import com.add.vpn.modelService.AlarmCH4;
 import com.add.vpn.modelService.ModelService;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
@@ -74,7 +75,9 @@ public class RealtimeDatabase {
                     Double ch4_1 = dataSnapshot.child("CH4_1").getValue(Double.class);
                     Double ch4_2 = dataSnapshot.child("CH4_2").getValue(Double.class);
                     arrayList.add(context.getString(R.string.VNS, String.valueOf(ch4_1), String.valueOf(ch4_2)));
-                    arrayList.add(context.getString(R.string.ch4_kgy, String.valueOf(dataSnapshot.child("CH4_KGY").getValue(Double.class))));
+                    Float ch4Kgy = dataSnapshot.child("CH4_KGY").getValue(Float.class);
+
+                    arrayList.add(context.getString(R.string.ch4_kgy, String.valueOf(ch4Kgy)));
                     arrayList.add(context.getString(R.string.gas_Flow, String.valueOf(UtilCalculations.calculateGasFlow(Float.valueOf(String.valueOf(ch4_1)), Float.valueOf(String.valueOf(ch4_2)), powerActive))));
                     arrayList.add(context.getString(R.string.gasTemp, String.valueOf(dataSnapshot.child("gasTemp").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.cleanOil, String.valueOf(dataSnapshot.child("cleanOil").getValue(Double.class))));
@@ -110,7 +113,12 @@ public class RealtimeDatabase {
                         }
                         arrayList.add(context.getString(R.string.KGY_error_msg));
                     }
-                    ModelService.dataListLiveData.setValue(arrayList);
+                    ModelService.dataListLiveData.postValue(arrayList);
+                    if (ch4Kgy != null){
+//                        ModelService.CH4kgy.postValue(ch4Kgy);
+                        AlarmCH4.ch4KGY = ch4Kgy;
+                    }
+
                 }else {
                     ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
                         add(context.getString(R.string.connection_error_message));
