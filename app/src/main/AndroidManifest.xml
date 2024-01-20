@@ -53,7 +53,7 @@
                 android:icon="@drawable/warning_icon"
                 android:foregroundServiceType="dataSync"
                 />
-        <service android:name=".modelService.AlarmCH4"
+        <service android:name=".modelService.AlarmCH4Service"
                  android:exported="false"
                  android:enabled="true"
                  android:description="@string/app_name"

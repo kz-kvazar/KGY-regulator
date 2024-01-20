@@ -28,7 +28,7 @@ import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
-import com.add.vpn.modelService.AlarmCH4;
+import com.add.vpn.modelService.AlarmCH4Service;
 import com.add.vpn.modelService.ModelService;
 import com.add.vpn.view.AnalogView;
 import com.add.vpn.view.ChartView;
@@ -108,7 +108,7 @@ public class MainFragment extends Fragment {
         btnSoundOff.setOnClickListener(v -> {
             AlarmSound alarmSound = ModelService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
-            if (AlarmCH4.alarmCH4 != null) AlarmCH4.alarmCH4.alarmStop();
+            if (AlarmCH4Service.alarmCH4 != null) AlarmCH4Service.alarmCH4.alarmStop();
         });
 
         realtimeDatabase = ModelService.realtimeDatabase.getValue();
@@ -121,7 +121,7 @@ public class MainFragment extends Fragment {
         realtimeDatabase.getAvgTemp(300);
         avgTemp();
 
-        AlarmCH4.running.observe(getViewLifecycleOwner(), isRunning -> {
+        AlarmCH4Service.running.observe(getViewLifecycleOwner(), isRunning -> {
             isAlarmCH4 = isRunning;
             if (isAlarmCH4) {
                 btnCH4.setText(R.string.alarmCH4disable);
@@ -132,9 +132,9 @@ public class MainFragment extends Fragment {
         });
         btnCH4.setOnClickListener(view1 -> {
             if (isAlarmCH4){
-                serviceIntent(AlarmCH4.STOP, AlarmCH4.class);
+                serviceIntent(AlarmCH4Service.STOP, AlarmCH4Service.class);
             }else {
-                serviceIntent(AlarmCH4.START, AlarmCH4.class);
+                serviceIntent(AlarmCH4Service.START, AlarmCH4Service.class);
             }
         });
 

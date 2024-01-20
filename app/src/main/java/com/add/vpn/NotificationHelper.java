@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
-import com.add.vpn.modelService.AlarmCH4;
+import com.add.vpn.modelService.AlarmCH4Service;
 import com.add.vpn.modelService.ModelService;
 
 public class NotificationHelper {
@@ -87,11 +87,11 @@ public class NotificationHelper {
     public Notification serviceCH4Notification() {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 5, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        Intent btnIntent = new Intent(context, AlarmCH4.class);
-        btnIntent.setAction(AlarmCH4.STOP);
-        PendingIntent btnPendingIntent = PendingIntent.getService(context,1,btnIntent, PendingIntent.FLAG_IMMUTABLE);
+        Intent btnIntent = new Intent(context, AlarmCH4Service.class);
+        btnIntent.setAction(AlarmCH4Service.STOP);
+        PendingIntent btnPendingIntent = PendingIntent.getService(context,6,btnIntent, PendingIntent.FLAG_IMMUTABLE);
 
         return new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.app_name))
