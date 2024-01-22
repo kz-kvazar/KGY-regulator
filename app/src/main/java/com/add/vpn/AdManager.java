@@ -18,6 +18,7 @@ public class AdManager {
     private final FragmentActivity activity;
     private InterstitialAd mInterstitialAd;
     private boolean active = true;
+    public boolean isAdLoaded = false;
 
     public AdManager(FragmentActivity activity) {
         this.activity = activity;
@@ -45,6 +46,7 @@ public class AdManager {
                 @Override
                 public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                     mInterstitialAd = interstitialAd;
+                    isAdLoaded = true;
                     mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                         @Override
                         public void onAdDismissedFullScreenContent() {
@@ -56,7 +58,6 @@ public class AdManager {
                         }
                     });
                 }
-
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     mInterstitialAd = null;

@@ -21,11 +21,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import com.add.vpn.AdManager;
 import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
-import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.AlarmCH4Service;
@@ -48,10 +46,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.LinkedList;
 
 public class MainFragment extends Fragment {
-
-    private RecyclerView dataList;
     private Button btnOnOff;
-    private DataAdapter dataAdapter;
     private boolean regulate;
     private AdManager adManager;
     private Button btnSoundOff;
@@ -63,7 +58,6 @@ public class MainFragment extends Fragment {
     private AnalogView opPe;
     private ChartView avgTemp;
     private Button btnCH4;
-    private AlarmSound alarmCH4;
     private Boolean isAlarmCH4 = false;
 
 
@@ -116,7 +110,6 @@ public class MainFragment extends Fragment {
             realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
             ModelService.realtimeDatabase.setValue(realtimeDatabase);
         }
-        //realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
         realtimeDatabase.connect();
         realtimeDatabase.getAvgTemp(300);
         avgTemp();
@@ -131,9 +124,9 @@ public class MainFragment extends Fragment {
 
         });
         btnCH4.setOnClickListener(view1 -> {
-            if (isAlarmCH4){
+            if (isAlarmCH4) {
                 serviceIntent(AlarmCH4Service.STOP, AlarmCH4Service.class);
-            }else {
+            } else {
                 serviceIntent(AlarmCH4Service.START, AlarmCH4Service.class);
             }
         });
@@ -204,6 +197,7 @@ public class MainFragment extends Fragment {
 
     private void checkAccess(String uid) {
         realtimeDatabase.isAccessGranted(uid);
+        Handler handler = new Handler(Looper.getMainLooper());
         ModelService.isAccessGranted.observe(requireActivity(), isAuth -> {
             if (isAuth) {
                 parMeter.setOnClickListener(view1 -> {
@@ -211,11 +205,25 @@ public class MainFragment extends Fragment {
                     numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
                     numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
                 });
-                Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
                 handler.postDelayed(() -> btnSoundOff.setEnabled(true), 3000);
                 handler.postDelayed(() -> btnCH4.setEnabled(true), 3000);
             }
+//            else if (count == 1 && false) {
+//                new Thread(() -> {
+//                    while (adManager == null || !adManager.isAdLoaded) {
+//                        try {
+//                            Thread.sleep(100);
+//                        } catch (InterruptedException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    }
+//                    if (Boolean.FALSE.equals(ModelService.isAccessGranted.getValue())) {
+//                        handler.postDelayed(() -> adManager.showInterstitialAd(), 100);
+//                    }
+//                }).start();
+//            }
+//            count++;
         });
         onResume();
     }

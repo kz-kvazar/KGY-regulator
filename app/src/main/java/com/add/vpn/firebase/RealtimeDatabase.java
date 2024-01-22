@@ -33,16 +33,17 @@ public class RealtimeDatabase {
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://kgy-regulator-default-rtdb.europe-west1.firebasedatabase.app/");
     }
 
-    public void isAccessGranted(String uid){
+    public void isAccessGranted(String uid) {
         DatabaseReference reference = databaseReference.child("AccessGrantedUsers");
 
         reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    ModelService.isAccessGranted.postValue(true);
+                if (dataSnapshot.exists() && Boolean.FALSE.equals(ModelService.isAccessGranted.getValue())) {
+                    ModelService.isAccessGranted.postValue(Boolean.TRUE);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError databaseError) {
             }
@@ -56,12 +57,11 @@ public class RealtimeDatabase {
                 ArrayList<String> arrayList = new ArrayList<>();
 
                 Long serverUnixTime20 = dataSnapshot.child("serverUnixTime20").getValue(Long.class);
-                long time = new Date().getTime()/1000;
+                long time = new Date().getTime() / 1000;
 
                 isServerOnline = serverUnixTime20 == null || time - serverUnixTime20 > 7250;
-                //Toast.makeText(context, "onConnect " + (serverUnixTime20), Toast.LENGTH_SHORT).show();
 
-                if (!isServerOnline){
+                if (!isServerOnline) {
                     arrayList.add(context.getString(R.string.op_Pressure, String.valueOf(dataSnapshot.child("opPresher").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("gtsPresher").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("kgyPresher").getValue(Double.class))));
@@ -83,15 +83,15 @@ public class RealtimeDatabase {
                     arrayList.add(context.getString(R.string.avgTemp, String.valueOf(dataSnapshot.child("avgTemp").getValue(Double.class))));
                     String bearing1Temp = String.valueOf(dataSnapshot.child("bearing1Temp").getValue(Double.class));
                     String bearing2Temp = String.valueOf(dataSnapshot.child("bearing2Temp").getValue(Double.class));
-                    arrayList.add(context.getString(R.string.bearingTemp, bearing1Temp,bearing2Temp ));
+                    arrayList.add(context.getString(R.string.bearingTemp, bearing1Temp, bearing2Temp));
                     String wnding1Temp = String.valueOf(dataSnapshot.child("wnding1Temp").getValue(Double.class));
                     String wnding2Temp = String.valueOf(dataSnapshot.child("wnding2Temp").getValue(Double.class));
                     String wnding3Temp = String.valueOf(dataSnapshot.child("wnding3Temp").getValue(Double.class));
-                    arrayList.add(context.getString(R.string.wndingTemp, wnding1Temp,wnding2Temp,wnding3Temp ));
+                    arrayList.add(context.getString(R.string.wndingTemp, wnding1Temp, wnding2Temp, wnding3Temp));
                     String l1N = String.valueOf(dataSnapshot.child("l1N").getValue(Integer.class));
                     String l2N = String.valueOf(dataSnapshot.child("l2N").getValue(Integer.class));
                     String l3N = String.valueOf(dataSnapshot.child("l3N").getValue(Integer.class));
-                    arrayList.add(context.getString(R.string.voltage, l1N,l2N,l3N ));
+                    arrayList.add(context.getString(R.string.voltage, l1N, l2N, l3N));
 
                     Long monthStartGenerated = dataSnapshot.child("monthStartGenerated").getValue(Long.class);
                     Long totalActivePower = dataSnapshot.child("totalActivePower").getValue(Long.class);
@@ -112,21 +112,20 @@ public class RealtimeDatabase {
                         arrayList.add(context.getString(R.string.KGY_error_msg));
                     }
                     ModelService.dataListLiveData.postValue(arrayList);
-                    if (ch4Kgy != null){
-//                        ModelService.CH4kgy.postValue(ch4Kgy);
+                    if (ch4Kgy != null) {
                         AlarmCH4Service.ch4KGY = ch4Kgy;
                     }
-
-                }else {
+                } else {
                     ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
                         add(context.getString(R.string.connection_error_message));
                     }});
                     ModelService.avgTemp.postValue(new LinkedList<>());
-                    ModelService.dataListLiveData.postValue(new ArrayList<String>(){{
+                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
                         add("Ошибка связи! Сервер не отвечает");
                     }});
                 }
             }
+
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
@@ -137,7 +136,6 @@ public class RealtimeDatabase {
 
         };
         databaseReference.child("now").addValueEventListener(eventListener);
-        //databaseReference.addValueEventListener(eventListener);
     }
 
     public void wrightUnixTime() {
@@ -179,8 +177,7 @@ public class RealtimeDatabase {
                     Float resTemp = item.child("resTemp").getValue(Float.class);
 
 
-                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null
-                    && cleanOil != null && avgTemp != null && resTemp != null && ch4_kgy != null) {
+                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null && cleanOil != null && avgTemp != null && resTemp != null && ch4_kgy != null) {
                         FBreportItem reportItem = new FBreportItem(date);
                         reportItem.setPowerActive(powerActive);
                         reportItem.setCH4_1(ch4_1);
@@ -205,22 +202,16 @@ public class RealtimeDatabase {
         query.addValueEventListener(reportListener);
     }
 
-    public void getServerUnixTime(){
+    public void getServerUnixTime() {
         DatabaseReference serverTime = databaseReference.child("now").child("serverUnixTime20");
-        serverTime.get().addOnSuccessListener(dataSnapshot ->
-        {
+        serverTime.get().addOnSuccessListener(dataSnapshot -> {
             Long serverTime20 = dataSnapshot.getValue(Long.class);
-            long time = new Date().getTime()/1000;
-
-            //isServerOnline = serverTime20 == null || time - serverTime20 > 7250;
-
             ModelService.serverUnixTime20.postValue(serverTime20);
-            //Toast.makeText(context, "getServTime " + (serverTime20) , Toast.LENGTH_SHORT).show();
         });
     }
 
     public void getAvgTemp(int maxItems) {
-        if (avgTempListener == null){
+        if (avgTempListener == null) {
             DatabaseReference avgTempReport = databaseReference.child("avgTemp").child("time");
 
             avgTempListener = new ValueEventListener() {
@@ -232,7 +223,7 @@ public class RealtimeDatabase {
                         if (avgTempValue != null && avgTempValue.size() > maxItems) {
                             avgTempValue.removeFirst();
                         }
-                        if (value != null){
+                        if (value != null) {
                             if (avgTempValue != null) {
                                 avgTempValue.addLast(Float.valueOf(value));
                                 ModelService.avgTemp.setValue(avgTempValue);
@@ -249,32 +240,15 @@ public class RealtimeDatabase {
         }
     }
     public void disconnect() {
-        if (eventListener != null){
+        if (eventListener != null) {
             databaseReference.removeEventListener(eventListener);
         }
-        if (avgTempListener != null){
+        if (avgTempListener != null) {
             databaseReference.removeEventListener(avgTempListener);
         }
-        if (reportListener != null){
+        if (reportListener != null) {
             databaseReference.removeEventListener(reportListener);
         }
-    }
-    public LinkedList<FBreportItem> pruneList(LinkedList<FBreportItem> list, int maxItems) {
-        if (list.size() <= maxItems) {
-            return list; // Если список уже не больше 48, не требуется прореживание
-        }
-        int interval = list.size() / maxItems;
-        LinkedList<FBreportItem> prunedList = new LinkedList<>();
-        int avgGenerated = 0;
-        for (int i = 0; i < list.size(); i++) {
-            avgGenerated += list.get(i).getPowerActive();
-            if (i % interval == 0) {
-                list.get(i).setPowerActive(avgGenerated / interval);
-                prunedList.add(list.get(i));
-                avgGenerated = 0;
-            }
-        }
-        return prunedList;
     }
 }
 

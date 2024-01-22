@@ -77,8 +77,8 @@
     <string name="dialog_stop_regulate">Остановить автоматическое удаленное регулирование?</string>
     <string name="ok">Да</string>
     <string name="cancel">Отмена</string>
-    <string name="alarmCH4enable">Вкл. сигнал 27.2%</string>
-    <string name="alarmCH4disable">Откл сигнал 27.2%</string>
+    <string name="alarmCH4enable">Вкл. сигнал 27.4%</string>
+    <string name="alarmCH4disable">Откл сигнал 27.4%</string>
     <string name="service_CH4_notification_message">Сигнал при повышении концентрации выше 27,2% включен!</string>
 
 

@@ -16,7 +16,6 @@ public class NotificationHelper {
 
     private static final String CHANNEL_ID = "KGY_Notifications";
     private static final String CHANNEL_NAME = "KGY";
-
     private final Context context;
     private final NotificationManager notificationManager;
 
@@ -33,7 +32,6 @@ public class NotificationHelper {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
     public void showNotification(String title, String message) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
