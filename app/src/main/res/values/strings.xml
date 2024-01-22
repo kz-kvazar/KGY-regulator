@@ -7,7 +7,6 @@
     <string name="const_Power">Заданная мощность: %s kW</string>
     <string name="gas_Flow">Расход ГВС: %s m3</string>
     <string name="max_power">Макс. мощность: %s kW</string>
-    <string name="CH4_concentration">Концентрация СН4: %s %%</string>
     <string name="kgy_pressure">Давление перед КГУ: %s kPa</string>
     <string name="gts_pressure">Давление перед GTS: %s kPa</string>
     <string name="VNS">СН4 ВНС: %s %%  %s %%</string>
@@ -34,45 +33,31 @@
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
     <string name="banner_ad_unit_id">ca-app-pub-7270220917037921/7740653678</string>
-    <string name="app_open_ad_unit_id">ca-app-pub-7270220917037921/1957957926</string>
     <string name="interstitial_ad_unit_id">ca-app-pub-7270220917037921/4303755944</string>
-    <string name="title_activity_settings">SettingsActivity</string>
 
     <string name="log_title">История работы</string>
     <string name="report_title">Текущие показатели</string>
 
-    <string name="connection_error_title">Проблемы с соединением</string>
     <string name="connection_error_message">Обнаружена ошибка связи с КГУ.</string>
-    <string name="connection_error_log_msg">%s Ошибка связи. Нестабильное соединение…</string>
 
     <string name="service_regulate_notification_message">Автоматическое регулирование КГУ запущенно!</string>
 
 
-
-    <string name="icon">icon</string>
-
     <string name="KGY_start">Запуск регулирования</string>
-    <string name="power_down">%s ↓ снижение мощности до %dкВт</string>
-    <string name="power_up">%s ↑ повышение мощности до %dкВт</string>
-    <string name="power_max">%s изменение границы регулирования мощности до %dкВт</string>
     <string name="KGY_stop">Остановка регулирования</string>
-    <string name="stop_notification">КГУ остановлена, так и задумано?</string>
     <string name="regulate_statusOn">Регулирование запущено</string>
     <string name="regulate_statusOff">Регулирование остановлено</string>
     <string name="backgrounded_message">Внимание !!!\nОтключение автоматического регулирования.</string>
     <string name="set_max_power">Верхний предел регулирования мощности 900–1560 kW</string>
     <string name="max_power_Error">Неверно введенное значение</string>
-    <string name="KGY_error_title">Ошибка КГУ</string>
     <string name="KGY_error_msg">Обнаружена ошибка КГУ требующая вашего внимания</string>
     <string name="time_period">Временной период:</string>
     <string name="web_client_id">569959857857-gmlc53n86pcrji3gfp57blqiiki41lm5.apps.googleusercontent.com</string>
     <string name="google_sign_in_failed">Ошибка аутентификации. \nРегулирование невозможно!!!</string>
-    <string name="denied_message">Доступ заблокирован не авторизированным пользователям. Регулирование невозможно.</string>
     <string name="kw">kW</string>
     <string name="kPa">kPa</string>
     <string name="Hour">Час</string>
     <string name="Day">День</string>
-    <string name="CH4">CH4</string>
     <string name="dialog_start_regulate">Запустить автоматическое удаленное регулирование?</string>
     <string name="dialog_stop_regulate">Остановить автоматическое удаленное регулирование?</string>
     <string name="ok">Да</string>

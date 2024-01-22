@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".fragments.MainFragment"
         android:orientation="vertical"
-        android:id="@+id/linearLayout">
+        >
 
 
     <com.add.vpn.view.ChartView

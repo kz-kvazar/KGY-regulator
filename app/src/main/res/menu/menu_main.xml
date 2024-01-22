@@ -11,8 +11,7 @@
         android:title="@string/errorEnable"
         app:showAsAction="never" />
     <item
-        android:id="@+id/alarm_settings"
-        android:checkable="true"
+            android:checkable="true"
         android:checked="false"
         android:enabled="true"
         android:orderInCategory="100"
@@ -20,8 +19,7 @@
         app:showAsAction="never"
         android:visible="false"/>
     <item
-        android:id="@+id/max_power"
-        android:checkable="false"
+            android:checkable="false"
         android:checked="false"
         android:enabled="true"
         android:orderInCategory="200"

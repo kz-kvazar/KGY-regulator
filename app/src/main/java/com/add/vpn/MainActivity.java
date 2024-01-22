@@ -9,9 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import com.add.vpn.adapters.ViewPagerAdapter;
-import com.add.vpn.fragments.MainFragment;
 import com.add.vpn.fragments.LogFragment;
-
+import com.add.vpn.fragments.MainFragment;
 import com.add.vpn.fragments.ReportFragment;
 import com.add.vpn.modelService.ModelService;
 
@@ -21,7 +20,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private boolean generatorErrors = false;
-    private MenuItem maxPower;
     private ViewPager2 viewPager2;
 
     @Override
@@ -53,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -60,18 +59,9 @@ public class MainActivity extends AppCompatActivity {
         if (menu != null) {
             MenuItem errorMenu = menu.findItem(R.id.error_settings);
             errorMenu.setChecked(generatorErrors);
-//            maxPower = menu.findItem(R.id.max_power);
-//            maxPower.setTitle(getString(R.string.max_power, String.valueOf(DataHolder.getMaxPower())));
-
         }
         return true;
     }
-
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        maxPower.setTitle(getString(R.string.max_power, String.valueOf(DataHolder.getMaxPower())));
-//        return super.onPrepareOptionsMenu(menu);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,11 +78,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         }
-//        else if (id == R.id.max_power) {
-//            NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-//            numberPickerDialog.setOnNumberSetListener(DataHolder::setMaxPower);
-//            numberPickerDialog.show(getSupportFragmentManager(), "MaxPower");
-//        }
         return super.onOptionsItemSelected(item);
     }
 
