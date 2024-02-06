@@ -25,7 +25,7 @@ public class ModelService extends Service {
     //private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
-    public static final MutableLiveData<Float> CH4kgy = new MutableLiveData<>(0F);
+    //public static final MutableLiveData<Float> CH4kgy = new MutableLiveData<>(0F);
     public static final MutableLiveData<Long> serverUnixTime20 = new MutableLiveData<>(0L);
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<Boolean> isAccessGranted = new MutableLiveData<>(Boolean.FALSE);
@@ -35,14 +35,14 @@ public class ModelService extends Service {
     }});
     public static final MutableLiveData<RealtimeDatabase> realtimeDatabase = new MutableLiveData<>();
     public static final MutableLiveData<LinkedList<FBreportItem>> reportList = new MutableLiveData<>(new LinkedList<FBreportItem>(){{
-//        FBreportItem fBreportItem = new FBreportItem(String.valueOf(new Date().getTime() / 1000));
+//        FBreportItem = new FBreportItem(String.valueOf(new Date().getTime() / 1000));
 //        fBreportItem.setCH4_1(10f);
 //        fBreportItem.setCH4_2(20f);
 //        fBreportItem.setPowerConstant(1000);
 //        fBreportItem.setGasFlow(1000f);
 //        add(fBreportItem);
     }});
-    public static final MutableLiveData<LinkedList<String>> logListLiveData = new MutableLiveData<>(new LinkedList<>());
+    //public static final MutableLiveData<LinkedList<String>> logListLiveData = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<Boolean> enableAlarm = new MutableLiveData<>(Boolean.FALSE);
     private Thread wrightToFirebase;
 
