@@ -111,7 +111,7 @@ public class MainFragment extends Fragment {
             ModelService.realtimeDatabase.setValue(realtimeDatabase);
         }
         realtimeDatabase.connect();
-        realtimeDatabase.getAvgTemp(300);
+        realtimeDatabase.getAvgTemp(360);
         avgTemp();
 
         AlarmCH4Service.running.observe(getViewLifecycleOwner(), isRunning -> {

@@ -34,7 +34,7 @@ public class AlarmCH4Service extends Service {
             running.postValue(Boolean.TRUE);
             checker = new Thread(() -> {
                 while (true) {
-                    if (ch4KGY > 27.4) {
+                    if (ch4KGY > 26.4) {
                         alarmCH4.alarmPlay();
                     }
                     try {
