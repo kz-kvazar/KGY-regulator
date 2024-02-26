@@ -70,6 +70,7 @@
     <string-array name="time_period">
         <item>12 часов</item>
         <item>24 часа</item>
-        <item>Месяц</item>
+        <item>месяц</item>
+        <item>3 месяца</item>
     </string-array>
 </resources>

@@ -86,6 +86,10 @@ public class LogFragment extends Fragment {
                         realtimeDatabase.getReportList(744);
                         report(true);
                         break;
+                    case 3:
+                        realtimeDatabase.getReportList(744*3);
+                        report(true);
+                        break;
                     default:
                         Toast.makeText(context, "Unexpected value:" + position, Toast.LENGTH_SHORT).show();
                 }

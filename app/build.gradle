@@ -9,6 +9,7 @@ android {
     defaultConfig {
         applicationId "com.add.vpn"
         minSdkVersion 21
+        targetSdkVersion 34 // Обновлено до версии, совместимой с compileSdkVersion
         versionCode 27
         versionName '18'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -36,7 +37,6 @@ android {
         includeInBundle true
     }
     namespace 'com.add.vpn'
-    ndkVersion '26.1.10909125'
 }
 
 dependencies {
@@ -62,7 +62,7 @@ dependencies {
     implementation('com.google.firebase:firebase-auth:22.3.1')
 
     // Also add the dependency for the Google Play services library and specify its version
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 
     implementation "androidx.work:work-runtime:2.9.0"
     implementation 'androidx.lifecycle:lifecycle-process:2.7.0'
