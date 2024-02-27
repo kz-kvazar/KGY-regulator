@@ -71,7 +71,7 @@
                         android:layout_height="wrap_content"
                         app:timeUnit="Час"
                         app:valueUnit=" %"
-                        app:valueMarker="28"
+                        app:valueMarker="26"
                         app:description="CH4"
                         app:isAvg="true"
                         app:isAutoScale="true"/>
