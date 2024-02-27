@@ -140,8 +140,8 @@ public class ChartView extends View {
         if (height >= width) {
             height = width / 2;
         }
-        maxSize = 48 * (width / height);
-        if (maxSize < 72) maxSize = 72;
+        maxSize = 72 * (width / height);
+        if (maxSize < 120) maxSize = 120;
         if (isAvg){
             dataValue = pruneList(tempReportValue, maxSize);
             time = pruneList(tempReportDate, maxSize);

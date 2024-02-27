@@ -73,7 +73,7 @@
             app:layout_constraintBottom_toBottomOf="@id/alarmCH4"
             app:layout_constraintStart_toEndOf="@id/on_off"
             android:layout_marginHorizontal="2dp"
-            android:fontFamily="@font/metal_mania"
+
             android:enabled="false"/>
     <Button
             android:id="@+id/alarmCH4"
@@ -87,7 +87,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/soundOff"
             android:layout_marginHorizontal="2dp"
-            android:fontFamily="@font/metal_mania"
+
             android:enabled="false"/>
 <!--    app:layout_constraintTop_toBottomOf="@id/cv_avgTemp"-->
 
