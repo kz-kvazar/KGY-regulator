@@ -12,11 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import com.add.vpn.ModelJobService.RegulateTransferService;
 import com.add.vpn.R;
 import com.add.vpn.UtilCalculations;
 import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
-import com.add.vpn.modelService.ModelService;
+
 import com.add.vpn.view.ChartView;
 
 import java.util.LinkedList;
@@ -62,10 +64,11 @@ public class LogFragment extends Fragment {
 //        logList.setAdapter(adapter);
 //        logList.setLayoutManager(new LinearLayoutManager(context));
 
-        realtimeDatabase = ModelService.realtimeDatabase.getValue();
-        if (realtimeDatabase == null) {
+        MutableLiveData<RealtimeDatabase> database = RegulateTransferService.realtimeDatabase;
+        if (database == null) {
             realtimeDatabase = new RealtimeDatabase(context);
-            ModelService.realtimeDatabase.setValue(realtimeDatabase);
+            database = new MutableLiveData<>();
+            database.setValue(realtimeDatabase);
         }
         //realtimeDatabase.getAvgTemp(300);
         //avgTemp();
@@ -102,8 +105,8 @@ public class LogFragment extends Fragment {
         });
     }
 //    private void avgTemp(){
-//        ModelService.avgTemp.removeObservers(requireActivity());
-//        ModelService.avgTemp.observe(requireActivity(),temp ->{
+//        RegulateTransferService.avgTemp.removeObservers(requireActivity());
+//        RegulateTransferService.avgTemp.observe(requireActivity(),temp ->{
 //            LinkedList<String> time = new LinkedList<>();
 //            for (int i = 0; i < temp.size(); i++) {
 //                if(i == 0){
@@ -117,8 +120,8 @@ public class LogFragment extends Fragment {
 //    }
 
     private void report(boolean isDayDeport) {
-        ModelService.reportList.removeObservers(requireActivity());
-        ModelService.reportList.observe(requireActivity(), reportItems -> {
+        RegulateTransferService.reportList.removeObservers(requireActivity());
+        RegulateTransferService.reportList.observe(requireActivity(), reportItems -> {
             LinkedList<Float> floats = new LinkedList<>();
             LinkedList<String> time = new LinkedList<>();
             LinkedList<Float> powers = new LinkedList<>();
@@ -199,7 +202,7 @@ public class LogFragment extends Fragment {
 
     @Override
     public void onStop() {
-        //ModelService.logListLiveData.removeObservers(requireActivity());
+        //RegulateTransferService.logListLiveData.removeObservers(requireActivity());
         super.onStop();
     }
 }

@@ -3,7 +3,13 @@ package com.add.vpn.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,13 +27,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.AdManager;
+import com.add.vpn.ModelJobService.RegulateTransferService;
 import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
 import com.add.vpn.modelService.AlarmCH4Service;
-import com.add.vpn.modelService.ModelService;
 import com.add.vpn.view.AnalogView;
 import com.add.vpn.view.ChartView;
 import com.google.android.gms.ads.MobileAds;
@@ -44,6 +51,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.LinkedList;
+
+import static kotlin.jvm.internal.Intrinsics.checkNotNull;
 
 public class MainFragment extends Fragment {
     private Button btnOnOff;
@@ -67,14 +76,14 @@ public class MainFragment extends Fragment {
 
         fragmentActivity = requireActivity();
 
-        ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
+        RegulateTransferService.running.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 btnOnOff.setText(R.string.btn_regulateOff);
             } else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
         });
 
-        ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
+        RegulateTransferService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> {
             if (strings.size() > 5) {
                 try {
                     String[] pwr = strings.get(4).split(" ");
@@ -100,18 +109,24 @@ public class MainFragment extends Fragment {
         btnOnOff.setOnClickListener(v -> startRegulate());
 
         btnSoundOff.setOnClickListener(v -> {
-            AlarmSound alarmSound = ModelService.alarmSound;
+            AlarmSound alarmSound = RegulateTransferService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
             if (AlarmCH4Service.alarmCH4 != null) AlarmCH4Service.alarmCH4.alarmStop();
         });
 
-        realtimeDatabase = ModelService.realtimeDatabase.getValue();
-        if (realtimeDatabase == null) {
+        //RegulateTransferService.realtimeDatabase = new MutableLiveData<RealtimeDatabase>();
+        MutableLiveData<RealtimeDatabase> database = RegulateTransferService.realtimeDatabase;
+        if (database == null || realtimeDatabase == null) {
             realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
-            ModelService.realtimeDatabase.setValue(realtimeDatabase);
+            database = new MutableLiveData<>();
+            database.setValue(realtimeDatabase);
         }
-        realtimeDatabase.connect();
-        realtimeDatabase.getAvgTemp(460);
+        realtimeDatabase = database.getValue();
+        if (realtimeDatabase != null) {
+            realtimeDatabase.connect();
+            realtimeDatabase.getAvgTemp(460);
+        }
+
         avgTemp();
 
         AlarmCH4Service.running.observe(getViewLifecycleOwner(), isRunning -> {
@@ -164,8 +179,8 @@ public class MainFragment extends Fragment {
     }
 
     private void avgTemp() {
-        ModelService.avgTemp.removeObservers(requireActivity());
-        ModelService.avgTemp.observe(requireActivity(), temp -> {
+        RegulateTransferService.avgTemp.removeObservers(requireActivity());
+        RegulateTransferService.avgTemp.observe(requireActivity(), temp -> {
             LinkedList<String> time = new LinkedList<>();
             for (int i = 0; i < temp.size() * 2; i += 2) {
                 if (i == 0) {
@@ -198,7 +213,8 @@ public class MainFragment extends Fragment {
     private void checkAccess(String uid) {
         realtimeDatabase.isAccessGranted(uid);
         Handler handler = new Handler(Looper.getMainLooper());
-        ModelService.isAccessGranted.observe(requireActivity(), isAuth -> {
+
+        RegulateTransferService.isAccessGranted.observe(requireActivity(), isAuth -> {
             if (isAuth) {
                 parMeter.setOnClickListener(view1 -> {
                     NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
@@ -209,21 +225,6 @@ public class MainFragment extends Fragment {
                 handler.postDelayed(() -> btnSoundOff.setEnabled(true), 3000);
                 handler.postDelayed(() -> btnCH4.setEnabled(true), 3000);
             }
-//            else if (count == 1 && false) {
-//                new Thread(() -> {
-//                    while (adManager == null || !adManager.isAdLoaded) {
-//                        try {
-//                            Thread.sleep(100);
-//                        } catch (InterruptedException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                    if (Boolean.FALSE.equals(ModelService.isAccessGranted.getValue())) {
-//                        handler.postDelayed(() -> adManager.showInterstitialAd(), 100);
-//                    }
-//                }).start();
-//            }
-//            count++;
         });
         onResume();
     }
@@ -265,11 +266,13 @@ public class MainFragment extends Fragment {
         builder.setPositiveButton(R.string.ok, (dialog, id) -> {
             if (regulate) {
                 regulate = false;
-                serviceIntent(ModelService.STOP, ModelService.class);
+                //serviceIntent(ModelService.STOP, ModelService.class);
+                startService(2);
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
             } else {
                 regulate = true;
-                serviceIntent(ModelService.START, ModelService.class);
+                //serviceIntent(ModelService.START, ModelService.class);
+                startService(1);
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
             }
         });
@@ -288,6 +291,32 @@ public class MainFragment extends Fragment {
             ContextCompat.startForegroundService(requireContext(), intent);
         } else {
             fragmentActivity.startService(intent);
+        }
+    }
+    private void startService(int command){
+        NetworkRequest networkRequestBuilder = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+                // Additional network request requirement
+                .build();
+
+        JobInfo.Builder jobInfo = new JobInfo.Builder(command, new ComponentName(requireContext(), RegulateTransferService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            jobInfo.setUserInitiated(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            jobInfo.setRequiredNetwork(networkRequestBuilder)
+                    .setEstimatedNetworkBytes(1024 * 1024 * 1024,1024 * 1024 * 1024)
+                    .build();
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            JobScheduler jobScheduler = (JobScheduler) requireContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(jobInfo.build());
+        }else {
+            // Для версий API ниже 21 используем IntentService или другие методы запуска службы
+            Intent intent = new Intent(requireContext(), RegulateTransferService.class);
+            intent.putExtra("command", command);
+            requireContext().startService(intent);
         }
     }
 
