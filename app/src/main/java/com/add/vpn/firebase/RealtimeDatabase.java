@@ -4,12 +4,14 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import com.add.vpn.ModelJobService.RegulateTransferService;
 import com.add.vpn.R;
 import com.add.vpn.UtilCalculations;
 import com.add.vpn.modelService.AlarmCH4Service;
-import com.add.vpn.modelService.ModelService;
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
 import org.jetbrains.annotations.NotNull;
@@ -39,8 +41,11 @@ public class RealtimeDatabase {
         reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && Boolean.FALSE.equals(ModelService.isAccessGranted.getValue())) {
-                    ModelService.isAccessGranted.postValue(Boolean.TRUE);
+//                if (dataSnapshot.exists() && Boolean.FALSE.equals(RegulateTransferService.isAccessGranted.getValue())) {
+//                    RegulateTransferService.isAccessGranted.postValue(Boolean.TRUE);
+//                }
+                if (dataSnapshot.exists()) {
+                    RegulateTransferService.isAccessGranted.postValue(Boolean.TRUE);
                 }
             }
 
@@ -105,50 +110,73 @@ public class RealtimeDatabase {
                     if (powerActive != null && powerActive > 0 && !alarm) stopAlarm = true;
 
                     if (alarm && powerActive != null && powerActive > 0 && stopAlarm) {
-                        if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
-                            ModelService.alarmSound.alarmPlay();
+                        if (Boolean.TRUE.equals(RegulateTransferService.enableAlarm.getValue()) && Boolean.TRUE.equals(RegulateTransferService.running.getValue())) {
+                            RegulateTransferService.alarmSound.alarmPlay();
                             stopAlarm = false;
                         }
                         arrayList.add(context.getString(R.string.KGY_error_msg));
                     }
-                    ModelService.dataListLiveData.postValue(arrayList);
+                    RegulateTransferService.dataListLiveData.postValue(arrayList);
+                    //RegulateTransferService.dataListLiveData.postValue(arrayList);
                     if (ch4Kgy != null) {
                         AlarmCH4Service.ch4KGY = ch4Kgy;
                     }
                 } else {
-                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
+
+//                    RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                        add(context.getString(R.string.connection_error_message));
+//                    }});
+                    RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>(){{
                         add(context.getString(R.string.connection_error_message));
                     }});
-                    ModelService.avgTemp.postValue(new LinkedList<>());
-                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
-                        add("Ошибка связи! Сервер не отвечает");
-                    }});
+                    //RegulateTransferService.avgTemp.postValue(new LinkedList<>());
+                    RegulateTransferService.avgTemp.postValue(new LinkedList<>());
+//                    RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                        add("Ошибка связи! Сервер не отвечает");
+//                    }});
+//                    RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                        add("Ошибка связи! Сервер не отвечает");
+//                    }});
                 }
             }
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
-                ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                    add(context.getString(R.string.connection_error_message));
+//                }});
+//                RegulateTransferService.avgTemp.postValue(new LinkedList<>());
+
+
+
+                RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>(){{
                     add(context.getString(R.string.connection_error_message));
                 }});
-                ModelService.avgTemp.postValue(new LinkedList<>());
+                //RegulateTransferService.avgTemp.postValue(new LinkedList<>());
+                RegulateTransferService.avgTemp.postValue(new LinkedList<>());
+//                RegulateTransferService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                    add("Ошибка связи! Сервер не отвечает");
+//                }});
             }
-
         };
         databaseReference.child("now").addValueEventListener(eventListener);
     }
 
     public void wrightUnixTime() {
-        databaseReference.child("now").child("UnixTime").setValue(new Date().getTime() / 1000).addOnFailureListener(e -> {
-            //
-            Intent intent = new Intent(context, ModelService.class);
-            intent.setAction("STOP");
+        Toast.makeText(context, "try to wright", Toast.LENGTH_SHORT).show();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ContextCompat.startForegroundService(context, intent);
-            } else {
-                context.startService(intent);
-            }
+        databaseReference.child("now").child("UnixTime")
+                .setValue(new Date().getTime() / 1000).addOnFailureListener(e -> {
+                    Toast.makeText(context, "Database fail", Toast.LENGTH_SHORT).show();
+//            //
+//            Intent intent = new Intent(context, RegulateTransferService.class);
+//            intent.setAction("STOP");
+
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                ContextCompat.startForegroundService(context, intent);
+//            } else {
+//                context.startService(intent);
+//            }
         });
     }
 
@@ -191,7 +219,7 @@ public class RealtimeDatabase {
                     }
                 }
                 //LinkedList<FBreportItem> prunedList = pruneList(reportList, 31);
-                ModelService.reportList.setValue(reportList);
+                RegulateTransferService.reportList.setValue(reportList);
             }
 
             @Override
@@ -206,7 +234,8 @@ public class RealtimeDatabase {
         DatabaseReference serverTime = databaseReference.child("now").child("serverUnixTime20");
         serverTime.get().addOnSuccessListener(dataSnapshot -> {
             Long serverTime20 = dataSnapshot.getValue(Long.class);
-            ModelService.serverUnixTime20.postValue(serverTime20);
+            RegulateTransferService.serverUnixTime20.postValue(serverTime20);
+            //RegulateTransferService.serverUnixTime20.postValue(serverTime20);
         });
     }
 
@@ -217,7 +246,7 @@ public class RealtimeDatabase {
             avgTempListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                    LinkedList<Float> avgTempValue = ModelService.avgTemp.getValue();
+                    LinkedList<Float> avgTempValue = RegulateTransferService.avgTemp.getValue();
                     databaseReference.child("avgTemp").child("0").get().addOnSuccessListener(dataSnapshot -> {
                         Integer value = dataSnapshot.getValue(Integer.class);
                         if (avgTempValue != null && avgTempValue.size() > maxItems) {
@@ -226,7 +255,7 @@ public class RealtimeDatabase {
                         if (value != null) {
                             if (avgTempValue != null) {
                                 avgTempValue.addLast(Float.valueOf(value));
-                                ModelService.avgTemp.setValue(avgTempValue);
+                                RegulateTransferService.avgTemp.setValue(avgTempValue);
                             }
                         }
                     });
