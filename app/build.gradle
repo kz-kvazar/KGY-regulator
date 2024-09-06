@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -9,11 +8,11 @@ android {
 
     defaultConfig {
         applicationId "com.add.vpn"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 34 // Обновлено до версии, совместимой с compileSdkVersion
-        versionCode 27
-        versionName '18'
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 28
+        versionName '19'
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -38,25 +37,21 @@ android {
         includeInBundle true
     }
     namespace 'com.add.vpn'
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
-    implementation "androidx.work:work-runtime-ktx:2.9.0"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.google.android.gms:play-services-ads:22.6.0'
-    implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.gms:play-services-ads:23.2.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
 
 //    implementation "androidx.room:room-runtime:2.5.2"
 //    annotationProcessor "androidx.room:room-compiler:2.5.2"
 //    implementation "androidx.room:room-guava:2.5.2"
 
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:32.7.2')
+    implementation platform('com.google.firebase:firebase-bom:32.7.1')
     // Add the dependency for the Realtime Database library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation('com.google.firebase:firebase-database')
@@ -64,15 +59,13 @@ dependencies {
 
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation('com.google.firebase:firebase-auth:22.3.1')
+    implementation('com.google.firebase:firebase-auth:23.0.0')
 
     // Also add the dependency for the Google Play services library and specify its version
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
-    implementation "androidx.work:work-runtime:2.9.0"
-    implementation 'androidx.lifecycle:lifecycle-process:2.7.0'
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.core:core-ktx:1.12.0'
+//    implementation "androidx.work:work-runtime:2.9.0"
+//    implementation 'androidx.lifecycle:lifecycle-process:2.8.2'
 
 //    def lifecycle_version = "2.3.1"
 //    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
