@@ -4,6 +4,9 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.add.vpn.R;
@@ -99,6 +102,11 @@ public class RealtimeDatabase {
                     if (monthStartGenerated != null && totalActivePower != null) {
                         arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
                     }
+                    if(powerActive != null && powerActive == 0){
+                        String engineStopTime = String.valueOf(dataSnapshot.child("engineStopTime").getValue(String.class));
+                        engineStopTime = engineStopTime.replace("T"," ");
+                        arrayList.add(context.getString(R.string.engineStopTime, engineStopTime));
+                    }
 
                     boolean alarm = Boolean.TRUE.equals(dataSnapshot.child("alarm").getValue(Boolean.class));
 
@@ -139,6 +147,7 @@ public class RealtimeDatabase {
     }
 
     public void wrightUnixTime() {
+        //databaseReference.child("now").child("UnixTime").setValue(1000);
         databaseReference.child("now").child("UnixTime").setValue(new Date().getTime() / 1000).addOnFailureListener(e -> {
             //
             Intent intent = new Intent(context, ModelService.class);

@@ -131,6 +131,8 @@ public class MainFragment extends Fragment {
             }
         });
 
+        //enableButtons(); // enable buttons fot no gaps phones!!!!
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.web_client_id)).requestEmail().build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
         mAuth = FirebaseAuth.getInstance();
@@ -197,35 +199,25 @@ public class MainFragment extends Fragment {
 
     private void checkAccess(String uid) {
         realtimeDatabase.isAccessGranted(uid);
-        Handler handler = new Handler(Looper.getMainLooper());
+
         ModelService.isAccessGranted.observe(requireActivity(), isAuth -> {
-            if (isAuth) {
-                parMeter.setOnClickListener(view1 -> {
-                    NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
-                    numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
-                    numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
-                });
-                handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
-                handler.postDelayed(() -> btnSoundOff.setEnabled(true), 3000);
-                handler.postDelayed(() -> btnCH4.setEnabled(true), 3000);
+            if (isAuth) {  /// enable buttons for no gaps phone !!!!!!
+                enableButtons();
             }
-//            else if (count == 1 && false) {
-//                new Thread(() -> {
-//                    while (adManager == null || !adManager.isAdLoaded) {
-//                        try {
-//                            Thread.sleep(100);
-//                        } catch (InterruptedException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                    if (Boolean.FALSE.equals(ModelService.isAccessGranted.getValue())) {
-//                        handler.postDelayed(() -> adManager.showInterstitialAd(), 100);
-//                    }
-//                }).start();
-//            }
-//            count++;
         });
         onResume();
+    }
+
+    private void enableButtons() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        parMeter.setOnClickListener(view1 -> {
+            NumberPickerDialog numberPickerDialog = new NumberPickerDialog();
+            numberPickerDialog.setOnNumberSetListener(realtimeDatabase::setMaxPower);
+            numberPickerDialog.show(fragmentActivity.getSupportFragmentManager(), "MaxPower");
+        });
+        handler.postDelayed(() -> btnOnOff.setEnabled(true), 3000);
+        handler.postDelayed(() -> btnSoundOff.setEnabled(true), 3000);
+        handler.postDelayed(() -> btnCH4.setEnabled(true), 3000);
     }
 
     @Override

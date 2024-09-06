@@ -4,7 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
@@ -12,6 +15,8 @@ import com.add.vpn.R;
 import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -52,39 +57,28 @@ public class ModelService extends Service {
         Boolean value = running.getValue();
 
         if (action.equals(START) && Boolean.FALSE.equals(value)) {
-            running.postValue(Boolean.TRUE);
 
-//            thread = new ModelThread(dataListLiveData,
-//                    logListLiveData,
-//                    getApplicationContext(),
-//                    notificationHelper,
-//                    alarmSound,
-//                    enableAlarm);
-//
-//            thread.start();
-            RealtimeDatabase realtimeDatabase = new RealtimeDatabase(getApplicationContext());
-            realtimeDatabase.connect();
+            running.setValue(true);
+
+//            realtimeDatabase.postValue(new RealtimeDatabase(getApplicationContext()));
+//            realtimeDatabase.getValue().connect();
             wrightToFirebase = new Thread(() -> {
-                boolean run = true;
-                while (run) {
+                do {
                     checkServer();
-                    realtimeDatabase.wrightUnixTime();
+                    RealtimeDatabase db = realtimeDatabase.getValue();
+                    if (db != null){
+                        db.wrightUnixTime();
+                    }
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException ignored) {
-                        run = false;
+                        running.setValue(false);
                     }
-                }
+                }while (running.getValue());
             });
             wrightToFirebase.start();
-
         } else if (action.equals(STOP)) {
             running.postValue(Boolean.FALSE);
-
-//            if (thread != null) {
-//                thread.interrupt();
-//                thread.setInterrupt();
-//            }
             if (wrightToFirebase != null){
                 wrightToFirebase.interrupt();
             }
