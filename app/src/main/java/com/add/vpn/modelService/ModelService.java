@@ -39,15 +39,8 @@ public class ModelService extends Service {
         add("Loading... Please wait.");
     }});
     public static final MutableLiveData<RealtimeDatabase> realtimeDatabase = new MutableLiveData<>();
-    public static final MutableLiveData<LinkedList<FBreportItem>> reportList = new MutableLiveData<>(new LinkedList<FBreportItem>(){{
-//        FBreportItem = new FBreportItem(String.valueOf(new Date().getTime() / 1000));
-//        fBreportItem.setCH4_1(10f);
-//        fBreportItem.setCH4_2(20f);
-//        fBreportItem.setPowerConstant(1000);
-//        fBreportItem.setGasFlow(1000f);
-//        add(fBreportItem);
-    }});
-    //public static final MutableLiveData<LinkedList<String>> logListLiveData = new MutableLiveData<>(new LinkedList<>());
+    public static final MutableLiveData<LinkedList<FBreportItem>> reportList = new MutableLiveData<>(new LinkedList<FBreportItem>(){
+    });
     public static final MutableLiveData<Boolean> enableAlarm = new MutableLiveData<>(Boolean.FALSE);
     private Thread wrightToFirebase;
 
@@ -72,7 +65,7 @@ public class ModelService extends Service {
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException ignored) {
-                        running.setValue(false);
+                        running.postValue(false);
                     }
                 }while (running.getValue());
             });
@@ -137,7 +130,9 @@ public class ModelService extends Service {
         }
         long time = new Date().getTime()/1000;
 
-        boolean isServerOnline = serverUnixTime20.getValue() == null || time - serverUnixTime20.getValue() > 7250;
+        Long serverUnixTime20sec = serverUnixTime20.getValue();
+        if (serverUnixTime20sec != null && serverUnixTime20sec == 0) serverUnixTime20sec = time;
+        boolean isServerOnline = serverUnixTime20sec == null || time - serverUnixTime20sec > 7250;
 
         if (isServerOnline){
 
