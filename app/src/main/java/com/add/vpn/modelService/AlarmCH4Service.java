@@ -14,7 +14,7 @@ public class AlarmCH4Service extends Service {
     public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
     public static final String STOP = "STOP";
     public static final String START = "START";
-    public static Float ch4KGY = 0F;
+    public static MutableLiveData<Float> ch4KGY = ModelService.CH4kgy;
     private Thread checker;
     public static AlarmSound alarmCH4;
 
@@ -34,7 +34,7 @@ public class AlarmCH4Service extends Service {
             running.postValue(Boolean.TRUE);
             checker = new Thread(() -> {
                 while (true) {
-                    if (ch4KGY > 26.4) {
+                    if (ch4KGY.getValue() != null && ch4KGY.getValue() > 26.4) {
                         alarmCH4.alarmPlay();
                     }
                     try {

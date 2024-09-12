@@ -17,7 +17,7 @@ public class NotificationHelper {
     private static final String CHANNEL_ID = "KGY_Notifications";
     private static final String CHANNEL_NAME = "KGY";
     private final Context context;
-    private final NotificationManager notificationManager;
+    public final NotificationManager notificationManager;
 
     public NotificationHelper(Context context) {
         this.context = context;
@@ -32,17 +32,17 @@ public class NotificationHelper {
             notificationManager.createNotificationChannel(channel);
         }
     }
-    public void showNotification(String title, String message) {
+    public void serviceStopNotification() {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle(title)
-                .setContentText(message)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(context.getString(R.string.backgrounded_message))
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setTicker(message)
+                .setTicker(context.getString(R.string.backgrounded_message))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)

@@ -4,14 +4,10 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.add.vpn.R;
 import com.add.vpn.UtilCalculations;
-import com.add.vpn.modelService.AlarmCH4Service;
 import com.add.vpn.modelService.ModelService;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
@@ -113,7 +109,7 @@ public class RealtimeDatabase {
                     if (powerActive != null && powerActive > 0 && !alarm) stopAlarm = true;
 
                     if (alarm && powerActive != null && powerActive > 0 && stopAlarm) {
-                        if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.running.getValue())) {
+                        if (Boolean.TRUE.equals(ModelService.enableAlarm.getValue()) && Boolean.TRUE.equals(ModelService.regulationRunning.getValue())) {
                             ModelService.alarmSound.alarmPlay();
                             stopAlarm = false;
                         }
@@ -121,7 +117,7 @@ public class RealtimeDatabase {
                     }
                     ModelService.dataListLiveData.postValue(arrayList);
                     if (ch4Kgy != null) {
-                        AlarmCH4Service.ch4KGY = ch4Kgy;
+                        ModelService.CH4kgy.setValue(ch4Kgy);
                     }
                 } else {
                     ModelService.dataListLiveData.postValue(new ArrayList<String>() {{

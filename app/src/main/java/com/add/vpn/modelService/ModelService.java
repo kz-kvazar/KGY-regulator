@@ -4,18 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
-import com.add.vpn.R;
 import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,9 +25,10 @@ public class ModelService extends Service {
     //private ModelThread thread;
     private NotificationHelper notificationHelper;
     public static AlarmSound alarmSound;
-    //public static final MutableLiveData<Float> CH4kgy = new MutableLiveData<>(0F);
+    public static final MutableLiveData<Float> CH4kgy = new MutableLiveData<>(0F);
     public static final MutableLiveData<Long> serverUnixTime20 = new MutableLiveData<>(0L);
-    public static final MutableLiveData<Boolean> running = new MutableLiveData<>(Boolean.FALSE);
+    public static final MutableLiveData<Boolean> regulationRunning = new MutableLiveData<>(Boolean.FALSE);
+    public static final MutableLiveData<Boolean> alarmCH4Running = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<Boolean> isAccessGranted = new MutableLiveData<>(Boolean.FALSE);
     public static final MutableLiveData<LinkedList<Float>> avgTemp = new MutableLiveData<>(new LinkedList<>());
     public static final MutableLiveData<List<String>> dataListLiveData = new MutableLiveData<>(new ArrayList<String>(){{
@@ -47,11 +43,11 @@ public class ModelService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        Boolean value = running.getValue();
+        Boolean value = regulationRunning.getValue();
 
         if (action.equals(START) && Boolean.FALSE.equals(value)) {
 
-            running.setValue(true);
+            regulationRunning.setValue(true);
 
 //            realtimeDatabase.postValue(new RealtimeDatabase(getApplicationContext()));
 //            realtimeDatabase.getValue().connect();
@@ -65,13 +61,13 @@ public class ModelService extends Service {
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException ignored) {
-                        running.postValue(false);
+                        regulationRunning.postValue(false);
                     }
-                }while (running.getValue());
+                }while (regulationRunning.getValue());
             });
             wrightToFirebase.start();
         } else if (action.equals(STOP)) {
-            running.postValue(Boolean.FALSE);
+            regulationRunning.postValue(Boolean.FALSE);
             if (wrightToFirebase != null){
                 wrightToFirebase.interrupt();
             }
@@ -112,7 +108,7 @@ public class ModelService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        notificationHelper.showNotification(getString(R.string.app_name), getString(R.string.backgrounded_message));
+        notificationHelper.serviceStopNotification();
 //        if (thread != null){
 //            thread.interrupt();
 //            thread.setInterrupt();
@@ -120,7 +116,7 @@ public class ModelService extends Service {
         if (wrightToFirebase != null){
             wrightToFirebase.interrupt();
         }
-        running.postValue(false);
+        regulationRunning.postValue(false);
         stopSelf();
     }
     public void checkServer(){
@@ -141,7 +137,7 @@ public class ModelService extends Service {
                 add("Ошибка связи! Сервер не отвечает");
             }});
 
-            if (Boolean.TRUE.equals(running.getValue()) && Boolean.TRUE.equals(enableAlarm.getValue())){
+            if (Boolean.TRUE.equals(regulationRunning.getValue()) && Boolean.TRUE.equals(enableAlarm.getValue())){
                 alarmSound.alarmPlay();
             }
         }
