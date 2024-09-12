@@ -9,21 +9,15 @@ import android.graphics.Color;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
-import com.add.vpn.ModelJobService.RegulateTransferService;
 import com.add.vpn.modelService.AlarmCH4Service;
-
+import com.add.vpn.modelService.ModelService;
 
 public class NotificationHelper {
 
     private static final String CHANNEL_ID = "KGY_Notifications";
     private static final String CHANNEL_NAME = "KGY";
     private final Context context;
-
-    public NotificationManager getNotificationManager() {
-        return notificationManager;
-    }
-
-    private final NotificationManager notificationManager;
+    public final NotificationManager notificationManager;
 
     public NotificationHelper(Context context) {
         this.context = context;
@@ -38,17 +32,17 @@ public class NotificationHelper {
             notificationManager.createNotificationChannel(channel);
         }
     }
-    public void showNotification(String title, String message) {
+    public void serviceStopNotification() {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle(title)
-                .setContentText(message)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(context.getString(R.string.backgrounded_message))
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setTicker(message)
+                .setTicker(context.getString(R.string.backgrounded_message))
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -64,12 +58,12 @@ public class NotificationHelper {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        Intent btnIntent = new Intent(context, RegulateTransferService.class);
-        //btnIntent.setAction(RegulateTransferService.STOP);
+        Intent btnIntent = new Intent(context, ModelService.class);
+        btnIntent.setAction(ModelService.STOP);
         PendingIntent btnPendingIntent = PendingIntent.getService(context,1,btnIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        Intent sounIntent = new Intent(context, RegulateTransferService.class);
-        //sounIntent.setAction(RegulateTransferService.SOUND_OFF);
+        Intent sounIntent = new Intent(context, ModelService.class);
+        sounIntent.setAction(ModelService.SOUND_OFF);
         PendingIntent soundPendingIntent = PendingIntent.getService(context,2,sounIntent,PendingIntent.FLAG_IMMUTABLE);
 
         return new NotificationCompat.Builder(context, CHANNEL_ID)

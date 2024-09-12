@@ -1,132 +1,76 @@
-//package com.add.vpn.modelService;
-//
-//import android.content.Context;
-//import androidx.lifecycle.MutableLiveData;
-//import com.add.vpn.NotificationHelper;
-//import com.add.vpn.R;
-//import com.add.vpn.holders.DataHolder;
-//import com.add.vpn.model.*;
-//
-//import java.io.IOException;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//import java.util.LinkedList;
-//import java.util.List;
-//import java.util.Locale;
-//
-//public class ModelThread extends Thread{
-//    private final NotificationHelper notification;
-//    private final MutableLiveData<Boolean> alarm;
-//    private int retry = 0;
-//    private boolean isAlarmPlaying  = false;
-//    private volatile boolean interrupt = true;
-//    private final DataReceiver dataReceiver;
-//    private final DataSender dataSender;
-//    private final AlarmReceiver alarmReceiver;
-//    private final Context applicationContext;
-//    private final MutableLiveData<List<String>> dataListLiveData;
-//    private final MutableLiveData<LinkedList<String>> logListLiveData;
-//    private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-//    private final AlarmSound alarmSound;
-//
-//    public ModelThread(MutableLiveData<List<String>> dataListLiveData,
-//                       MutableLiveData<LinkedList<String>> logListLiveData,
-//                       Context applicationContext,
-//                       NotificationHelper notification,
-//                       AlarmSound alarmSound,
-//                       MutableLiveData<Boolean> alarm) {
-//        this.dataListLiveData = dataListLiveData;
-//        this.logListLiveData = logListLiveData;
-//        this.notification = notification;
-//        this.alarm = alarm;
-//
-//        this.dataReceiver = new DataReceiver();
-//        this.dataSender = new DataSender();
-//
-//        this.alarmReceiver = new AlarmReceiver();
-//        this.applicationContext = applicationContext;
-//        this.alarmSound = alarmSound;
-//    }
-//
-//    @Override
-//    public void run() {
-//        ModelRegulator regulator = new ModelRegulator(logListLiveData, applicationContext, notification, alarmSound, alarm);
-//        while (interrupt) {
-//            try {
-//                checkInterrupt();
-//                receiveData();
-//                checkGeneratorErrors();
-//                Integer regulateConstant = regulator.regulate();
-//                if (regulateConstant != null) {
-//                    dataSender.setPowerConstant(regulateConstant);
-//                }
-//                //Thread.sleep(1000);
-//            } catch (InterruptedException i) {
-//                interrupt = false;
-//            } catch (IOException e) {
-//                checkConnectionErrors(retry);
-//                retry++;
-//            }
-//        }
-//    }
-//
-//    private void checkInterrupt() {
-//        if (Thread.currentThread().isInterrupted()) {
-//            interrupt = false;
-//        }
-//    }
-//    public void setInterrupt(){
-//        interrupt = false;
-//    }
-//
-//
-//
-//    public void receiveData() throws IOException, InterruptedException {
-//
-//        Thread.sleep(300);
-//
-//        DataHolder.setThrottlePosition(dataReceiver.getThrottlePosition());
-//        Thread.sleep(300);
-//
-//        DataHolder.setOpPressure(dataReceiver.getOpPressure());
-//        Thread.sleep(300);
-//
-//        DataHolder.setActPower(dataReceiver.getPowerActive());
-//        Thread.sleep(300);
-//
-//        DataHolder.setConstPower(dataReceiver.getPowerConstant());
-//        Thread.sleep(300);
-//
-//        DataHolder.setCH4Concentration(dataReceiver.getCH4Concentration());
-//        Thread.sleep(300);
-//
-//        dataListLiveData.postValue(DataHolder.toLis(applicationContext));
-//
-//        //retry = 0;
-//    }
-//
-//    public void checkGeneratorErrors() throws IOException, InterruptedException {
-//        boolean alarmReceiverAlarm = alarmReceiver.getAlarm();
-//        Thread.sleep(300);
-//        if (alarmReceiverAlarm && !isAlarmPlaying && Boolean.TRUE.equals(alarm.getValue())) {
-//            isAlarmPlaying = true;
-//            alarmSound.alarmPlay();
-//            notification.showNotification(applicationContext.getString(R.string.KGY_error_title), applicationContext.getString(R.string.KGY_error_msg));
-//        } else if (!alarmReceiverAlarm && isAlarmPlaying) {
-//            isAlarmPlaying = false;
-//        }
-//        //Thread.sleep(1200);
-//    }
-//    public void checkConnectionErrors(int trays) {
-//        if (trays == 4) {
-//            retry = 0;
-//            LinkedList<String> list = logListLiveData.getValue();
-//            if (list != null) {
-//                list.addFirst(applicationContext.getString(R.string.connection_error_log_msg, sdf.format(new Date())));
-//                logListLiveData.postValue(list);
-//            }
-//            if (Boolean.TRUE.equals(alarm.getValue())) alarmSound.alarmPlay();
-//            notification.showNotification(applicationContext.getString(R.string.connection_error_title), applicationContext.getString(R.string.connection_error_message));
-//        }
-//    }
-//}
+package com.add.vpn.modelService;
+
+import android.app.Notification;
+import androidx.fragment.app.FragmentActivity;
+import com.add.vpn.NotificationHelper;
+import com.add.vpn.firebase.RealtimeDatabase;
+import com.add.vpn.model.AlarmSound;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+
+import static com.add.vpn.modelService.ModelService.*;
+
+public class ModelThread extends Thread {
+    private final NotificationHelper notificationHelper;
+    private final int notification_id = 778;
+    //private final AlarmSound alarmSound;
+
+    public ModelThread(FragmentActivity fragmentActivity) {
+        if (alarmSound == null) alarmSound = new AlarmSound(fragmentActivity);
+        notificationHelper = new NotificationHelper(fragmentActivity);
+        Notification notification = notificationHelper.serviceRegulateNotification();
+        notificationHelper.notificationManager.notify(notification_id, notification);
+        regulationRunning.setValue(true);
+    }
+
+    @Override
+    public void run() {
+        regulationRunning.postValue(true);
+        do {
+            checkServer();
+            RealtimeDatabase db = realtimeDatabase.getValue();
+            if (db != null) {
+                db.wrightUnixTime();
+            }
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ignored) {
+                regulationRunning.postValue(false);
+            }
+        } while (Boolean.TRUE.equals(regulationRunning.getValue()));
+        notificationHelper.serviceStopNotification();
+        notificationHelper.notificationManager.cancel(notification_id);
+        alarmSound.alarmStop();
+        alarmSound.release();
+        regulationRunning.postValue(false);
+    }
+
+    public void checkServer() {
+        RealtimeDatabase database = realtimeDatabase.getValue();
+        if (database != null) {
+            database.getServerUnixTime();
+        }
+        long time = new Date().getTime() / 1000;
+
+        Long serverUnixTime20sec = serverUnixTime20.getValue();
+        if (serverUnixTime20sec != null && serverUnixTime20sec == 0) serverUnixTime20sec = time;
+        boolean isServerOnline = serverUnixTime20sec == null || time - serverUnixTime20sec > 7250;
+
+        if (isServerOnline) {
+
+            avgTemp.postValue(new LinkedList<>());
+            dataListLiveData.postValue(new ArrayList<String>() {{
+                add("Ошибка связи! Сервер не отвечает");
+            }});
+
+            if (Boolean.TRUE.equals(regulationRunning.getValue()) && Boolean.TRUE.equals(enableAlarm.getValue())) {
+                alarmSound.alarmPlay();
+            }
+        }
+    }
+
+}
+
+

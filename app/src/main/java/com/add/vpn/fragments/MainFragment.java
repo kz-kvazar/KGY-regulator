@@ -67,7 +67,7 @@ public class MainFragment extends Fragment {
 
         fragmentActivity = requireActivity();
 
-        ModelService.running.observe(getViewLifecycleOwner(), aBoolean -> {
+        ModelService.regulationRunning.observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 btnOnOff.setText(R.string.btn_regulateOff);
             } else btnOnOff.setText(R.string.btn_regulateOn);
