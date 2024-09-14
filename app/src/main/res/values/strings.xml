@@ -13,7 +13,8 @@
     <string name="ch4_kgy">СН4 КГУ: %s %%</string>
     <string name="bearingTemp">Подшипники генератора: %s °C %s °C</string>
     <string name="gasTemp">ГВС после GTS: %s °C</string>
-    <string name="voltage">Напр. сети: %s V  %s V  %s V</string>
+    <string name="voltageGen">Напр. Генератора: %s V  %s V  %s V</string>
+    <string name="voltageKtp">Напр. КТП: %s V  %s V  %s V</string>
     <string name="wndingTemp">Обмотки генератора: %s °C  %s °C  %s °C</string>
 
     <string name="month_generated">Генерация за месяц: %s MW</string>
