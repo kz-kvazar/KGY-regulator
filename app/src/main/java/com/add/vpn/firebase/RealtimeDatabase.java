@@ -90,7 +90,12 @@ public class RealtimeDatabase {
                     String l1N = String.valueOf(dataSnapshot.child("l1N").getValue(Integer.class));
                     String l2N = String.valueOf(dataSnapshot.child("l2N").getValue(Integer.class));
                     String l3N = String.valueOf(dataSnapshot.child("l3N").getValue(Integer.class));
-                    arrayList.add(context.getString(R.string.voltage, l1N, l2N, l3N));
+                    arrayList.add(context.getString(R.string.voltageGen, l1N, l2N, l3N));
+                    String U12 = String.valueOf(dataSnapshot.child("U12").getValue(Integer.class));
+                    String U23 = String.valueOf(dataSnapshot.child("U23").getValue(Integer.class));
+                    String U31 = String.valueOf(dataSnapshot.child("U31").getValue(Integer.class));
+                    arrayList.add(context.getString(R.string.voltageKtp, U12, U23, U31));
+
 
                     Long monthStartGenerated = dataSnapshot.child("monthStartGenerated").getValue(Long.class);
                     Long totalActivePower = dataSnapshot.child("totalActivePower").getValue(Long.class);
