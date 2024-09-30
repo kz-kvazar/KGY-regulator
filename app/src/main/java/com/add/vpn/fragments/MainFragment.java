@@ -26,8 +26,9 @@ import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
-import com.add.vpn.modelService.AlarmCH4Service;
+import com.add.vpn.modelService.AlarmCH4Thread;
 import com.add.vpn.modelService.ModelService;
+import com.add.vpn.modelService.ModelThread;
 import com.add.vpn.view.AnalogView;
 import com.add.vpn.view.ChartView;
 import com.google.android.gms.ads.MobileAds;
@@ -58,7 +59,7 @@ public class MainFragment extends Fragment {
     private AnalogView opPe;
     private ChartView avgTemp;
     private Button btnCH4;
-    private Boolean isAlarmCH4 = false;
+    private Boolean isAlarmCH4Enabled = false;
 
 
     @Override
@@ -68,7 +69,8 @@ public class MainFragment extends Fragment {
         fragmentActivity = requireActivity();
 
         ModelService.regulationRunning.observe(getViewLifecycleOwner(), aBoolean -> {
-            if (aBoolean) {
+            ModelThread modelThread = ModelService.modelThread.getValue();
+            if (aBoolean && modelThread != null && modelThread.isAlive()) {
                 btnOnOff.setText(R.string.btn_regulateOff);
             } else btnOnOff.setText(R.string.btn_regulateOn);
             regulate = aBoolean;
@@ -102,7 +104,7 @@ public class MainFragment extends Fragment {
         btnSoundOff.setOnClickListener(v -> {
             AlarmSound alarmSound = ModelService.alarmSound;
             if (alarmSound != null) alarmSound.alarmStop();
-            if (AlarmCH4Service.alarmCH4 != null) AlarmCH4Service.alarmCH4.alarmStop();
+            //if (AlarmCH4Service.alarmCH4 != null) AlarmCH4Service.alarmCH4.alarmStop();
         });
 
         realtimeDatabase = ModelService.realtimeDatabase.getValue();
@@ -114,9 +116,10 @@ public class MainFragment extends Fragment {
         realtimeDatabase.getAvgTemp(460);
         avgTemp();
 
-        AlarmCH4Service.running.observe(getViewLifecycleOwner(), isRunning -> {
-            isAlarmCH4 = isRunning;
-            if (isAlarmCH4) {
+        ModelService.alarmCH4Running.observe(getViewLifecycleOwner(), isRunning -> {
+            isAlarmCH4Enabled = isRunning;
+            AlarmCH4Thread alarmCH4Thread = ModelService.alarmTread.getValue();
+            if (isAlarmCH4Enabled && alarmCH4Thread != null && alarmCH4Thread.isAlive()) {
                 btnCH4.setText(R.string.alarmCH4disable);
             } else {
                 btnCH4.setText(R.string.alarmCH4enable);
@@ -124,10 +127,23 @@ public class MainFragment extends Fragment {
 
         });
         btnCH4.setOnClickListener(view1 -> {
-            if (isAlarmCH4) {
-                serviceIntent(AlarmCH4Service.STOP, AlarmCH4Service.class);
+            AlarmCH4Thread alarmCH4Thread = ModelService.alarmTread.getValue();
+            if (isAlarmCH4Enabled && alarmCH4Thread != null && alarmCH4Thread.isAlive()) {
+                //serviceIntent(AlarmCH4Service.STOP, AlarmCH4Service.class);
+                alarmCH4Thread.interrupt();
+                ModelService.alarmTread.setValue(new AlarmCH4Thread(fragmentActivity));
+                ModelService.alarmCH4Running.setValue(false);
+
+                Snackbar.make(fragmentActivity, requireView(), getString(R.string.stop_CH4_notification_message), Snackbar.LENGTH_LONG).show();
             } else {
-                serviceIntent(AlarmCH4Service.START, AlarmCH4Service.class);
+                //serviceIntent(AlarmCH4Service.START, AlarmCH4Service.class);
+                if (alarmCH4Thread != null && alarmCH4Thread.isAlive()) alarmCH4Thread.interrupt();
+                AlarmCH4Thread ch4Thread = new AlarmCH4Thread(fragmentActivity);
+                ModelService.alarmTread.setValue(ch4Thread);
+                ch4Thread.start();
+                ModelService.alarmCH4Running.setValue(true);
+
+                Snackbar.make(fragmentActivity, requireView(), getString(R.string.start_CH4_notification_message), Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -255,13 +271,30 @@ public class MainFragment extends Fragment {
 
         // Add the buttons.
         builder.setPositiveButton(R.string.ok, (dialog, id) -> {
-            if (regulate) {
-                regulate = false;
-                serviceIntent(ModelService.STOP, ModelService.class);
+            ModelThread modelThread = ModelService.modelThread.getValue();
+            if (regulate && modelThread != null && modelThread.isAlive()) {
+
+                //serviceIntent(ModelService.STOP, ModelService.class);
+
+                modelThread.interrupt();
+                //ModelService.regulationRunning.setValue(false);
+                ModelService.modelThread.setValue(new ModelThread(fragmentActivity));
+                ModelService.regulationRunning.setValue(false);
+
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
             } else {
-                regulate = true;
-                serviceIntent(ModelService.START, ModelService.class);
+
+                //serviceIntent(ModelService.START, ModelService.class);
+                //ModelService.regulationRunning.setValue(true);
+
+                if (modelThread != null && modelThread.isAlive()) modelThread.interrupt();
+
+                modelThread = new ModelThread(fragmentActivity);
+                ModelService.modelThread.setValue(modelThread);
+                modelThread.start();
+
+                ModelService.regulationRunning.setValue(true);
+
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
             }
         });
@@ -285,8 +318,20 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onStop() {
-        if (adManager != null) adManager.release();
-        //serviceIntent(ModelService.STOP);
+
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+//        if (adManager != null) adManager.release();
+//
+//        ModelThread modelThread = ModelService.modelThread.getValue();
+//        if (modelThread != null && modelThread.isAlive()) modelThread.interrupt();
+//
+//        AlarmCH4Thread alarmCH4Thread = ModelService.alarmTread.getValue();
+//        if (alarmCH4Thread != null && alarmCH4Thread.isAlive()) alarmCH4Thread.interrupt();
+
+        super.onDestroy();
     }
 }

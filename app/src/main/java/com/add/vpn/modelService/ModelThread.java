@@ -1,6 +1,5 @@
 package com.add.vpn.modelService;
 
-import android.app.Notification;
 import androidx.fragment.app.FragmentActivity;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.firebase.RealtimeDatabase;
@@ -14,20 +13,19 @@ import static com.add.vpn.modelService.ModelService.*;
 
 public class ModelThread extends Thread {
     private final NotificationHelper notificationHelper;
-    private final int notification_id = 778;
+    private int notification_id = 777;
     //private final AlarmSound alarmSound;
 
     public ModelThread(FragmentActivity fragmentActivity) {
         if (alarmSound == null) alarmSound = new AlarmSound(fragmentActivity);
         notificationHelper = new NotificationHelper(fragmentActivity);
-        Notification notification = notificationHelper.serviceRegulateNotification();
-        notificationHelper.notificationManager.notify(notification_id, notification);
+        notification_id = notificationHelper.regulateStartNotification();
         regulationRunning.setValue(true);
     }
 
     @Override
     public void run() {
-        regulationRunning.postValue(true);
+        //regulationRunning.postValue(true);
         do {
             checkServer();
             RealtimeDatabase db = realtimeDatabase.getValue();
@@ -37,14 +35,18 @@ public class ModelThread extends Thread {
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException ignored) {
+                //notificationHelper.notificationManager.cancel(notification_id);
                 regulationRunning.postValue(false);
+                alarmSound.alarmStop();
+                notificationHelper.regulateStopNotification();
+                //alarmSound.release();
             }
         } while (Boolean.TRUE.equals(regulationRunning.getValue()));
-        notificationHelper.serviceStopNotification();
-        notificationHelper.notificationManager.cancel(notification_id);
-        alarmSound.alarmStop();
-        alarmSound.release();
-        regulationRunning.postValue(false);
+//        regulationRunning.postValue(false);
+//        notificationHelper.serviceStopNotification();
+//        notificationHelper.notificationManager.cancel(notification_id);
+//        alarmSound.alarmStop();
+//        //alarmSound.release();
     }
 
     public void checkServer() {

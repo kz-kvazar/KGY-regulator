@@ -13,8 +13,8 @@
     <string name="ch4_kgy">СН4 КГУ: %s %%</string>
     <string name="bearingTemp">Подшипники генератора: %s °C %s °C</string>
     <string name="gasTemp">ГВС после GTS: %s °C</string>
-    <string name="voltageGen">Напр. Генератора: %s V  %s V  %s V</string>
-    <string name="voltageKtp">Напр. КТП: %s V  %s V  %s V</string>
+    <string name="voltageGen">Напр. РУ-0,4кВ: %s V  %s V  %s V</string>
+    <string name="voltageKtp">Напр. РУ-10кВ: %s V  %s V  %s V</string>
     <string name="wndingTemp">Обмотки генератора: %s °C  %s °C  %s °C</string>
 
     <string name="month_generated">Генерация за месяц: %s MW</string>
@@ -65,7 +65,8 @@
     <string name="cancel">Отмена</string>
     <string name="alarmCH4enable">Вкл. сигнал 26.4%</string>
     <string name="alarmCH4disable">Откл сигнал 26.4%</string>
-    <string name="service_CH4_notification_message">Сигнал при повышении концентрации выше 26,4% включен!</string>
+    <string name="start_CH4_notification_message">Сигнал при повышении концентрации выше 26,4% включён!</string>
+    <string name="stop_CH4_notification_message">Сигнал при повышении концентрации выше 26,4% отключён!</string>
     <string name="engineStopTime">"КГУ остановлено с: %s"</string>
 
 
