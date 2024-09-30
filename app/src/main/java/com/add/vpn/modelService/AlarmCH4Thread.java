@@ -1,6 +1,5 @@
 package com.add.vpn.modelService;
 
-import android.app.Notification;
 import androidx.fragment.app.FragmentActivity;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.model.AlarmSound;
@@ -13,16 +12,15 @@ public class AlarmCH4Thread extends Thread {
     //private final AlarmSound alarmSound;
 
     public AlarmCH4Thread(FragmentActivity fragmentActivity) {
-        notificationHelper = new NotificationHelper(fragmentActivity);
-        Notification notification = notificationHelper.serviceCH4Notification();
-        notificationHelper.notificationManager.notify(notification_id, notification);
-        if (alarmSound == null) alarmSound = new AlarmSound(fragmentActivity);
         alarmCH4Running.setValue(true);
+        if (alarmSound == null) alarmSound = new AlarmSound(fragmentActivity);
+        notificationHelper = new NotificationHelper(fragmentActivity);
+        notificationHelper.alarmCH4StartNotification();
     }
 
     @Override
     public void run() {
-        regulationRunning.postValue(true);
+        alarmCH4Running.postValue(true);
         do {
             if (CH4kgy.getValue() != null && CH4kgy.getValue() > 26.4) {
                 alarmSound.alarmPlay();
@@ -31,11 +29,9 @@ public class AlarmCH4Thread extends Thread {
                 Thread.sleep(10000);
             } catch (InterruptedException ignored) {
                 alarmCH4Running.postValue(false);
+                alarmSound.alarmStop();
+                notificationHelper.alarmCH4StopNotification();
             }
         } while (Boolean.TRUE.equals(alarmCH4Running.getValue()));
-        notificationHelper.notificationManager.cancel(notification_id);
-        alarmSound.alarmStop();
-        alarmSound.release();
-        alarmCH4Running.postValue(false);
     }
 }

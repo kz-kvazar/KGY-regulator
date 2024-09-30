@@ -38,6 +38,8 @@ public class ModelService extends Service {
     public static final MutableLiveData<LinkedList<FBreportItem>> reportList = new MutableLiveData<>(new LinkedList<FBreportItem>(){
     });
     public static final MutableLiveData<Boolean> enableAlarm = new MutableLiveData<>(Boolean.FALSE);
+    public static final MutableLiveData<ModelThread> modelThread = new MutableLiveData<>();
+    public static final MutableLiveData<AlarmCH4Thread> alarmTread = new MutableLiveData<>();
     private Thread wrightToFirebase;
 
     @Override
@@ -108,7 +110,7 @@ public class ModelService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        notificationHelper.serviceStopNotification();
+        notificationHelper.regulateStopNotification();
 //        if (thread != null){
 //            thread.interrupt();
 //            thread.setInterrupt();
