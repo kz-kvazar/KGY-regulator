@@ -10,8 +10,8 @@ android {
         applicationId "com.add.vpn"
         minSdkVersion 23
         targetSdkVersion 34 // Обновлено до версии, совместимой с compileSdkVersion
-        versionCode 30
-        versionName '30'
+        versionCode 32
+        versionName '32'
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

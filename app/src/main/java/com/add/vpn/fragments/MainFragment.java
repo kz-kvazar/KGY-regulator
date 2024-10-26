@@ -131,13 +131,13 @@ public class MainFragment extends Fragment {
             if (isAlarmCH4Enabled && alarmCH4Thread != null && alarmCH4Thread.isAlive()) {
                 //serviceIntent(AlarmCH4Service.STOP, AlarmCH4Service.class);
                 alarmCH4Thread.interrupt();
-                ModelService.alarmTread.setValue(new AlarmCH4Thread(fragmentActivity));
-                ModelService.alarmCH4Running.setValue(false);
+                //ModelService.alarmTread.setValue(new AlarmCH4Thread(fragmentActivity));
+                //ModelService.alarmCH4Running.setValue(false);
 
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.stop_CH4_notification_message), Snackbar.LENGTH_LONG).show();
             } else {
                 //serviceIntent(AlarmCH4Service.START, AlarmCH4Service.class);
-                if (alarmCH4Thread != null && alarmCH4Thread.isAlive()) alarmCH4Thread.interrupt();
+                //if (alarmCH4Thread != null && alarmCH4Thread.isAlive()) alarmCH4Thread.interrupt();
                 AlarmCH4Thread ch4Thread = new AlarmCH4Thread(fragmentActivity);
                 ModelService.alarmTread.setValue(ch4Thread);
                 ch4Thread.start();
@@ -278,8 +278,8 @@ public class MainFragment extends Fragment {
 
                 modelThread.interrupt();
                 //ModelService.regulationRunning.setValue(false);
-                ModelService.modelThread.setValue(new ModelThread(fragmentActivity));
-                ModelService.regulationRunning.setValue(false);
+                //ModelService.modelThread.setValue(new ModelThread(fragmentActivity));
+                //ModelService.regulationRunning.setValue(false);
 
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOff), Snackbar.LENGTH_LONG).show();
             } else {
@@ -287,7 +287,7 @@ public class MainFragment extends Fragment {
                 //serviceIntent(ModelService.START, ModelService.class);
                 //ModelService.regulationRunning.setValue(true);
 
-                if (modelThread != null && modelThread.isAlive()) modelThread.interrupt();
+                //if (modelThread != null && modelThread.isAlive()) modelThread.interrupt();
 
                 modelThread = new ModelThread(fragmentActivity);
                 ModelService.modelThread.setValue(modelThread);
@@ -297,6 +297,7 @@ public class MainFragment extends Fragment {
 
                 Snackbar.make(fragmentActivity, requireView(), getString(R.string.regulate_statusOn), Snackbar.LENGTH_LONG).show();
             }
+            adManager.showInterstitialAd();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
             // User cancels the dialog.

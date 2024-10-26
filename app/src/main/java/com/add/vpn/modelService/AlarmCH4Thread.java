@@ -7,15 +7,21 @@ import com.add.vpn.model.AlarmSound;
 import static com.add.vpn.modelService.ModelService.*;
 
 public class AlarmCH4Thread extends Thread {
-    private final NotificationHelper notificationHelper;
+    //private final NotificationHelper notificationHelper;
     private final int notification_id = 775;
     //private final AlarmSound alarmSound;
 
     public AlarmCH4Thread(FragmentActivity fragmentActivity) {
         alarmCH4Running.setValue(true);
         if (alarmSound == null) alarmSound = new AlarmSound(fragmentActivity);
-        notificationHelper = new NotificationHelper(fragmentActivity);
-        notificationHelper.alarmCH4StartNotification();
+        if (notificationHelper.getValue() == null){
+            notificationHelper.setValue(new NotificationHelper(fragmentActivity));
+            notificationHelper.getValue().alarmCH4StartNotification();
+        }else {
+            notificationHelper.getValue().alarmCH4StartNotification();
+        }
+//        notificationHelper = new NotificationHelper(fragmentActivity);
+//        notificationHelper.alarmCH4StartNotification();
     }
 
     @Override
@@ -28,9 +34,12 @@ public class AlarmCH4Thread extends Thread {
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException ignored) {
-                alarmCH4Running.postValue(false);
+
+                if (notificationHelper.getValue() != null){
+                    notificationHelper.getValue().alarmCH4StopNotification();
+                }
                 alarmSound.alarmStop();
-                notificationHelper.alarmCH4StopNotification();
+                alarmCH4Running.postValue(false);
             }
         } while (Boolean.TRUE.equals(alarmCH4Running.getValue()));
     }
