@@ -12,7 +12,8 @@
     <string name="VNS">СН4 ВНС: %s %%  %s %%</string>
     <string name="ch4_kgy">СН4 КГУ: %s %%</string>
     <string name="bearingTemp">Подшипники генератора: %s °C %s °C</string>
-    <string name="gasTemp">ГВС после GTS: %s °C</string>
+    <string name="gasTempIN">ГВС перед GTS: %s °C</string>
+    <string name="gasTempOUT">ГВС после GTS: %s °C</string>
     <string name="voltageGen">Напр. РУ-0,4кВ: %s V  %s V  %s V</string>
     <string name="voltageKtp">Напр. РУ-10кВ: %s V  %s V  %s V</string>
     <string name="wndingTemp">Обмотки генератора: %s °C  %s °C  %s °C</string>

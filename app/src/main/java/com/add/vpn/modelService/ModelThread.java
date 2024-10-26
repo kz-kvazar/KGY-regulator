@@ -1,6 +1,7 @@
 package com.add.vpn.modelService;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import com.add.vpn.NotificationHelper;
 import com.add.vpn.firebase.RealtimeDatabase;
 import com.add.vpn.model.AlarmSound;
@@ -12,15 +13,22 @@ import java.util.LinkedList;
 import static com.add.vpn.modelService.ModelService.*;
 
 public class ModelThread extends Thread {
-    private final NotificationHelper notificationHelper;
+    private final MutableLiveData<NotificationHelper> notifier = ModelService.notificationHelper;
+
     private int notification_id = 777;
     //private final AlarmSound alarmSound;
 
     public ModelThread(FragmentActivity fragmentActivity) {
         if (alarmSound == null) alarmSound = new AlarmSound(fragmentActivity);
-        notificationHelper = new NotificationHelper(fragmentActivity);
-        notification_id = notificationHelper.regulateStartNotification();
-        regulationRunning.setValue(true);
+
+        if (notifier.getValue() == null){
+            ModelService.notificationHelper.setValue(new NotificationHelper(fragmentActivity));
+            notifier.getValue().regulateStartNotification();
+        }else{
+            notifier.getValue().regulateStartNotification();
+        }
+        //notificationHelper = new NotificationHelper(fragmentActivity);
+        //regulationRunning.setValue(true);
     }
 
     @Override
@@ -36,9 +44,13 @@ public class ModelThread extends Thread {
                 Thread.sleep(10000);
             } catch (InterruptedException ignored) {
                 //notificationHelper.notificationManager.cancel(notification_id);
-                regulationRunning.postValue(false);
+
+
+                if (notifier.getValue() != null) {
+                    notifier.getValue().regulateStopNotification();
+                }
                 alarmSound.alarmStop();
-                notificationHelper.regulateStopNotification();
+                regulationRunning.postValue(false);
                 //alarmSound.release();
             }
         } while (Boolean.TRUE.equals(regulationRunning.getValue()));

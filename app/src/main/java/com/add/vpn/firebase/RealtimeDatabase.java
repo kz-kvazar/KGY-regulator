@@ -76,7 +76,8 @@ public class RealtimeDatabase {
 
                     arrayList.add(context.getString(R.string.ch4_kgy, String.valueOf(ch4Kgy)));
                     arrayList.add(context.getString(R.string.gas_Flow, String.valueOf(UtilCalculations.calculateGasFlow(Float.valueOf(String.valueOf(ch4_1)), Float.valueOf(String.valueOf(ch4_2)), powerActive))));
-                    arrayList.add(context.getString(R.string.gasTemp, String.valueOf(dataSnapshot.child("gasTemp").getValue(Double.class))));
+                    arrayList.add(context.getString(R.string.gasTempIN, String.valueOf(dataSnapshot.child("gasTempIN").getValue(Double.class))));
+                    arrayList.add(context.getString(R.string.gasTempOUT, String.valueOf(dataSnapshot.child("gasTempOUT").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.cleanOil, String.valueOf(dataSnapshot.child("cleanOil").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.resTemp, String.valueOf(dataSnapshot.child("resTemp").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.avgTemp, String.valueOf(dataSnapshot.child("avgTemp").getValue(Double.class))));
