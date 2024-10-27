@@ -4,6 +4,8 @@ package com.add.vpn;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -41,17 +43,31 @@ public class MainActivity extends AppCompatActivity {
         generatorErrors = SettingsManager.getErrorSetting(MainActivity.this);
 
         ModelService.enableAlarm.setValue(generatorErrors);
+        OnBackPressedDispatcher onBackPressedDispatcher = this.getOnBackPressedDispatcher();
+
+        // Регистрируем новый обработчик нажатия "назад"
+        onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Логика обработки нажатия "назад"
+                if (viewPager2.getCurrentItem() == 0) {
+                    finish();  // Закрываем Activity
+                } else {
+                    viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);  // Переходим на предыдущий элемент
+                }
+            }
+        });
     }
 
 
-    @Override
-    public void onBackPressed() {
-        if (viewPager2.getCurrentItem() == 0) {
-            super.onBackPressed();
-        } else {
-            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if (viewPager2.getCurrentItem() == 0) {
+//            super.onBackPressed();
+//        } else {
+//            viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
