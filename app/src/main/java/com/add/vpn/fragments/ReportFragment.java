@@ -8,18 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.add.vpn.ModelJobService.RegulateTransferService;
-import com.add.vpn.NumberPickerDialog;
 import com.add.vpn.R;
 import com.add.vpn.adapters.DataAdapter;
 import com.add.vpn.firebase.RealtimeDatabase;
-//import com.add.vpn.modelService.RegulateTransferService;
-
-import java.util.List;
+import com.add.vpn.modelService.ModelService;
 
 public class ReportFragment extends Fragment {
 
@@ -46,16 +40,14 @@ public class ReportFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dataAdapter = new DataAdapter(RegulateTransferService.dataListLiveData.getValue());
+        dataAdapter = new DataAdapter(ModelService.dataListLiveData.getValue());
         dataList.setAdapter(dataAdapter);
         dataList.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
-        MutableLiveData<RealtimeDatabase> database = RegulateTransferService.realtimeDatabase;
-        //realtimeDatabase = database;
-        if (database == null) {
+        realtimeDatabase = ModelService.realtimeDatabase.getValue();
+        if (realtimeDatabase == null) {
             realtimeDatabase = new RealtimeDatabase(requireActivity());
-            database = new MutableLiveData<>();
-            database.setValue(realtimeDatabase);
+            ModelService.realtimeDatabase.setValue(realtimeDatabase);
         }
         //realtimeDatabase = new RealtimeDatabase(this.fragmentActivity);
         //realtimeDatabase.connect();
@@ -67,8 +59,7 @@ public class ReportFragment extends Fragment {
 //                numberPickerDialog.show(requireActivity().getSupportFragmentManager(), "MaxPower");
 //            }
 //        });
-        RegulateTransferService.dataListLiveData.observe(getViewLifecycleOwner(), strings ->
-                dataAdapter.notifyItemRangeChanged(0,20));
+        ModelService.dataListLiveData.observe(getViewLifecycleOwner(), strings -> dataAdapter.notifyItemRangeChanged(0, 20));
     }
 
     @Override
@@ -82,7 +73,7 @@ public class ReportFragment extends Fragment {
 
     @Override
     public void onStop() {
-        //RegulateTransferService.reportListLiveData.removeObservers(requireActivity());
+        //ModelService.reportListLiveData.removeObservers(requireActivity());
         super.onStop();
     }
 }

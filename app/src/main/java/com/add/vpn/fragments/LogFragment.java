@@ -12,13 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import com.add.vpn.ModelJobService.RegulateTransferService;
 import com.add.vpn.R;
-import com.add.vpn.UtilCalculations;
 import com.add.vpn.firebase.FBreportItem;
 import com.add.vpn.firebase.RealtimeDatabase;
-
+import com.add.vpn.modelService.ModelService;
 import com.add.vpn.view.ChartView;
 
 import java.util.LinkedList;
@@ -64,11 +61,10 @@ public class LogFragment extends Fragment {
 //        logList.setAdapter(adapter);
 //        logList.setLayoutManager(new LinearLayoutManager(context));
 
-        MutableLiveData<RealtimeDatabase> database = RegulateTransferService.realtimeDatabase;
-        if (database == null) {
+        realtimeDatabase = ModelService.realtimeDatabase.getValue();
+        if (realtimeDatabase == null) {
             realtimeDatabase = new RealtimeDatabase(context);
-            database = new MutableLiveData<>();
-            database.setValue(realtimeDatabase);
+            ModelService.realtimeDatabase.setValue(realtimeDatabase);
         }
         //realtimeDatabase.getAvgTemp(300);
         //avgTemp();
@@ -90,7 +86,7 @@ public class LogFragment extends Fragment {
                         report(true);
                         break;
                     case 3:
-                        realtimeDatabase.getReportList(744*3);
+                        realtimeDatabase.getReportList(744 * 3);
                         report(true);
                         break;
                     default:
@@ -105,8 +101,8 @@ public class LogFragment extends Fragment {
         });
     }
 //    private void avgTemp(){
-//        RegulateTransferService.avgTemp.removeObservers(requireActivity());
-//        RegulateTransferService.avgTemp.observe(requireActivity(),temp ->{
+//        ModelService.avgTemp.removeObservers(requireActivity());
+//        ModelService.avgTemp.observe(requireActivity(),temp ->{
 //            LinkedList<String> time = new LinkedList<>();
 //            for (int i = 0; i < temp.size(); i++) {
 //                if(i == 0){
@@ -120,8 +116,8 @@ public class LogFragment extends Fragment {
 //    }
 
     private void report(boolean isDayDeport) {
-        RegulateTransferService.reportList.removeObservers(requireActivity());
-        RegulateTransferService.reportList.observe(requireActivity(), reportItems -> {
+        ModelService.reportList.removeObservers(requireActivity());
+        ModelService.reportList.observe(requireActivity(), reportItems -> {
             LinkedList<Float> floats = new LinkedList<>();
             LinkedList<String> time = new LinkedList<>();
             LinkedList<Float> powers = new LinkedList<>();
@@ -137,11 +133,11 @@ public class LogFragment extends Fragment {
                 //floats.add(UtilCalculations.averageConcentration(ch4_1, ch4_2));
                 floats.add(item.getCH4_KGY());
                 gas.add(item.getGasFlow());
-                try{
+                try {
                     //avg.add(Float.valueOf(item.getAvgTemp()));
                     oil.add(Float.valueOf(item.getCleanOil()));
                     res.add(item.getResTemp());
-                }catch (Exception e){
+                } catch (Exception e) {
                     //avg.add(390f);
                     oil.add(71f);
                     res.add(49.6f);
@@ -170,10 +166,10 @@ public class LogFragment extends Fragment {
             }
             ch4View.setData(floats, time);
             powerView.setData(powers, time);
-            resTemp.setData(res,time);
+            resTemp.setData(res, time);
             //avgTemp.setData(avg,time);
-            cleanOil.setData(oil,time);
-            gasFlow.setData(gas,time);
+            cleanOil.setData(oil, time);
+            gasFlow.setData(gas, time);
         });
     }
 
@@ -202,7 +198,7 @@ public class LogFragment extends Fragment {
 
     @Override
     public void onStop() {
-        //RegulateTransferService.logListLiveData.removeObservers(requireActivity());
+        //ModelService.logListLiveData.removeObservers(requireActivity());
         super.onStop();
     }
 }

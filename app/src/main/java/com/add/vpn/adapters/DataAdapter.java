@@ -6,9 +6,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.add.vpn.ModelJobService.RegulateTransferService;
 import com.add.vpn.R;
-
+import com.add.vpn.modelService.ModelService;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         //stringList = ModelService.dataListLiveData.getValue();
-        stringList = RegulateTransferService.dataListLiveData.getValue();
+        stringList = ModelService.dataListLiveData.getValue();
         if (stringList != null) {
             return stringList.size();
         } else return 0;

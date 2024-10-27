@@ -8,11 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
-import com.add.vpn.ModelJobService.RegulateTransferService;
+
 import com.add.vpn.adapters.ViewPagerAdapter;
 import com.add.vpn.fragments.LogFragment;
 import com.add.vpn.fragments.MainFragment;
 import com.add.vpn.fragments.ReportFragment;
+import com.add.vpn.modelService.ModelService;
 
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager2.setPageTransformer(new ZoomOutPageTransformer());
         generatorErrors = SettingsManager.getErrorSetting(MainActivity.this);
 
-        RegulateTransferService.enableAlarm.setValue(generatorErrors);
+        ModelService.enableAlarm.setValue(generatorErrors);
     }
 
 
@@ -71,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
             generatorErrors = !generatorErrors;
             item.setChecked(generatorErrors);
             SettingsManager.setErrorSetting(this, generatorErrors);
-            RegulateTransferService.enableAlarm.setValue(generatorErrors);
+            ModelService.enableAlarm.setValue(generatorErrors);
 
-            if (!generatorErrors && RegulateTransferService.alarmSound != null) {
-                RegulateTransferService.alarmSound.alarmStop();
+            if (!generatorErrors && ModelService.alarmSound != null) {
+                ModelService.alarmSound.alarmStop();
             }
             return true;
         }
