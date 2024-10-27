@@ -4,9 +4,12 @@ package com.add.vpn.firebase;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.add.vpn.R;
+import com.add.vpn.SettingsManager;
 import com.add.vpn.UtilCalculations;
 import com.add.vpn.modelService.ModelService;
 import com.google.firebase.FirebaseApp;
@@ -25,6 +28,8 @@ public class RealtimeDatabase {
     DatabaseReference databaseReference;
     private Boolean stopAlarm = false;
     private Boolean isServerOnline = true;
+    private Long serverUnixTime20 = 0L;
+    private Long time = 0L;
 
     public RealtimeDatabase(Context context) {
         this.context = context;
@@ -50,17 +55,37 @@ public class RealtimeDatabase {
     }
 
     public void connect() {
+        Handler handler = new Handler(Looper.getMainLooper());
         eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> arrayList = new ArrayList<>();
 
-                Long serverUnixTime20 = dataSnapshot.child("serverUnixTime20").getValue(Long.class);
-                long time = new Date().getTime() / 1000;
+                serverUnixTime20 = dataSnapshot.child("serverUnixTime20").getValue(Long.class);
 
-                isServerOnline = serverUnixTime20 == null || time - serverUnixTime20 > 7250;
+
+                if (serverUnixTime20 == null || serverUnixTime20.equals(SettingsManager.getServerUnixTime(context))) {
+                    isServerOnline = true;
+                } else {
+                    SettingsManager.setServerUnixTime(context, serverUnixTime20);
+                    isServerOnline = false;
+                    time = (new Date().getTime() / 1000) - serverUnixTime20;
+                }
+
 
                 if (!isServerOnline) {
+
+                    handler.postDelayed(() -> {
+//                        Toast.makeText(context, "new time ="+(((new Date().getTime() / 1000) - serverUnixTime20)), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "old time ="+time, Toast.LENGTH_SHORT).show();
+                        if (((new Date().getTime() / 1000) - serverUnixTime20) > 45 + time) {
+                            ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
+                                add(context.getString(R.string.connection_error_message));
+                            }});
+                            ModelService.avgTemp.postValue(new LinkedList<>());
+                        }
+                    }, 60000);
+
                     arrayList.add(context.getString(R.string.op_Pressure, String.valueOf(dataSnapshot.child("opPresher").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.gts_pressure, String.valueOf(dataSnapshot.child("gtsPresher").getValue(Double.class))));
                     arrayList.add(context.getString(R.string.kgy_pressure, String.valueOf(dataSnapshot.child("kgyPresher").getValue(Double.class))));
@@ -104,9 +129,9 @@ public class RealtimeDatabase {
                     if (monthStartGenerated != null && totalActivePower != null) {
                         arrayList.add(context.getString(R.string.month_generated, String.valueOf((totalActivePower - monthStartGenerated) / 1000)));
                     }
-                    if(powerActive != null && powerActive == 0){
+                    if (powerActive != null && powerActive == 0) {
                         String engineStopTime = String.valueOf(dataSnapshot.child("engineStopTime").getValue(String.class));
-                        engineStopTime = engineStopTime.replace("T"," ");
+                        engineStopTime = engineStopTime.replace("T", " ");
                         arrayList.add(context.getString(R.string.engineStopTime, engineStopTime));
                     }
 
@@ -125,15 +150,16 @@ public class RealtimeDatabase {
                     if (ch4Kgy != null) {
                         ModelService.CH4kgy.setValue(ch4Kgy);
                     }
-                } else {
-                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
-                        add(context.getString(R.string.connection_error_message));
-                    }});
-                    ModelService.avgTemp.postValue(new LinkedList<>());
-                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
-                        add("Ошибка связи! Сервер не отвечает");
-                    }});
                 }
+                //else {
+//                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                        add(context.getString(R.string.connection_error_message));
+//                    }});
+//                    ModelService.avgTemp.postValue(new LinkedList<>());
+//                    ModelService.dataListLiveData.postValue(new ArrayList<String>() {{
+//                        add("Ошибка связи! Сервер не отвечает");
+//                    }});
+//                }
             }
 
             @Override
@@ -250,6 +276,7 @@ public class RealtimeDatabase {
             avgTempReport.addValueEventListener(avgTempListener);
         }
     }
+
     public void disconnect() {
         if (eventListener != null) {
             databaseReference.removeEventListener(eventListener);
