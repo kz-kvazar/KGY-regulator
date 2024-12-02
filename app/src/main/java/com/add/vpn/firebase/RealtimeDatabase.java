@@ -215,7 +215,8 @@ public class RealtimeDatabase {
                     Long generated = item.child("totalActivePower").getValue(Long.class);
 
 
-                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null && cleanOil != null && avgTemp != null && resTemp != null && ch4_kgy != null) {
+                    if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null &&
+                            cleanOil != null && avgTemp != null && resTemp != null && ch4_kgy != null && generated != null) {
                         FBreportItem reportItem = new FBreportItem(date);
                         reportItem.setPowerActive(powerActive);
                         reportItem.setCH4_1(ch4_1);
