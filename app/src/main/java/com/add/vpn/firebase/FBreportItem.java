@@ -3,6 +3,7 @@ package com.add.vpn.firebase;
 public class FBreportItem {
     private String date;
     private Integer powerConstant;
+    private Long generated;
     private Float CH4_1;
     private Float gasFlow;
     private Float CH4_2;
@@ -10,6 +11,17 @@ public class FBreportItem {
     private Integer avgTemp;
     private Float resTemp;
     private Float CH4_KGY;
+    public FBreportItem(String date) {
+        this.date = date;
+    }
+
+    public Long getGenerated() {
+        return generated;
+    }
+
+    public void setGenerated(Long generated) {
+        this.generated = generated;
+    }
 
     public Float getCH4_KGY() {
         return CH4_KGY;
@@ -49,10 +61,6 @@ public class FBreportItem {
 
     public void setResTemp(Float resTemp) {
         this.resTemp = resTemp;
-    }
-
-    public FBreportItem(String date) {
-        this.date = date;
     }
 
     public String getDate() {

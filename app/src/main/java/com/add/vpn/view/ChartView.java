@@ -140,8 +140,8 @@ public class ChartView extends View {
         if (height >= width) {
             height = width / 2;
         }
-        maxSize = 72 * (width / height);
-        if (maxSize < 120) maxSize = 120;
+        maxSize = 50 * (width / height);
+        if (maxSize < 50) maxSize = 50;
         if (isAvg){
             dataValue = pruneList(tempReportValue, maxSize);
             time = pruneList(tempReportDate, maxSize);
@@ -156,12 +156,16 @@ public class ChartView extends View {
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
 
-        float maxValue = 1;
-        float minValue = 1;
+        float maxValue = 0;
+        float minValue = 0;
 
         if (dataValue != null && !dataValue.isEmpty()){
              maxValue = Collections.max(dataValue);
-             minValue = Collections.min(dataValue);
+             minValue = Collections.max(dataValue);
+            for (Float aFloat : dataValue) {
+                if (aFloat >= 0 && aFloat < minValue) minValue = aFloat;
+            }
+
         }else {
             return;
         }
@@ -220,12 +224,14 @@ public class ChartView extends View {
             float y = height - startPointX - valueScale * (value - minValue);
 
             // добавляем точки для последующей отрисовки
-            points.add(new PointF(x, y)); // Записываем точки для отрисовки точек
+            if (value >= 0){  // если значение выходит за график то мы его не рисуем
+                points.add(new PointF(x, y)); // Записываем точки для отрисовки точек
+            }
 
             // Строим линию графика
             if (trendLine.isEmpty()) {
                 trendLine.moveTo(x, y);
-            } else {
+            } else if(value >= 0) {
                 float control1X = (x + prevPoint.x) / 2;
                 float control1Y = prevPoint.y;
                 float control2X = (x + prevPoint.x) / 2;
@@ -255,7 +261,7 @@ public class ChartView extends View {
             }catch (Exception ignored){
             }
             offset++;
-            prevPoint.set(x, y);
+            if (value >= 0) prevPoint.set(x, y);
         }
 
         // рисуем значения графика и линии на оси Y
@@ -274,7 +280,7 @@ public class ChartView extends View {
         }
         //рисуем маркер значение - Зеленую линию
         if (valueMarker != null && maxValue > valueMarker && valueMarker > minValue) {
-            paintLine.setColor(Color.argb(100, 0, 255, 0));
+            paintLine.setColor(Color.argb(250, 0, 255, 0));
             paintLine.setStrokeWidth((float) height / 50);
             canvas.drawLine(startPointX - radius, height - startPointX - valueScale * (valueMarker - minValue), right, height - startPointX - valueScale * (valueMarker - minValue), paintLine);
         }

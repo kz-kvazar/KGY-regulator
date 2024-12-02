@@ -212,6 +212,7 @@ public class RealtimeDatabase {
                     Integer cleanOil = item.child("cleanOil").getValue(Integer.class);
                     Integer avgTemp = item.child("avgTemp").getValue(Integer.class);
                     Float resTemp = item.child("resTemp").getValue(Float.class);
+                    Long generated = item.child("totalActivePower").getValue(Long.class);
 
 
                     if (ch4_1 != null && ch4_2 != null && powerActive != null && date != null && cleanOil != null && avgTemp != null && resTemp != null && ch4_kgy != null) {
@@ -224,6 +225,7 @@ public class RealtimeDatabase {
                         reportItem.setCleanOil(cleanOil);
                         reportItem.setAvgTemp(avgTemp);
                         reportItem.setResTemp(resTemp);
+                        reportItem.setGenerated(generated);
                         reportList.add(reportItem);
                     }
                 }

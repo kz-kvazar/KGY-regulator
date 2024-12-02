@@ -72,9 +72,9 @@
                         app:timeUnit="Час"
                         app:valueUnit=" %"
                         app:valueMarker="26"
-                        app:description="CH4"
+                        app:description="CH4 КГУ"
                         app:isAvg="true"
-                        app:isAutoScale="true"/>
+                        app:isAutoScale="false"/>
 
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_power"
@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         app:timeUnit="Час"
                         app:valueUnit="kW"
-                        app:description="Активная мощность"
+                        app:description="Техническая генерация"
                         app:isAvg="true"
                         app:isAutoScale="false"
                         />
@@ -94,7 +94,7 @@
                         app:valueUnit="°C"
                         app:description="Температура ресивера"
                         app:isAvg="true"
-                        app:isAutoScale="true"
+                        app:isAutoScale="false"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_gasFlow"
@@ -104,7 +104,7 @@
                         app:valueUnit="м3/ч"
                         app:description="Расход ГВС"
                         app:isAvg="true"
-                        app:isAutoScale="true"
+                        app:isAutoScale="false"
                         />
                 <com.add.vpn.view.ChartView
                         android:id="@+id/cv_cleanOil"
@@ -116,6 +116,16 @@
                         app:isAvg="true"
                         app:isAutoScale="false"
                         />
+                <com.add.vpn.view.ChartView
+                        android:id="@+id/cv_CH4_VNS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:timeUnit="Час"
+                        app:valueUnit=" %"
+                        app:valueMarker="29"
+                        app:description="CH4 ВНС"
+                        app:isAvg="true"
+                        app:isAutoScale="false"/>
             </LinearLayout>
 
     </ScrollView>

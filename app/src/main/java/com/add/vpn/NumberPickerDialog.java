@@ -45,7 +45,7 @@ public class NumberPickerDialog extends DialogFragment {
                     }
 
                     if (selectedValue>1560) selectedValue = 1560;
-                    if (selectedValue<900) selectedValue = 900;
+                    if (selectedValue<810) selectedValue = 810;
 
                     Toast.makeText(requireActivity(),(requireActivity().getString(R.string.max_power, String.valueOf(selectedValue))), Toast.LENGTH_SHORT).show();
                    // menuItem.setTitle(getText(R.string.max_power) + " " + selectedValue + "кВт");

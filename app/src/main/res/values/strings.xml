@@ -50,7 +50,7 @@
     <string name="regulate_statusOn">Регулирование запущено</string>
     <string name="regulate_statusOff">Регулирование остановлено</string>
     <string name="backgrounded_message">Внимание !!!\nОтключение автоматического регулирования.</string>
-    <string name="set_max_power">Верхний предел регулирования мощности 900–1560 kW</string>
+    <string name="set_max_power">Верхний предел регулирования мощности 800–1560 kW</string>
     <string name="max_power_Error">Неверно введенное значение</string>
     <string name="KGY_error_msg">Обнаружена ошибка КГУ требующая вашего внимания</string>
     <string name="time_period">Временной период:</string>
@@ -72,8 +72,8 @@
 
 
     <string-array name="time_period">
-        <item>12 часов</item>
-        <item>24 часа</item>
+        <item>24 час</item>
+        <item>неделя</item>
         <item>месяц</item>
         <item>3 месяца</item>
     </string-array>
